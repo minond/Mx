@@ -18,6 +18,19 @@ if (Game.project.length) {
 	Game.project = Game.project[1];
 }
 
+// no project loaded
+// TODO: do this in a different way
+else {
+	Game.project = prompt("What assignment should I load?", "");
+
+	if (Game.project) {
+		window.location.href = window.location.origin + window.location.pathname + "?load:" + Game.project;
+	}
+	else {
+		window.location.href = window.location.origin;
+	}
+}
+
 
 
 // main Mx library
