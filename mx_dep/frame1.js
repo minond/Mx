@@ -2,7 +2,7 @@
     var css = document.createElement("link");
     css.setAttribute("rel", "stylesheet");
     css.type = "text/css";
-    css.href = "/admin/javascript/frame1/frame1.css";
+    css.href = "mx_style/frame1.css";
     setTimeout(function () {
         document.getElementsByTagName("head")[0].appendChild( css );
     }, 1500);
