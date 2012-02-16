@@ -218,32 +218,3 @@
 	
 	scope[ 'Alert' ] = Alert;
 })(this, jQuery);
-
-
-
-
-
-
-// tests:
-
-//Alert.prompt('How many minutes did you spend on XYZ\'s IVR?', '0', click_check_2);
-
-
-//Alert.alert('Welcome!');
-//Alert.confirm('Would you like a tour?', function (tour) {
-//	if (tour) {
-//		Alert.alert('Perfect!');
-//		Alert.prompt('What\'s your name?', '', function (click, text) {
-//			if (click)
-//				Alert.alert(text + ' look over here....');
-//			else
-//				Alert.alert('c ya');
-//		});
-//	}
-//	else {
-//		Alert.alert('Ok, next time.');
-//	}
-//});
-
-
-
