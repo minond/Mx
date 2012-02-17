@@ -7,10 +7,12 @@ Mx.storage.use({
     images: {
         "@description": {
             id: String,
+			type: Number,
             offset: Array,
             section: String,
             image: String,
-            node: Node
+            node: Node,
+			father: Node
         },
         "@data": []
     }

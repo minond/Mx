@@ -17,14 +17,14 @@ Mx.image.map.root = "mx_images/";
 Mx.image.map.enviroment = {
 	type: "div",
     root: "enviroment/",
-    grass: "grass.jpg",
-    empty: "empty.png"
+    grass: ["grass.jpg", Mx.const.dom.type.ENV],
+    empty: ["empty.png", Mx.const.dom.type.ENV]
 };
 
 Mx.image.map.buildings = {
 	type: "img",
 	root: "buildings/",
-	blank: "building.png"
+	blank: ["building.png", Mx.const.dom.type.BUILDING]
 };
 
 Mx.internals.id.images = {
@@ -64,5 +64,5 @@ Mx.internals.id.out = {
 /*****************************************************************************
  * component settings
  *****************************************************************************/
-Mx.internals.components = [ "buildings", "movement", "timer", "location", "panel", "menu", "notify", "3D", "d3" ];
+Mx.internals.components = [ "buildings", "movement", "timer", "location", "panel", "menu", "notify", "3D", "d3", "places" ];
 Mx.internals.components.root = "mx_custom/{%0}.js";

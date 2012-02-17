@@ -65,7 +65,7 @@ var Mx = {
 	const: {
 		// Mx dom element types
 		dom: {
-			type: manage.enum("ENV", "BODY", "UX")
+			type: manage.enum("ENV", "BODY", "UX", "BUILDING")
 		},
 
 		// dom event types

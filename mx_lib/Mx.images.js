@@ -23,7 +23,7 @@ Mx.image = (function () {
 
 
 	var gen_url = function (img, section) {
-		return map.root + map[ section ].root + map[ section ][ img ];
+		return map.root + map[ section ].root + map[ section ][ img ][0];
 	};
 
 	var gen_image = function (i, s) {
@@ -34,7 +34,7 @@ Mx.image = (function () {
 		// img.src = url;
 		img.className = s + mx_vars.sep + i;
 		img.setAttribute(mx_vars.type, s);
-		img.src = map.root + img_info.root + img_info[i];
+		img.src = map.root + img_info.root + img_info[i][0];
 		img.id = s + mx_vars.sep + i + mx_vars.sep + 
 			(img.className in map.count ? 
 			++map.count[ img.className ] : 
@@ -53,7 +53,7 @@ Mx.image = (function () {
 
 			else {
 				img = gen_image(i, s);
-				Mx.storage.insert([img.id, loc, s, i, img], Mx.internals.id.storage.IMAGES);
+				Mx.storage.insert([img.id, map[s][i][1], loc, s, i, img, null], Mx.internals.id.storage.IMAGES);
 				return img;
 			}
 		}

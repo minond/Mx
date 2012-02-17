@@ -53,7 +53,7 @@ Mx.dom = (function () {
 		var vp_dim = { Y: 25 / 311, X: 23 / 1000 };
 		var vp_dim = { Y: 8 / 100, X: 11 / 500 };
 
-		var pl_dim = {
+		var pl_dim = Mx.dom.pl_dim = {
 			X: vp_dim.X * width,
 			Y: vp_dim.Y * height
 		};

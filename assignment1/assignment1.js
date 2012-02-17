@@ -1,25 +1,33 @@
-// User input				done
-// Image texture			done
-// 3D model					done
-// Moving objects
+// User input               done
+// Image texture            done
+// 3D model                 done
+// Moving objects           in process
 // Collision detection
-// Timer					done
+// Timer                    done
 // A way to win
+
+
+Mx.define("pname", "", String);
+Mx.define("win", false, Boolean);
+Mx.define("str_max_time", "one minute", String);
+Mx.define("int_max_time", 60, Number);
+Mx.define("building");
 
 
 Mx.image.init();
 Mx.dom.init();
 Mx.comp.panel.init();
+Mx.comp.places.init();
 
-
-Mx.define("pname", "", String);
-Mx.define("win", false, Boolean);
 
 
 function main () {
 	Game.start();
-	x(Mx.image.factory("blank", "buildings"))
-		.append()
+
+	Mx.set.building = Mx.image.factory("blank", "buildings");
+
+
+	x( Mx.get.building ).append()
 		.style({
 			"position": "absolute",
 			"top": "12px",
@@ -31,7 +39,7 @@ function main () {
 
 function setup () {
 	Mx.comp.panel.append = Mx.comp.menu.init();
-	Mx.comp.panel.append = Mx.comp.timer.init(120, Game.end);
+	Mx.comp.panel.append = Mx.comp.timer.init(Mx.get.int_max_time, Game.end);
 	d3.btn = Mx.comp.panel.button(d3.btntxton, d3.run);
 
 	Mx.dom.vp.reset();
@@ -71,7 +79,7 @@ Game.start = function start () {
 
 		if (click && Mx.get.pname) {
 			Mx.queue.out(Template.build(Alert.settings.ltxt, 
-			stringf("{%0}, you have two minutes to....", Mx.get.pname)), function () {
+			stringf("{%0}, you have {%1} to....", Mx.get.pname, Mx.get.str_max_time)), function () {
 				Mx.comp.timer.start();
 			});
 		}
