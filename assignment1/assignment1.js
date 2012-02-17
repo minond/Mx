@@ -2,9 +2,9 @@
 // Image texture            done
 // 3D model                 done
 // Moving objects           done
-// Collision detection
+// Collision detection      done
 // Timer                    done
-// A way to win
+// A way to win             done
 
 
 Mx.define("pname", "", String);
