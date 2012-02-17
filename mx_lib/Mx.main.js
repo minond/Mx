@@ -5,7 +5,7 @@
 
 // purely got clean namespace/scope reasons
 // Mx library will only require Mx, Game, main, setup, m, and x
-var Game = {};
+var Game = { running: false };
 
 // which game to load
 Game.project = window.location.search.match(/load:([A-x0-9]+)/) || [];
@@ -74,7 +74,10 @@ var Mx = {
 		    "keypress", "keyup", "mouseleave", "mouseout", 
 		    "mouseover", "mouseup", "mousewheel", "resize", 
 		    "scroll", "submit", "select"
-		)
+		),
+
+		// movement directions
+		move: manage.enum("up", "down", "left", "right")
 	}
 };
 

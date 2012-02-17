@@ -72,7 +72,7 @@
 		Frame.menu.add_item(mainmenu, "Project Reset", function () { location.reload(true); });
 		Frame.menu.add_sptr(mainmenu);
 		Frame.menu.add_help(mainmenu, RELOAD_HELP);
-		Frame.menu.add_item(mainmenu, "Project Reload", function () { Mx.internals.fn.init(true); });
+		Frame.menu.add_item(mainmenu, "Project Reload", function () { Mx.resource.init.run(true); });
 		Frame.menu.add_sptr(mainmenu);
 		Frame.menu.add_menu(mainmenu, "Script Reload", scriptmenu);
 		Frame.menu.add_trigger(mainmenu, trigger, Mx.const.event.MOUSEOVER, SETTINGS);

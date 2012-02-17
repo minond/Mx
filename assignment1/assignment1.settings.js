@@ -24,6 +24,11 @@ Mx.image.map.enviroment = {
 Mx.image.map.buildings = {
 	type: "img",
 	root: "buildings/",
+	mew: ["mew.gif", Mx.const.dom.type.BUILDING],
+	oldmew: ["oldmew.gif", Mx.const.dom.type.BUILDING],
+	pidgey: ["pidgey.png", Mx.const.dom.type.BUILDING],
+	pokeball: ["pokeball.png", Mx.const.dom.type.BUILDING],
+	luigi: ["luigi.png", Mx.const.dom.type.BUILDING],
 	blank: ["building.png", Mx.const.dom.type.BUILDING]
 };
 

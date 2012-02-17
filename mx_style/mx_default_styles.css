@@ -56,6 +56,10 @@ div.enviroment_grass {
 	background: black url('../mx_images/enviroment/grass.jpg') no-repeat right top;
 }
 
+div.mx_vp_row {
+	/* text-align: center; */
+}
+
 div[mx_type="enviroment"]:hover:not(.blank) {
 	background: black url('../mx_images/enviroment/empty.png') no-repeat right top;
 	opacity: 0.2;
@@ -109,6 +113,7 @@ div[mx_type="enviroment"] {
 
 
 .panel_component_father {
+	z-index: 100000;
 	left: 10px;
 	position: absolute;
 	top: 10px;
@@ -127,6 +132,7 @@ div[mx_type="enviroment"] {
 	overflow-x: hidden;
 	overflow-y: scroll;
 	height: 90%;
+	background-color: transparent;
 }
 
 .panel_component_father center {
@@ -134,6 +140,7 @@ div[mx_type="enviroment"] {
 }
 
 .panel_component_child {
+	background-color: white;
 	border: 1px solid #C8C8C8;
 	padding: 5px 4px;
 	/* border-top-width: 4px;

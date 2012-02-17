@@ -8,6 +8,7 @@ Mx.dom = (function () {
 	var unit = "px";
 	var speed = "fast";
 	var elemtype = "div";
+	var elemtype_classname = "mx_vp_row";
 	var storageprop = "@data";
 	var imgsection = "enviroment";
 	var imgtype = "empty";
@@ -46,6 +47,9 @@ Mx.dom = (function () {
 
 		VIEWPORT_CREATED = true;
 
+		width = width || innerWidth - 50;
+		height = height || innerHeight - 80;
+
 		holder.style.width = width + unit;
 		holder.style.height = height + unit;
 		
@@ -62,6 +66,7 @@ Mx.dom = (function () {
 
 		for (var row = 0, max_row = Math.ceil(pl_dim.Y); row < max_row; row++) {
 			rowholder = document.createElement( elemtype );
+			rowholder.className = elemtype_classname;
 
 			for (var col = 0, max_col = Math.ceil(pl_dim.X); col < max_col; col++)
 				rowholder.appendChild( Mx.image.factory(imgtype, imgsection, [col, row]) );
