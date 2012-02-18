@@ -56,6 +56,10 @@ div.enviroment_grass {
 	background: black url('../mx_images/enviroment/grass.jpg') no-repeat right top;
 }
 
+div.enviroment_empty {
+	/* border: 1px solid white !important; */
+}
+
 div.mx_vp_row {
 	/* text-align: center; */
 }
