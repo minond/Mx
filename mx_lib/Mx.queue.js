@@ -1,16 +1,14 @@
 "use strict";
 
 
-var QUEUE_RATE = 1000 / 60;
-
-Mx.queue = new function () {
-	this.stack = throttle(function (fn) { fn(); }, QUEUE_RATE);
+mx.queue = new function () {
+	this.stack = throttle(function (fn) { fn(); }, 1000 / 60);
 
 	return Mx.queue;
 };
 
 
-Mx.queue.component = function (cname, args) {
+mx.queue.component = function (cname, args) {
 	this.stack(function () {
 		Mx.comp[ cname ].init.apply(window, args || []);
 	});
@@ -19,7 +17,7 @@ Mx.queue.component = function (cname, args) {
 };
 
 
-Mx.queue.component._call = function (cname, fnname, args) {
+mx.queue.component._call = function (cname, fnname, args) {
 	Mx.queue.stack(function () {
 		Mx.comp[ cname ][ fnname ].apply(window, args || []);
 	});
@@ -28,7 +26,7 @@ Mx.queue.component._call = function (cname, fnname, args) {
 };
 
 
-Mx.queue.dom = function (node) {
+mx.queue.dom = function (node) {
 	this.stack(function () {
 		Mx.dom.append(node);
 	});
@@ -37,7 +35,7 @@ Mx.queue.dom = function (node) {
 };
 
 
-Mx.queue.out = function (str, action) {
+mx.queue.out = function (str, action) {
 	this.stack(function () {
 		if (m(action).is_function) {
 			switch (action.length) {
