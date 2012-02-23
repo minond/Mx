@@ -250,7 +250,7 @@
 
 	// applies all css properties passed
 	// in from cssobj to the current node
-	lambdas.is_node.style = function (cssobj) {
+	lambdas.is_node.css = function (cssobj) {
 		for (var css in cssobj)
 			this.style[ css ] = cssobj[ css ];
 		return x(this);
@@ -258,13 +258,13 @@
 
 	// sets style.display to none on the current node
 	lambdas.is_node.hide = function () {
-		x(this).style({"display":"none"});
+		x(this).css({"display":"none"});
 		return x(this);
 	};
 
 	// resets style.display on the current node
 	lambdas.is_node.show = function () {
-		x(this).style({"display":""});
+		x(this).css({"display":""});
 		return x(this);
 	};
 
@@ -287,10 +287,14 @@
 	// applies all css properties passed
 	// in from cssobj to the current nodes
 	// @see is_node.style
-	lambdas.is_nodelist.style = function (cssobj) {
+	lambdas.is_nodelist.css = function (cssobj) {
 		for (var m = this.length, i = 0; i < m; i++)
-			for (var css in cssobj)
-				this[i].style[ css ] = cssobj[ css ];
+			for (var css in cssobj) {
+				if ("style" in this[i])
+					this[i].style[ css ] = cssobj[ css ];
+				else if ("node" in this[i] && "style" in this[i].node)
+					this[i].node.style[ css ] = cssobj[ css ];
+			}
 		return x(this);
 	};
 
@@ -298,7 +302,7 @@
 	// @see is_node.hide
 	lambdas.is_nodelist.hide = function () {
 		for (var m = this.length, i = 0; i < m; i++)
-			x(this[i]).style({"display":"none"});
+			x(this[i]).css({"display":"none"});
 		return x(this);
 	};
 
@@ -306,7 +310,7 @@
 	// @see is_node.show
 	lambdas.is_nodelist.show = function () {
 		for (var m = this.length, i = 0; i < m; i++)
-			x(this[i]).style({"display":""});
+			x(this[i]).css({"display":""});
 		return x(this);
 	};
 
@@ -325,8 +329,17 @@
 	// @see is_array.rest
 	lambdas.is_nodelist.rest = lambdas.is_array.rest;
 
-	// @see is_array.is_array
+	// @see is_array.in_array
 	lambdas.is_nodelist.is_list = lambdas.is_array.in_array;
+
+	// @see is_nodelist.css
+	lambdas.is_array.css = lambdas.is_nodelist.css;
+
+	// @see is_nostlist.hide
+	lambdas.is_array.hide = lambdas.is_nodelist.hide;
+
+	// @see is_nostlist.show
+	lambdas.is_array.show = lambdas.is_nodelist.show;
 
 
 	// takes an element and according to it's type

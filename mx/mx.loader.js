@@ -1,6 +1,6 @@
 // main holder for all modules in the library
 // some helper scripts may also append to this object
-var mx = {};
+var mx = { queue: {} };
 
 var mx_modules = [	"component", "debugger", "dom", 
 					"driver", "events", "element", 
@@ -40,7 +40,11 @@ mx.load_queue = new function () {
 mx.include = (function (modlist) {
 	var main = {};
 
+	var loaded = {};
+
 	var nscript = function (src) {
+		loaded[ src ] = true;
+
 		mx.load_queue.stack(function () {
 			var node = document.createElement("script");
 			node.type = "text/javascript";
@@ -50,11 +54,13 @@ mx.include = (function (modlist) {
 	};
 
 	var cscript = (function (href) {
+		loaded[ href ] = true;
+
 		mx.load_queue.stack(function () {
 			var node = document.createElement("link");
 			node.type = "text/css";
 			node.rel = "stylesheet";
-			node.href = href;
+			node.href = href + "?" + Date.now();
 			document.head.appendChild(node);
 		});
 	});
@@ -63,7 +69,16 @@ mx.include = (function (modlist) {
 
 	// shorcut getters for all modules
 	var load_module = main.module = function (mod) {
+		loaded[ mod ] = true;
 		nscript("mx_module/mx." + mod + ".js");
+	}
+
+	// load limit function used within modules
+	// to prevent loading the same resource
+	// multiple times.
+	var load_module_once = main.module.dependency = function (mod) {
+		if (!(mod in loaded))
+			load_module(mod);
 	}
 
 
@@ -71,8 +86,15 @@ mx.include = (function (modlist) {
 	for (var i = 0; i < modlist.length; i++) {
 		(function () {
 			var locmod = modlist[i];
+
 			main.module.__defineGetter__(locmod, function () {
+				mx.queue[ locmod ] = {};
 				load_module( locmod );
+			});
+
+			main.module.dependency.__defineGetter__(locmod, function () {
+				mx.queue[ locmod ] = {};
+				load_module_once( locmod );
 			});
 		})();
 	}
@@ -91,3 +113,15 @@ mx.include = (function (modlist) {
 
 	return main;
 })( mx_modules );
+
+
+
+
+
+
+
+if ('manage' in window)
+	manage.as_global();
+
+if ('Template' in window)
+	Template.stringf.as_global();

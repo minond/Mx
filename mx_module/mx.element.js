@@ -1,6 +1,10 @@
 "use strict";
 
 
+// every element is stored in an msql instance
+mx.include.module.dependency.storage;
+
+
 // each element requires the tag to be set
 // when creating a new element it is this setting
 // that is used to determine how it should be built
@@ -98,14 +102,13 @@ mx.element = (function () {
 })();
 
 
-/*
-
-// samples:
-
-// creating a new element
-mx.element.factory("grass", "enviroment");
-
-// creating a new set of elements
+// a few defaults
+// creating a few default enviroment
+// elements that other modules may depend upon
+// if additional enviroment elements need to be
+// added, they may be added to:
+// mx.element.map.enviroment.element,
+// or a new map property may be created as well.
 mx.element.map.enviroment = {
 	type: mx.element_node.DIV,
 	root: "enviroment",
@@ -121,5 +124,3 @@ mx.element.map.enviroment = {
 		}
 	}
 };
-
-*/
