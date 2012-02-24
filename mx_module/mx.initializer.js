@@ -5,10 +5,12 @@ mx.include.setmods = [ "component", "debug", "dom", "element", "helpers", "stora
 
 
 
-mx.include.module.dependency.url;
 mx.include.module.dependency.helpers;
+mx.include.module.dependency.url;
 mx.include.module.dependency.debug;
 
 mx.queue.action = function () {
-	console.log(mx.url.load || mx.url.debug);
+	mx.debug.time("load time");
+	console.log(Template.stringf("loading {%0}", mx.__project__));
+	mx.debug.time("load time");
 };

@@ -137,6 +137,12 @@ mx.include = (function (modlist) {
 		}, 500);
 	});
 
+	mx.queue.__defineSetter__("action_s", function (fn) {
+		setTimeout(function () {
+			mx.queue.action = fn;
+		}, 500);
+	});
+
 	// set setter for variables main and setup.
 	// these should be declared after every module
 	// has been requeuested as they will be placed

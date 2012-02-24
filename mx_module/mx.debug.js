@@ -14,9 +14,9 @@ mx.debug = (function () {
 	var debug;
 
 	// 'debug' in the url in the main debug flag
-	mx.queue.action = function () {
+	// mx.queue.action = function () {
 		debug = mx.debugging = !!mx.url.debug;
-	}
+	// }
 
 	// timer storage
 	var timing = {};
