@@ -1,11 +1,9 @@
+"use strict";
+
+
 // main holder for all modules in the library
 // some helper scripts may also append to this object
 var mx = {};
-
-var mx_modules = [	"component", "debugger", "dom", 
-					"driver", "events", "element", 
-					"loader", "queue", "helpers", 
-					"storage", "tests" ];
 
 
 // default output method all modules
@@ -111,14 +109,32 @@ mx.include = (function (modlist) {
 
 
 
-	// helper setter for configuration loader
+	// helper setter for file loader
+	main.__defineSetter__("file", function (file) {
+		nscript( file );
+	});
+
+	// settings loader
 	main.__defineSetter__("settings", function (file) {
 		nscript( file );
+	});
+
+	// dependency short cut
+	main.__defineSetter__("dependency", function (file) {
+		nscript( Template.stringf("mx_dependency/{%0}.js", file) );
 	});
 
 	// helper setter for style sheet loader
 	main.__defineSetter__("style", function (href) {
 		cscript( href );
+	});
+
+	// adds an action/function to the call stack
+	mx.queue.__defineSetter__("action", function (fn) {
+		setTimeout(function () {
+			if (m(fn).is_function)
+				mx.load_queue.stack(fn);
+		}, 500);
 	});
 
 	// set setter for variables main and setup.
@@ -143,4 +159,9 @@ mx.include = (function (modlist) {
 
 
 	return main;
-})( mx_modules );
+});
+
+
+mx.include.__defineSetter__("setmods", function () {
+	mx.include = mx.include.apply(mx, arguments);
+});
