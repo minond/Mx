@@ -1,6 +1,6 @@
 // main holder for all modules in the library
 // some helper scripts may also append to this object
-var mx = { queue: {} };
+var mx = {};
 
 var mx_modules = [	"component", "debugger", "dom", 
 					"driver", "events", "element", 
@@ -25,6 +25,16 @@ mx.load_queue = new function () {
 	this.stack = manage.throttle(function (fn) {
 		fn();
 	}, 150);
+};
+
+
+// main throttled call stack. similar to
+// mx.load_queue, except every module extends
+// from this object and uses the same call queue.
+mx.queue = new function () {
+	this.stack = manage.throttle(function (fn) {
+		fn();
+	});
 };
 
 
@@ -111,17 +121,26 @@ mx.include = (function (modlist) {
 		cscript( href );
 	});
 
+	// set setter for variables main and setup.
+	// these should be declared after every module
+	// has been requeuested as they will be placed
+	// in the load queue right away.
+	(function () {
+		__defineSetter__("main", function (fn) {
+			setTimeout(function () {
+				if (m(fn).is_function)
+					mx.load_queue.stack(fn);
+			}, 1000);
+		});
+
+		__defineSetter__("setup", function (fn) {
+			setTimeout(function () {
+				if (m(fn).is_function)
+					mx.load_queue.stack(fn);
+			}, 1000);
+		});
+	})();
+
+
 	return main;
 })( mx_modules );
-
-
-
-
-
-
-
-if ('manage' in window)
-	manage.as_global();
-
-if ('Template' in window)
-	Template.stringf.as_global();
