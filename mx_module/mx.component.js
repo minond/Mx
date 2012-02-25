@@ -19,7 +19,7 @@ mx.components = (function () {
 	// the new componenet or normalize it.
 	main.register = function (component) {
 		components[ component.name ] = component;
-		mx.message("registered component:", component.name);
+		mx.message("registered component: {%0}", component.name);
 	};
 
 	return main;

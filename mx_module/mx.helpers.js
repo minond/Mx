@@ -244,6 +244,33 @@
 			action.call(this, this[prop], prop);
 	};
 
+	// returns new object made up of properties
+	// that passed the test function
+	lambdas.is_object.reduce = function (test) {
+		var ret = {};
+		for (var prop in this)
+			if (test(this[ prop ], prop, this))
+				ret[ prop ] = this[ prop ];
+		return ret;
+	};
+
+	// returns object's keys
+	// @see values
+	lambdas.is_object.keys = function () {
+		var ret = [];
+		for (var key in this)
+			ret.push(key);
+		return ret;
+	};
+
+	// returns object's values
+	// @see keys
+	lambdas.is_object.values = function () {
+		var ret = [];
+		for (var key in this)
+			ret.push( this[ key ] );
+		return ret;
+	};
 
 	// Node methods
 	lambdas.is_node = {};
@@ -314,6 +341,24 @@
 		return x(this);
 	};
 
+	// integer only numbers
+	lambdas.is_int = {};
+
+	// takes an action x number of times
+	lambdas.is_int.times = function (action) {
+		for (var m = this.valueOf(), i = 0; i < m; i++)
+			action(i);
+	};
+
+	// returns an array of numbers for self
+	// to to not including to.
+	lambdas.is_int.range = function (to) {
+		var ret = [];
+		for (var i = this.valueOf(); i < to; i++)
+			ret.push(i);
+		return ret;
+	};
+
 	// @see is_array.first
 	lambdas.is_nodelist.first = lambdas.is_array.first;
 
@@ -347,17 +392,18 @@
 	// lambdas object
 	// @see lambdas
 	var upgrade = function (item) {
-		var types = m(item);
+		var types = m(item), ret = {};
 
 		// check each type
 		for (var type in types)
 			// and whe we have a match
 			if (types[ type ])
 				// add the new functions to the element
-				for (var lambda in lambdas[ type ])
-					item[ lambda ] = lambdas[ type ][ lambda ].bind(item);
+				for (var lambda in lambdas[ type ]) {
+					ret[ lambda ] = lambdas[ type ][ lambda ].bind(item);
+				}
 
-		return item;
+		return ret;
 	};
 
 

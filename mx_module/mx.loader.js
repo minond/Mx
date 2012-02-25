@@ -11,7 +11,7 @@ var mx = {};
 // is needed.
 mx.message = function () {
 	if (mx.debug) {
-		mx.debug.log.apply(mx, arguments);
+		mx.debug.log( Template.stringf.apply(Template, arguments) );
 	}
 };
 
@@ -119,6 +119,11 @@ mx.include = (function (modlist) {
 		nscript( file );
 	});
 
+	// default settings loader
+	main.__defineGetter__("settings", function () {
+		nscript( Template.stringf("{%0}/settings.js", mx.__project__) );
+	});
+
 	// dependency short cut
 	main.__defineSetter__("dependency", function (file) {
 		nscript( Template.stringf("mx_dependency/{%0}.js", file) );
@@ -129,11 +134,26 @@ mx.include = (function (modlist) {
 		cscript( href );
 	});
 
+	// helper setter for loading a project
+	main.__defineSetter__("project", function (pname) {
+		nscript( Template.stringf("{%0}/main.js", pname) );
+	});
+
 	// adds an action/function to the call stack
 	mx.queue.__defineSetter__("action", function (fn) {
 		setTimeout(function () {
 			if (m(fn).is_function)
 				mx.load_queue.stack(fn);
+		}, 500);
+	});
+
+	// calls a function in x seconds
+	mx.queue.__defineSetter__("delay", function (fn) {
+		setTimeout(function () {
+			if (m(fn).is_function)
+				setTimeout(function () {
+					fn();
+				}, 500);
 		}, 500);
 	});
 
@@ -149,17 +169,17 @@ mx.include = (function (modlist) {
 	// in the load queue right away.
 	(function () {
 		__defineSetter__("main", function (fn) {
+			mx.message("set main");
 			setTimeout(function () {
-				if (m(fn).is_function)
-					mx.load_queue.stack(fn);
-			}, 1000);
+				mx.queue.delay = fn;
+			}, 750);
 		});
 
 		__defineSetter__("setup", function (fn) {
+			mx.message("set setup");
 			setTimeout(function () {
-				if (m(fn).is_function)
-					mx.load_queue.stack(fn);
-			}, 1000);
+				mx.queue.delay = fn;
+			}, 250);
 		});
 	})();
 

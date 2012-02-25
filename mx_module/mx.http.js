@@ -6,11 +6,16 @@ mx.include.module.dependency.debug;
 mx.http = (function () {
 	var main = {};
 
+	var genxhr = (function () {
+		return function () {
+			return new XMLHttpRequest();
+		};
+	})();
 
 	// makes a synchronous http request to a given
 	// url and returns the response text.
-	main.file_get_contents = function (fileurl) {
-		var xhr = new XMLHttpRequest;
+	main.syncget = function (fileurl) {
+		var xhr = genxhr();
 		xhr.open("GET", fileurl, false);
 		xhr.send(null);
 		

@@ -56,7 +56,7 @@ div.Frame_menu_item span.Frame_menu_submenu_arrow {
 	font-weight: 900;
 	text-align: right;
 	right: 11px;
-	position: absolute;
+	position: relative;
 	margin-top: 3px;
 }
 
