@@ -76,7 +76,7 @@ mx.element = (function () {
 	// factory function. builds new elements
 	// assigned to the map object. stores every new node
 	// into the elements table to mx.storage
-	var factory = main.factory = function (elem_name, elem_section) {
+	var factory = main.factory = function (elem_name, elem_section, offset, father) {
 		var node;
 
 		if (!elem_name || !elem_section)
@@ -92,8 +92,13 @@ mx.element = (function () {
 
 
 		node = generate_element_node(elem_name, elem_section);
-		mx.storage.insert.element(
-			[node.id, node.mx_type, [null, null], node, document.body]);
+		mx.storage.insert.element({
+			    id: node.id,
+			  type: node.getAttribute("mx_type"),
+			offset: offset,
+			  node: node,
+			father: father || document.body
+		});
 
 		return node;
 	}

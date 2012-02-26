@@ -96,12 +96,14 @@ mx.include = (function (modlist) {
 			var locmod = modlist[i];
 
 			main.module.__defineGetter__(locmod, function () {
-				mx.queue[ locmod ] = {};
+				if (!(locmod in mx.queue))
+					mx.queue[ locmod ] = {};
 				load_module( locmod );
 			});
 
 			main.module.dependency.__defineGetter__(locmod, function () {
-				mx.queue[ locmod ] = {};
+				if (!(locmod in mx.queue))
+					mx.queue[ locmod ] = {};
 				load_module_once( locmod );
 			});
 		})();
@@ -129,10 +131,22 @@ mx.include = (function (modlist) {
 		nscript( Template.stringf("mx_dependency/{%0}.js", file) );
 	});
 
+	// component short cut
+	main.component = function (file) {
+		loaded[ file ] = true;
+		nscript( Template.stringf("mx_component/{%0}.js", file) );
+	};
+
+	// component dependecy loader
+	main.component.dependency = function (file) {
+		if (!(file in loaded))
+			main.component(file);
+	};
+
 	// helper setter for style sheet loader
-	main.__defineSetter__("style", function (href) {
+	main.style = function (href) {
 		cscript( href );
-	});
+	};
 
 	// helper setter for loading a project
 	main.__defineSetter__("project", function (pname) {
@@ -157,6 +171,8 @@ mx.include = (function (modlist) {
 		}, 500);
 	});
 
+	// TODO: remove this function all together and just
+	// keep main.delay
 	mx.queue.__defineSetter__("action_s", function (fn) {
 		setTimeout(function () {
 			mx.queue.action = fn;

@@ -37,11 +37,11 @@ mx.storage = (new mSQL).use({
 
 
 // wrapper for mSQL.select from element
-mx.storage.select.element = function (filters) {
+mx.storage.select.element = function (filters, limit, flat) {
 	var ret, msg = "select query execution time";
 
 	mx.debug.time(msg);
-	ret = mx.storage.select("*", "element", filters);
+	ret = mx.storage.select("*", "element", filters, limit, flat);
 	mx.debug.time(msg);
 
 	return ret;

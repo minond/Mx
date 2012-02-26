@@ -25,7 +25,7 @@ div#mx_main {
 	-webkit-user-select: none;
 	height: 100%;
 	width: 100%;
-	overflow: auto;
+	overflow: hidden;
 }
 
 div#mx_viewport {

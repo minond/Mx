@@ -6,6 +6,10 @@
 mx.include.module.dependency.element;
 mx.include.module.dependency.helpers;
 
+
+// main document module
+// everything that needs to access the dom should
+// go through this module.
 mx.dom = (function () {
 	var main = {};
 
@@ -81,7 +85,7 @@ mx.dom = (function () {
 			row_elem.className = ids.rclass;
 
 			for (var column = 0, max_column = Math.ceil( env_dim.x ); column < max_column; column++) {
-				cell_elem = mx.element.factory(defaults.vpcell.img, defaults.vpcell.sel);
+				cell_elem = mx.element.factory(defaults.vpcell.img, defaults.vpcell.sel, [column, row], viewport);
 
 				// apply unique classes to the first and last columns
 				if (column === 0)
@@ -104,7 +108,7 @@ mx.dom = (function () {
 			else if (row === max_row - 1)
 				row_elem.className += " " + ids.rlast;
 
-			mx.queue.dom.append(row_elem);
+			mx.queue.dom.vp_append(row_elem);
 		}
 	}, 1000);
 
@@ -127,12 +131,19 @@ mx.dom = (function () {
 })();
 
 
-
 // view port throttled append implementation
-mx.queue.dom.append = (function () {
+mx.queue.dom.vp_append = (function () {
 	var queue = manage.throttle(function (element) {
 		mx.dom.viewport.appendChild( element );
 	}, 1000 / 60);
+
+	return queue;
+})();
+
+mx.queue.dom.mp_append = (function () {
+	var queue = manage.throttle(function (element) {
+		mx.dom.mainport.appendChild( element );
+	}, 1000 / 16);
 
 	return queue;
 })();
