@@ -16,7 +16,7 @@ mx.element_node = manage.const("div", "img", "span");
 // used on other modules, however, it is here where
 // it is set.
 // @see mx.element
-mx.element_type = manage.enum("env", "building", "player");
+mx.element_type = manage.const("env", "building", "player");
 
 // main module to building/editing new elements for
 // game. images, divs, and spans are the main building
@@ -60,7 +60,7 @@ mx.element = (function () {
 
 		node.className = Template.stringf("{%0}_{%1}", section, name);
 
-		node.mx_type = map[ section ].elements[ name ].type;
+		node.setAttribute("mx_type", map[ section ].elements[ name ].type);
 
 		if (info.type === mx.element_node.IMG)
 			node.src = generate_element_url(name, section);
@@ -115,12 +115,12 @@ mx.element.map.enviroment = {
 	elements: {
 		grass: {
 			file: "grass.jpg",
-			type: mx.element_type.env
+			type: mx.element_type.ENV
 		},
 
 		empty: {
 			file: "empty.png",
-			type: mx.element_type.env
+			type: mx.element_type.ENV
 		}
 	}
 };

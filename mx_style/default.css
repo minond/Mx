@@ -1,0 +1,64 @@
+div.enviroment_grass {
+	background: black url('../mx_images/enviroment/grass.jpg') no-repeat right top;
+}
+
+div.enviroment_empty {
+	/* border: 1px solid white !important; */
+}
+
+div.mx_vp_row {
+	/* text-align: center; */
+}
+
+div[mx_type="enviroment"]:hover:not(.blank) {
+	background: black url('../mx_images/enviroment/empty.png') no-repeat right top;
+	opacity: 0.2;
+	border: 1px solid black;
+}
+
+
+body {
+	overflow: hidden;
+}
+
+div#mx_main {
+	-webkit-user-select: none;
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+}
+
+div#mx_viewport {
+	padding-top: 80px;
+	padding-left: 130px;
+}
+
+div[mx_type="env"] {
+	-webkit-transform: matrix(1, 0, 1, 0.3, 0, 0);
+	display: inline-block;
+	position: relative;
+	border-top: 1px solid blue;
+	border-left: 2px solid blue;
+	margin-top: -29px;
+	margin-right: 0px;
+	height: 40px;
+	width: 40px;
+}
+
+div.env_row {
+	display: relative;
+	white-space: nowrap;
+}
+
+div.env_row.last_row div[mx_type="env"] {
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
+	border-top: 1px solid blue;
+	margin-bottom: 50px;
+}
+
+div[mx_type="env"].last_col {
+	border-right: 2px solid blue;
+	margin-right: 100px;
+}

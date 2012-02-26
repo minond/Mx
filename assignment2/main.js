@@ -1,18 +1,13 @@
-mx.include.module.storage;
-mx.include.module.file;
 mx.include.module.helpers;
+mx.include.module.storage;
 mx.include.module.element;
 mx.include.module.dom;
 
-
 mx.include.settings;
+mx.include.style = "mx_style/reset.css"
+mx.include.style = "mx_style/default.css";
 
-
-setup = function () {
-	mx.message("running setup");
-};
-
+setup = function () {};
 main = function () {
-	mx.message("running main");
-	mx.message(mx.file.read("README"));
+	mx.dom.vp.initialize(500, 500);
 };
