@@ -1,2 +1,3 @@
 priority	item		description
-
+1			movement	movement component that also calculated direction, 
+						position, and player state while moving.
