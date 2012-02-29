@@ -62,3 +62,41 @@ div[mx_type="env"].last_col {
 	border-right: 2px solid blue;
 	margin-right: 100px;
 }
+
+
+div#mx_output_holder {
+	-webkit-user-select: none;
+	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	border: 1px solid #C8C8C8;
+	height: 70px;
+	min-width: 250px;
+	font: 12px Arial;
+	cursor: default;
+	padding: 10px;
+	background-color: white;
+	z-index: 1000;
+}
+
+div#mx_output {
+	height: 100%;
+	width: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+div#mx_output span.lfile {
+	font-weight: 900;
+}
+
+div#mx_output span.ncom {
+	font-weight: 900;
+	color: blue;
+}
+
+div#mx_output span.nmod {
+	font-weight: 900;
+	color: green;
+}
