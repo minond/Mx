@@ -177,6 +177,30 @@
 		return false;
 	};
 
+	// similar to for each except the return value
+	// of action is stored and returned in a list of 
+	// returns array
+	lambdas.is_array.map = function (action) {
+		var ret = [];
+
+		for (var m = this.length, i = 0; i < m; i++)
+			ret.push( action.call(this[i], i, this) );
+
+		return ret;
+	};
+
+	// like map, except only successful calls 
+	// are returned
+	lambdas.is_array.filter = function (test) {
+		var ret = [];
+
+		for (var m = this.length, i = 0; i < m; i++)
+			if (test.call(this[i], i, this))
+				ret.push( this[i] );
+
+		return ret;
+	};
+
 	// Object and Object like methods
 	lambdas.is_object = {};
 

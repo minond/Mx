@@ -15,5 +15,5 @@ setup = function () {
 };
 
 main = function () {
-	mx.dom.vp.initialize(120, 450);
+	mx.dom.vp.initialize(900, 900);
 };

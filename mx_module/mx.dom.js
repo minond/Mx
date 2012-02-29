@@ -47,7 +47,8 @@ mx.dom = (function () {
 		h: innerHeight - 80,
 		w: innerWidth - 50,
 		x: 8 / 100,
-		y: 11 / 500,
+		// y: 11 / 500,
+		y: 8 / 100,
 		p: 40
 	};
 

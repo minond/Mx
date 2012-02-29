@@ -7,7 +7,10 @@ mx.include.module.dependency.dom;
 	var main = { name: "event" };
 
 	// currently supported events:
-	var events = ["click", "keypress", "keydown", "mouseover"];
+	var events = [ 	"click", "dblclick", "change", "focus", "keydown",
+					"keypress", "keyup", "mouseleave", "mouseout",
+					"mouseover", "mouseup", "mousewheel", "resize",
+					"scroll", "submit", "select" ];
 
 	// for each event we store a flag to let us know if
 	// it has already been registered to prevent multiple

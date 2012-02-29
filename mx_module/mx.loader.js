@@ -79,9 +79,7 @@ mx.include = (function (modlist) {
 	var load_module = main.module = function (mod) {
 		loaded[ mod ] = true;
 		nscript("mx_module/mx." + mod + ".js");
-		if ("out" in mx) {
-			mx.out.loading_module(mod);
-		}
+		mx.out.loading_module(mod);
 	}
 
 	// load limit function used within modules
@@ -138,9 +136,7 @@ mx.include = (function (modlist) {
 	main.component = function (file) {
 		loaded[ file ] = true;
 		nscript( Template.stringf("mx_component/{%0}.js", file) );
-		if ("out" in mx) {
-			mx.out.loading_component(file);
-		}
+		mx.out.loading_component(file);
 	};
 
 	// component dependecy loader
