@@ -2,9 +2,9 @@ mx.include.module.helpers;
 mx.include.module.storage;
 mx.include.module.element;
 mx.include.module.dom;
+mx.include.module.events;
 
 mx.include.module.component;
-mx.include.component("event");
 mx.include.component("vp_movement");
 
 mx.include.settings;

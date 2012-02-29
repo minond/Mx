@@ -1,7 +1,7 @@
 "use strict";
 
 
-mx.include.setmods = [ "component", "debug", "dom", "element", "helpers", "storage", "http", "url", "file" ];
+mx.include.setmods = [ "component", "debug", "dom", "element", "helpers", "storage", "http", "url", "file", "events" ];
 
 
 

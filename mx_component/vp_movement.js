@@ -1,42 +1,35 @@
 "use strict";
 
 
-mx.include.component.dependency("event");
+mx.include.module.dependency.events;
 
 (function () {
-	var main = { name: "vp_movement", offset: 150 };
+	var main = { name: "vp_movement", offset: 100 };
 
 	var direction = manage.enum("up", "down", "left", "right");
-	var kbrkey = {up: 38, down: 40, left: 37, right: 39 };
+	var kbrkey = {up: [38, 87], down: [40, 83], left: [37, 65], right: [39, 68] };
 
-	var key_action = function () {
-		mx.component.event.bind.keydown(function (e) {
-			switch (e.keyCode) {
-				case kbrkey.up:
-					main.action.clear();
-					main.action( direction.up );
-					break;
+	var bind_key_actions = function () {
+		mx.events.shortcut(kbrkey.up, function () {
+			main.action( direction.up );
+		});
 
-				case kbrkey.down:
-					main.action.clear();
-					main.action( direction.down );
-					break;
+		mx.events.shortcut(kbrkey.down, function () {
+			main.action( direction.down );
+		});
 
-				case kbrkey.left:
-					main.action.clear();
-					main.action( direction.left );
-					break;
+		mx.events.shortcut(kbrkey.left, function () {
+			main.action( direction.left );
+		});
 
-				case kbrkey.right:
-					main.action.clear();
-					main.action( direction.right );
-					break;
-			}
+		mx.events.shortcut(kbrkey.right, function () {
+			main.action( direction.right );
 		});
 	};
 
 
 	main.action = manage.throttle(function (dir) {
+		main.action.clear();
 		switch (dir) {
 			case direction.up:
 				mx.dom.mainport.scrollTop -= main.offset;
@@ -56,8 +49,9 @@ mx.include.component.dependency("event");
 		}
 	}, 50);
 
+
 	main.initialize = manage.limit(function () {
-		key_action();
+		bind_key_actions();
 	}, 1);
 
 
