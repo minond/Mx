@@ -4,7 +4,7 @@
 mx.include.module.dependency.events;
 
 (function () {
-	var main = { name: "vp_movement", offset: 100 };
+	var main = { name: "vp_movement" };
 
 	var direction = manage.enum("up", "down", "left", "right");
 	var kbrkey = {up: [38, 87], down: [40, 83], left: [37, 65], right: [39, 68] };
@@ -27,6 +27,7 @@ mx.include.module.dependency.events;
 		});
 	};
 
+	main.offset = 100;
 
 	main.action = manage.throttle(function (dir) {
 		main.action.clear();

@@ -6,13 +6,25 @@ mx.include.module.events;
 mx.include.module.component;
 
 mx.include.component("vp_movement");
+mx.include.component("pl_movement");
 mx.include.settings;
 
 
+
 setup = function () {
-	mx.component.vp_movement.initialize();
+	dom.vp.initialize(600, 900);
+	component.vp_movement.initialize();
+	component.pl_movement.initialize();
 };
 
 main = function () {
-	mx.dom.vp.initialize(140, 140);
+	var truck = element.factory("racecar", "car");
+
+	x(truck).css({
+		'position': 'absolute',
+		'top': '78px',
+		'left': '302px'
+	});
+	
+	queue.dom.vp_append(truck);
 };

@@ -22,7 +22,7 @@ mx.message = function () {
 mx.load_queue = new function () {
 	this.stack = manage.throttle(function (fn) {
 		fn();
-	}, 150);
+	}, 200);
 };
 
 
@@ -79,7 +79,7 @@ mx.include = (function (modlist) {
 	var load_module = main.module = function (mod) {
 		loaded[ mod ] = true;
 		nscript("mx_module/mx." + mod + ".js");
-		mx.out.loading_module(mod);
+		mx.out.module(mod);
 	}
 
 	// load limit function used within modules
@@ -114,6 +114,7 @@ mx.include = (function (modlist) {
 
 	// helper setter for file loader
 	main.__defineSetter__("file", function (file) {
+		mx.out.file(file);
 		nscript( file );
 	});
 
@@ -136,7 +137,7 @@ mx.include = (function (modlist) {
 	main.component = function (file) {
 		loaded[ file ] = true;
 		nscript( Template.stringf("mx_component/{%0}.js", file) );
-		mx.out.loading_component(file);
+		mx.out.component(file);
 	};
 
 	// component dependecy loader
@@ -169,7 +170,7 @@ mx.include = (function (modlist) {
 			if (m(fn).is_function)
 				setTimeout(function () {
 					fn();
-				}, 500);
+				}, 750);
 		}, 500);
 	});
 
@@ -190,6 +191,9 @@ mx.include = (function (modlist) {
 			mx.message("set main");
 			setTimeout(function () {
 				mx.queue.delay = fn;
+				setTimeout(function () {
+					mx.out.method("main");
+				}, 750);
 			}, 750);
 		});
 
@@ -197,7 +201,11 @@ mx.include = (function (modlist) {
 			mx.message("set setup");
 			setTimeout(function () {
 				mx.queue.delay = fn;
-			}, 250);
+				setTimeout(function () {
+					mx.globalize();
+					mx.out.method("setup");
+				}, 750);
+		}, 250);
 		});
 	})();
 
@@ -206,6 +214,22 @@ mx.include = (function (modlist) {
 });
 
 
+// the initializer's initializer
+// shortcut for creating module loader shortcuts
 mx.include.__defineSetter__("setmods", function () {
 	mx.include = mx.include.apply(mx, arguments);
 });
+
+// adds ever first level property to the global scope
+mx.globalize = function (quiet) {
+	Template.stringf.as_global();
+	
+	for (var item in mx) {
+		window[ item ] = mx[ item ];
+
+		if (!quiet) {
+			mx.debug.logf("added {%0} to global scope", item);
+			mx.out.global(item);
+		}
+	}
+};

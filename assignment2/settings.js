@@ -1,22 +1,14 @@
-mx.element.map.demo = {
+mx.element.map.car = {
 	type: mx.element_node.IMG, 
-	root: "demo",
+	root: "cars",
 	elements: {
-		up: {
-			file: "up.png",
+		truck: {
+			file: "truck.png",
 			type: mx.element_type.PLAYER
 		},
-		down: {
-			file: "down.png",
+		racecar: {
+			file: "racecar.png",
 			type: mx.element_type.PLAYER
-		},
-		left: {
-			file: "left.png",
-			type: mx.element_type.PLAYER
-		},
-		right: {
-			file: "right.png",
-			type: mx.element_type.PLAYER
-		},
+		}
 	}
 };
