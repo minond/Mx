@@ -1,9 +1,7 @@
 "use strict";
 
 
-mx.include.module.dependency.dom;
 mx.include.module.dependency.events;
-mx.include.module.dependency.element;
 
 (function () {
 	var main = { name: "pl_movement" };

@@ -6,7 +6,9 @@ mx.include.module.events;
 mx.include.module.component;
 
 mx.include.component("vp_movement");
+mx.include.component("pl_placement");
 mx.include.component("pl_movement");
+mx.include.style(mx.__project__ + "/css/players.css");
 mx.include.settings;
 
 

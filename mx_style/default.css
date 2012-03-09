@@ -109,3 +109,7 @@ div#mx_output span.gvar {
 div#mx_output span.call {
 	color: red;
 }
+
+div#mx_output span.move {
+	color: purple;
+}
