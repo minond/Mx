@@ -50,15 +50,36 @@ mx.include = (function (modlist) {
 
 	var loaded = {};
 
+	var loc_load_queue = new manage.structure.queue;
+
 	var nscript = function (src) {
 		loaded[ src ] = true;
 
-		mx.load_queue.stack(function () {
-			var node = document.createElement("script");
-			node.type = "text/javascript";
-			node.src = src + "?" + Date.now();
-			document.head.appendChild(node);
-		});
+		loc_load_queue.enqueue(src);
+
+		// new loader testing:
+		if (loc_load_queue.count === 1) {
+			get_script_content(src + "?" + Date.now());
+		}
+	};
+
+	var append_script = function (str_script) {
+		var node = document.createElement("script");
+		node.type = "text/javascript";
+		node.innerHTML = str_script;
+		document.head.appendChild(node);
+	};
+
+	var get_script_content = function (src) {
+		var xhr = new XMLHttpRequest;
+		loc_load_queue.dequeue();
+
+		xhr.open("GET", src, false);
+		xhr.send(null);
+		append_script(xhr.responseText);
+		if (loc_load_queue.count) {
+			get_script_content(loc_load_queue.dequeue());
+		}
 	};
 
 	var cscript = (function (href) {
