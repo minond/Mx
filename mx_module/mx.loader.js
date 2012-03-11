@@ -47,9 +47,7 @@ mx.queue = new function () {
 // project.
 mx.include = (function (modlist) {
 	var main = {};
-
 	var loaded = {};
-
 	var loc_load_queue = new manage.structure.queue;
 
 	var nscript = function (src) {
@@ -57,7 +55,6 @@ mx.include = (function (modlist) {
 
 		loc_load_queue.enqueue(src);
 
-		// new loader testing:
 		if (loc_load_queue.count === 1) {
 			get_script_content(src + "?" + Date.now());
 		}
@@ -177,30 +174,11 @@ mx.include = (function (modlist) {
 		nscript( Template.stringf("{%0}/main.js", pname) );
 	});
 
-	// adds an action/function to the call stack
-	mx.queue.__defineSetter__("action", function (fn) {
-		setTimeout(function () {
-			if (m(fn).is_function)
-				mx.load_queue.stack(fn);
-		}, 500);
-	});
-
 	// calls a function in x seconds
 	mx.queue.__defineSetter__("delay", function (fn) {
-		setTimeout(function () {
-			if (m(fn).is_function)
-				setTimeout(function () {
-					fn();
-				}, 750);
-		}, 500);
-	});
-
-	// TODO: remove this function all together and just
-	// keep main.delay
-	mx.queue.__defineSetter__("action_s", function (fn) {
-		setTimeout(function () {
-			mx.queue.action = fn;
-		}, 500);
+		if (m(fn).is_function) {
+			fn();
+		}
 	});
 
 	// set setter for variables main and setup.
@@ -210,23 +188,14 @@ mx.include = (function (modlist) {
 	(function () {
 		__defineSetter__("main", function (fn) {
 			mx.message("set main");
-			setTimeout(function () {
-				mx.queue.delay = fn;
-				setTimeout(function () {
-					mx.out.method("main");
-				}, 750);
-			}, 750);
+			mx.out.method("main");
+			mx.queue.delay = fn;
 		});
 
 		__defineSetter__("setup", function (fn) {
 			mx.message("set setup");
-			setTimeout(function () {
-				mx.queue.delay = fn;
-				setTimeout(function () {
-					mx.globalize();
-					mx.out.method("setup");
-				}, 750);
-		}, 250);
+			mx.out.method("setup");
+			mx.queue.delay = fn;
 		});
 	})();
 

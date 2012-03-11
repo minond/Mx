@@ -29,7 +29,8 @@ mx.include.module.dependency.helpers;
 
 		x(node, true).css({
 			'left': dest.x + units,
-			'top': dest.y + units
+			'top': dest.y + units,
+			'position': 'absolute'
 		});
 	};
 
