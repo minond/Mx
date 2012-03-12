@@ -13,7 +13,7 @@ mx.include.component("movement");
 mx.include.style(mx.__project__ + "/css/players.css");
 mx.include.settings;
 
-mx.dom.vp.initialize(600, 900, null, null, null, mx.dom.type._2_5D);
+mx.dom.vp.initialize(1200, 650, null, null, null, mx.dom.type._2D);
 mx.component.movement.initialize();
 mx.globalize();
 
@@ -22,6 +22,6 @@ mx.globalize();
  * main project
  * ------------------------------------------------------------------ */
 
-var truck = new element.factory.car.racecar;
-component.placement.place(truck, 3, 5);
-queue.dom.append(truck);
+//var truck = new element.factory.car.racecar;
+//component.placement.place(truck, 3, 5);
+//queue.dom.append(truck);

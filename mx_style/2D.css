@@ -1,0 +1,29 @@
+div#mx_viewport {
+	padding-top: 0px !important;
+	padding-left: 0px !important;
+}
+
+div[mx_type="env"] {
+	display: inline-block;
+	position: relative;
+	border-top: 1px solid blue;
+	border-left: 1px solid blue;
+	margin-right: 0px;
+	height: 10px;
+	width: 10px;
+}
+
+div.env_row.last_row div[mx_type="env"] {
+	border-left: 1px solid blue;
+	border-bottom: 1px solid blue;
+	border-top: 1px solid blue;
+}
+
+div[mx_type="env"].last_col {
+	border-right: 1px solid blue;
+}
+
+div.env_row {
+	display: relative;
+	white-space: nowrap;
+}

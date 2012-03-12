@@ -1,15 +1,9 @@
+/* ----------------------------------------------------------------------
+ * basic styles
+ * ---------------------------------------------------------------------- */
+
 body {
 	overflow: hidden;
-}
-
-div.enviroment_grass {
-	background: black url('../mx_images/enviroment/grass.jpg') no-repeat right top;
-}
-
-div[mx_type="enviroment"]:hover:not(.blank) {
-	background: black url('../mx_images/enviroment/empty.png') no-repeat right top;
-	opacity: 0.2;
-	border: 1px solid black;
 }
 
 div#mx_main {
@@ -25,23 +19,9 @@ div#mx_viewport {
 	padding-left: 130px;
 }
 
-div.env_row {
-	display: relative;
-	white-space: nowrap;
-}
-
-div.env_row.last_row div[mx_type="env"] {
-	border-left: 1px solid white;
-	border-right: 1px solid white;
-	border-bottom: 1px solid white;
-	border-top: 1px solid blue;
-	margin-bottom: 50px;
-}
-
-div[mx_type="env"].last_col {
-	border-right: 2px solid blue;
-	margin-right: 100px;
-}
+/* ----------------------------------------------------------------------
+ * output div
+ * ---------------------------------------------------------------------- */
 
 div#mx_output_holder {
 	-webkit-user-select: none;
@@ -93,7 +73,7 @@ div#mx_output span.move {
 }
 
 /* ----------------------------------------------------------------------
- * Frame/menu styles
+ * frame/menu styles
  * ---------------------------------------------------------------------- */
 
 .Frame_menu_trigger_node {

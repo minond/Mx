@@ -9,3 +9,21 @@ div[mx_type="env"] {
 	height: 40px;
 	width: 40px;
 }
+
+div.env_row.last_row div[mx_type="env"] {
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
+	border-top: 1px solid blue;
+	margin-bottom: 50px;
+}
+
+div[mx_type="env"].last_col {
+	border-right: 2px solid blue;
+	margin-right: 100px;
+}
+
+div.env_row {
+	display: relative;
+	white-space: nowrap;
+}
