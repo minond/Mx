@@ -174,32 +174,6 @@ mx.include = (function (modlist) {
 		nscript( Template.stringf("{%0}/main.js", pname) );
 	});
 
-	// calls a function in x seconds
-	mx.queue.__defineSetter__("delay", function (fn) {
-		if (m(fn).is_function) {
-			fn();
-		}
-	});
-
-	// set setter for variables main and setup.
-	// these should be declared after every module
-	// has been requeuested as they will be placed
-	// in the load queue right away.
-	(function () {
-		__defineSetter__("main", function (fn) {
-			mx.message("set main");
-			mx.out.method("main");
-			mx.queue.delay = fn;
-		});
-
-		__defineSetter__("setup", function (fn) {
-			mx.message("set setup");
-			mx.out.method("setup");
-			mx.queue.delay = fn;
-		});
-	})();
-
-
 	return main;
 });
 
@@ -212,8 +186,29 @@ mx.include.__defineSetter__("setmods", function () {
 
 // adds ever first level property to the global scope
 mx.globalize = function (quiet) {
+	delete mx.globalize;
 	Template.stringf.as_global();
 	
+	// elements
+	for (var section in mx.element.map) {
+		if (!(section in mx.element.factory)) {
+			for (var element in mx.element.map[ section ].elements) {
+				(function () {
+					var loc_section = section;
+					var loc_element = element;
+
+					if (!(section in mx.element.factory))
+						mx.element.factory[ section ] = {};
+
+					mx.element.factory[ section ][ element ] = function () {
+						return mx.element.factory(loc_element, loc_section);
+					};
+				})();
+			}
+		}
+	}
+
+	// modules
 	for (var item in mx) {
 		window[ item ] = mx[ item ];
 

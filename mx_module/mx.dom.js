@@ -5,6 +5,7 @@
 // to create every cell in the viewport.
 mx.include.module.dependency.element;
 mx.include.module.dependency.helpers;
+mx.include.module.dependency.events;
 
 
 // main document module
@@ -12,6 +13,7 @@ mx.include.module.dependency.helpers;
 // go through this module.
 mx.dom = (function () {
 	var main = {};
+	var direction = manage.enum(37)("left", "up", "right", "down");
 
 	var viewport = main.viewport = document.createElement("div");
 	var mainport = main.mainport = document.createElement("div");
@@ -32,6 +34,7 @@ mx.dom = (function () {
 
 	// default settings
 	var defaults = main.defaults = {
+		move_offset: 100,
 		vpcell: {
 			img: "empty",
 			sel: "enviroment"
@@ -47,10 +50,52 @@ mx.dom = (function () {
 		h: innerHeight - 80,
 		w: innerWidth - 50,
 		x: 8 / 100,
-		// y: 11 / 500,
 		y: 8 / 100,
 		p: 40
 	};
+
+	// bind the viewport's movement to the arrow keys.
+	var bind_key_actions = function () {
+		mx.events.shortcut(direction.up, function () {
+			vp.move( direction.up );
+		}); 
+
+		mx.events.shortcut(direction.down, function () {
+			vp.move( direction.down );
+		}); 
+
+		mx.events.shortcut(direction.left, function () {
+			vp.move( direction.left );
+		}); 
+
+		mx.events.shortcut(direction.right, function () {
+			vp.move( direction.right );
+		});
+	};
+
+	// moves the view port in the specified direction
+	vp.move = manage.throttle(function (dir) {
+		vp.move.clear();
+
+		switch (dir) {
+			case direction.up:
+				mx.dom.mainport.scrollTop -= defaults.move_offset;
+				break;
+
+			case direction.down:
+				mx.dom.mainport.scrollTop += defaults.move_offset;
+				break;
+
+			case direction.left:
+				mx.dom.mainport.scrollLeft -= defaults.move_offset;
+				break;
+
+			case direction.right:
+				mx.dom.mainport.scrollLeft += defaults.move_offset;
+				break;
+		}
+	}, 50);
+
 
 	// the viewport is the actual holder for everything in the game
 	// enviroment. enviroment elements are always added as children.
@@ -58,6 +103,8 @@ mx.dom = (function () {
 		var dim = suggested_dimensions;
 		var row_elem;
 		var cell_elem;
+
+		bind_key_actions();
 
 		// apply custom settings
 		dim.w = cw || dim.w;

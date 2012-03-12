@@ -4,13 +4,12 @@
 mx.include.module.dependency.events;
 
 (function () {
-	var main = { name: "pl_movement" };
+	var main = { name: "movement" };
 	var player_selector = "img[mx_type='player']";
 
 	var handle_selection = function (node) {
 		node.style.border = "1px solid black";
 	};
-
 
 	main.initialize = manage.limit(function () {
 		mx.events.click_on(player_selector, function () {

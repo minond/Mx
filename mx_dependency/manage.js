@@ -243,6 +243,15 @@
 
 	var enum_counter = 0;
 	main.enum = function (holder) {
+		if (typeof holder === "number") {
+			if (holder <= enum_counter) {
+				console.error("enum counter re-declaration");
+			}
+
+			enum_counter = holder;
+			return main.enum;
+		}
+
 		var map = {};
 
 		for (var i = 0; i < arguments.length; i++)
