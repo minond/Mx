@@ -110,6 +110,7 @@ mx.dom = (function () {
 		var row_elem;
 		var cell_elem;
 
+		dtype = dtype || type._2_5D;
 		bind_key_actions();
 
 		if (dtype in defaults.styles) {
@@ -158,7 +159,7 @@ mx.dom = (function () {
 
 			// apply a left padding to each row so the first
 			// element line up correctly.
-			if (row)
+			if (row && dtype === type._2_5D)
 				x(row_elem).css({ paddingLeft: dim.p * row + unit });
 
 			// apply unique classes to the first and last rows
