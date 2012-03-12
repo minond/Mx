@@ -1,14 +1,14 @@
 mx.element.map.car = {
-	type: mx.element_node.IMG, 
+	type: mx.element.node.IMG, 
 	root: "cars",
 	elements: {
 		truck: {
 			file: "truck.png",
-			type: mx.element_type.PLAYER
+			type: mx.element.type.PLAYER
 		},
 		racecar: {
 			file: "racecar.png",
-			type: mx.element_type.PLAYER
+			type: mx.element.type.PLAYER
 		}
 	}
 };

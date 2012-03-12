@@ -6,6 +6,7 @@
 mx.include.module.dependency.element;
 mx.include.module.dependency.helpers;
 mx.include.module.dependency.events;
+mx.include.module.dependency.debug;
 
 
 // main document module
@@ -13,7 +14,8 @@ mx.include.module.dependency.events;
 // go through this module.
 mx.dom = (function () {
 	var main = {};
-	var direction = manage.enum(37)("left", "up", "right", "down");
+	var type = main.type = manage.const("_2D", "_2_5D");
+	var direction = main.direction = manage.enum(37)("left", "up", "right", "down");
 
 	var viewport = main.viewport = document.createElement("div");
 	var mainport = main.mainport = document.createElement("div");
@@ -35,6 +37,10 @@ mx.dom = (function () {
 	// default settings
 	var defaults = main.defaults = {
 		move_offset: 100,
+		styles: {
+			"_2D": "mx_style/2D.css",
+			"_2_5D": "mx_style/2_5D.css"
+		},
 		vpcell: {
 			img: "empty",
 			sel: "enviroment"
@@ -99,12 +105,17 @@ mx.dom = (function () {
 
 	// the viewport is the actual holder for everything in the game
 	// enviroment. enviroment elements are always added as children.
-	vp.initialize = manage.limit(function (cw, ch, cx, cy, cp) {
+	vp.initialize = manage.limit(function (cw, ch, cx, cy, cp, dtype) {
 		var dim = suggested_dimensions;
 		var row_elem;
 		var cell_elem;
 
 		bind_key_actions();
+
+		if (dtype in defaults.styles) {
+			mx.debug.log("loading style:", dtype);
+			mx.include.style( defaults.styles[ dtype ] );
+		}
 
 		// apply custom settings
 		dim.w = cw || dim.w;
@@ -156,7 +167,7 @@ mx.dom = (function () {
 			else if (row === max_row - 1)
 				row_elem.className += " " + ids.rlast;
 
-			mx.queue.dom.vp_append(row_elem);
+			mx.queue.dom.append(row_elem);
 		}
 	}, 1000);
 
@@ -180,7 +191,7 @@ mx.dom = (function () {
 
 
 // view port throttled append implementation
-mx.queue.dom.vp_append = (function () {
+mx.queue.dom.append = (function () {
 	var queue = manage.throttle(function (element) {
 		mx.dom.viewport.appendChild( element );
 	}, 1000 / 60);

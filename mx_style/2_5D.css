@@ -1,0 +1,11 @@
+div[mx_type="env"] {
+	-webkit-transform: matrix(1, 0, 1, 0.3, 0, 0);
+	display: inline-block;
+	position: relative;
+	border-top: 1px solid blue;
+	border-left: 2px solid blue;
+	margin-top: -29px;
+	margin-right: 0px;
+	height: 40px;
+	width: 40px;
+}

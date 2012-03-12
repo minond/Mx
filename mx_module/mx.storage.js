@@ -15,7 +15,7 @@ mx.storage = (new mSQL).use({
 			// should be same as Node.id
 			id: String,
 
-			// from mx.element_type
+			// from mx.element.type
 			type: Number,
 
 			// array of view port coordinates
