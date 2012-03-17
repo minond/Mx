@@ -7,9 +7,11 @@ mx.include.module.element;
 mx.include.module.dom;
 mx.include.module.events;
 mx.include.module.component;
+mx.include.module.player;
 
 mx.include.component("placement");
 mx.include.component("movement");
+mx.element.Player.player_import("alien");
 mx.include.style(mx.__project__ + "/css/players.css");
 mx.include.settings;
 
@@ -21,11 +23,14 @@ mx.dom.vp.initialize({
 mx.component.movement.initialize();
 mx.globalize();
 
-mx.include.module.player;
 
 /* ------------------------------------------------------------------
  * main project
  * ------------------------------------------------------------------ */
+
+var alien = new mx.element.Player.alien;
+
+alien.show();
 
 //var truck = new mx.element.factory.car.racecar;
 //component.placement.place(truck, 3, 5);

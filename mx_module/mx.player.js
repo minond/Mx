@@ -30,6 +30,43 @@ mx.element.Player = (function () {
 		width_body: 2
 	};
 
+	// player data importer helper function
+	// {project}/players/{player}.json
+	main.player_import = function (file) {
+		var filepath = Template.stringf("{%0}/players/{%1}.json", mx.__project__, file);
+		var raw_data = mx.file.read(filepath);
+		var json_data = raw_data && eval("(" + raw_data + ")");
+		
+		player_register(file, json_data);
+
+		mx.debug.log("imported player data: ", file, json_data);
+	};
+
+	var player_register = function (player_name, player_data) {
+		(function () {
+			var loc_player_name = player_name;
+			var loc_player_data = player_data;
+			main[ loc_player_name ] = function () {
+				var player = new mx.element.Player;
+
+				player.color(loc_player_data.color);
+				player.height(loc_player_data.height);
+				player.width(loc_player_data.width);
+				player.build();
+
+				for (var point = 0, max = loc_player_data.points.length; point < max; point++) {
+					player.body_map(
+						loc_player_data.points[ point ].x || 0,
+						loc_player_data.points[ point ].y || 0,
+						loc_player_data.points[ point ].c || null
+					);
+				}
+
+				return player;
+			};
+		})();
+	};
+
 	var player_block_template = function () {
 		return document.createElement("div");
 	};
@@ -105,7 +142,7 @@ mx.element.Player = (function () {
 	};
 
 	// player body map appender
-	main.prototype.body_map = function (top_offset, left_offset, piece_color) {
+	main.prototype.body_map = function (left_offset, top_offset, piece_color) {
 		var piece = player_block_template();
 
 		x(piece).css({
@@ -130,7 +167,7 @@ mx.element.Player = (function () {
 	return main;
 })();
 
-
+/*
 // for testing only
 x(mx_output_holder).hide();
 
@@ -243,4 +280,4 @@ pp.body_map(1, 7);
 pp.body_map(1, 8);
 pp.body_map(1, 9);
 pp.body_map(1, 10);
-pp.body_map(1, 11);
+pp.body_map(1, 11);*/
