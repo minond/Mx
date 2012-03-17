@@ -11,8 +11,7 @@ mx.include.module.player;
 
 mx.include.component("placement");
 mx.include.component("movement");
-mx.element.Player.player_import("alien");
-mx.include.style(mx.__project__ + "/css/players.css");
+mx.element.player.get("alien");
 mx.include.settings;
 
 mx.dom.vp.initialize({
@@ -28,7 +27,7 @@ mx.globalize();
  * main project
  * ------------------------------------------------------------------ */
 
-var alien = new mx.element.Player.alien;
+var alien = new mx.element.player.alien;
 
 alien.show();
 
