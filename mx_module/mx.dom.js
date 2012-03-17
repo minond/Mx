@@ -1,5 +1,6 @@
 "use strict";
 
+
 // the initialize function assument mx.element
 // has been loaded as it uses mx.element.factory
 // to create every cell in the viewport.
@@ -7,7 +8,6 @@ mx.include.module.dependency.element;
 mx.include.module.dependency.helpers;
 mx.include.module.dependency.events;
 mx.include.module.dependency.debug;
-
 
 // main document module
 // everything that needs to access the dom should
@@ -105,13 +105,24 @@ mx.dom = (function () {
 
 	// the viewport is the actual holder for everything in the game
 	// enviroment. enviroment elements are always added as children.
-	vp.initialize = manage.limit(function (cw, ch, cx, cy, cp, dtype) {
+	// settings:
+	// width: viewport width
+	// height: viewport height
+	// x: enviroment element x dimension
+	// y: enviroment element y dimension
+	// padding: row padding offset
+	// type: display type (2D, 2.5D)
+	// key_movement: apply arrow key viewport movement
+	vp.initialize = manage.limit(function (settings) {
 		var dim = suggested_dimensions;
+		var dtype = settings.type || type._2_5D;
 		var row_elem;
 		var cell_elem;
 
-		dtype = dtype || type._2_5D;
-		bind_key_actions();
+		if ("key_movement" in settings && settings.key_movement) {
+			mx.debug.log("applying arrow key viewport movement");
+			bind_key_actions();
+		}
 
 		if (dtype in defaults.styles) {
 			mx.debug.log("loading style:", dtype);
@@ -119,11 +130,11 @@ mx.dom = (function () {
 		}
 
 		// apply custom settings
-		dim.w = cw || dim.w;
-		dim.h = ch || dim.h;
-		dim.x = cx || dim.x;
-		dim.y = cy || dim.y;
-		dim.p = cp || dim.p;
+		dim.w = settings.width || dim.w;
+		dim.h = settings.height || dim.h;
+		dim.x = settings.x || dim.x;
+		dim.y = settings.y || dim.y;
+		dim.p = settings.padding || dim.p;
 
 		// update the view port and main port's settings
 		viewport.innerHTML = "";
@@ -193,17 +204,22 @@ mx.dom = (function () {
 
 // view port throttled append implementation
 mx.queue.dom.append = (function () {
-	var queue = manage.throttle(function (element) {
-		mx.dom.viewport.appendChild( element );
-	}, 1000 / 60);
+	var queue = function (element) {
+		mx.queue.global(function () {
+			mx.dom.viewport.appendChild( element );
+		});
+	};
 
 	return queue;
 })();
 
+// main port queued append method.
 mx.queue.dom.mp_append = (function () {
-	var queue = manage.throttle(function (element) {
-		mx.dom.mainport.appendChild( element );
-	}, 1000 / 16);
+	var queue = function (element) {
+		mx.queue.global(function () {
+			mx.dom.mainport.appendChild( element );
+		});
+	};
 
 	return queue;
 })();

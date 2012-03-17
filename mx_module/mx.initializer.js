@@ -11,7 +11,8 @@ mx.include.setmods = [
 	"http", 
 	"url", 
 	"file", 
-	"events"
+	"events",
+	"player"
 ];
 
 mx.include.module.dependency.helpers;

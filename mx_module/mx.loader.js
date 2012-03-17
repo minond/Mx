@@ -218,3 +218,13 @@ mx.globalize = function (quiet) {
 		}
 	}
 };
+
+// an anonymous function used along with a throttle
+// and the default queue time
+mx.queue.frame = 1000 / 16;
+mx.queue.anonymous = function (action) {
+	action();
+};
+
+// global function queue
+mx.queue.global = manage.throttle(mx.queue.anonymous, mx.queue.frame);

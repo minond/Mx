@@ -20,6 +20,26 @@ div#mx_viewport {
 }
 
 /* ----------------------------------------------------------------------
+ * player elements
+ * ---------------------------------------------------------------------- */
+
+div.mx_player {
+	position: absolute;
+	left: 11px;
+	top: 11px;
+	border: 1px dotted red;
+	z-index: 1;
+	background-color: white;
+}
+
+div.mx_player .mx_player_body_part {
+	position: absolute;
+	border-right: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+	background-color: red;
+}
+
+/* ----------------------------------------------------------------------
  * output div
  * ---------------------------------------------------------------------- */
 

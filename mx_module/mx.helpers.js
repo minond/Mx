@@ -319,6 +319,11 @@
 		return x(this);
 	};
 
+	// uses mx dom's append function
+	lambdas.is_node.append = function () {
+		mx.dom.vp.append(this);
+	};
+
 	// removes the current node from the dom
 	lambdas.is_node.remove = function () {
 		var mon = this.parentNode;

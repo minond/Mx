@@ -128,3 +128,10 @@ mx.element.map.enviroment = {
 		}
 	}
 };
+
+// colors used throughout other modules
+// and custom components
+mx.element.color_map = {
+	light_purple: "#BDAEC6",
+	dark_purple: "#732C7B"
+};
