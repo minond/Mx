@@ -102,6 +102,24 @@ mx.element = (function () {
 	// @see mx.element
 	main.type = manage.const("env", "building", "player");
 
+	// shorthand to document.create for divs
+	main.block = function () {
+		return document.createElement( main.node.DIV );
+	};
+
+	// returns an element's css property value
+	// get computed style
+	main.gcs = function (node, prop) {
+		var css_dec = getComputedStyle(node);
+		var value;
+
+		if (css_dec && m(prop).is_string) {
+			value = css_dec.getPropertyValue(prop);
+		}
+
+		return value;
+	};
+
 	return main;
 })();
 

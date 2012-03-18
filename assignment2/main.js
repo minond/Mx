@@ -10,6 +10,7 @@ mx.include.module.dependency.events;
 mx.include.module.dependency.component;
 mx.include.module.dependency.gravity;
 mx.include.module.dependency.placement;
+mx.include.module.dependency.movement;
 
 // settings, components, and players
 mx.include.settings;

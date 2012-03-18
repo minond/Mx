@@ -120,6 +120,25 @@
 	// each data type
 	var lambdas = {};
 
+	// String methods
+	lambdas.is_string = {};
+
+	// convert a css size property value to an integer
+	lambdas.is_string.px2num = function () {
+		var str = this.valueOf();
+		var number;
+
+		str = str.split("px")[0];
+		if (m(+str).is_number)
+			number = + str;
+		else if (m(+str.replace(/[^0-9]+/g, '')).is_number)
+			number = +str.replace(/[^0-9]+/g, '');
+		else
+			number = 0;
+
+		return number;
+	};
+
 	// Array methods
 	lambdas.is_array = {};
 

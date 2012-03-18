@@ -62,8 +62,9 @@ mx.include = (function (modlist) {
 		}
 	};
 
-	var append_script = function (str_script) {
+	var append_script = function (str_script, script_name) {
 		var node = document.createElement("script");
+		
 		node.type = "text/javascript";
 		node.innerHTML = str_script;
 		document.head.appendChild(node);
@@ -76,7 +77,7 @@ mx.include = (function (modlist) {
 		xhr.open("GET", src, false);
 		xhr.send(null);
 
-		append_script(xhr.responseText);
+		append_script(xhr.responseText, src);
 		if (loc_load_queue.count) {
 			get_script_content(loc_load_queue.dequeue());
 		}

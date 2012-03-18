@@ -73,15 +73,19 @@ div#mx_output span {
 }
 
 div#mx_output span.ncom {
-	color: blue;
+	color: green;
 }
 
 div#mx_output span.nmod {
-	color: green;
+	color: blue;
 }
 
 div#mx_output span.gvar {
 	color: saddleBrown;
+}
+
+div#mx_output span.nresource {
+	color: purple;
 }
 
 div#mx_output span.call {
@@ -89,7 +93,7 @@ div#mx_output span.call {
 }
 
 div#mx_output span.move {
-	color: purple;
+	color: salmon;
 }
 
 /* ----------------------------------------------------------------------

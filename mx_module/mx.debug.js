@@ -19,6 +19,13 @@ mx.debug = (function () {
 	// timer storage
 	var timing = {};
 
+	// wrapper for console.track
+	main.back_trace = function () {
+		if (debug) {
+			console.trace();
+		}
+	};
+
 	// wrapper for console.log
 	main.log = function () {
 		if (debug) {
@@ -26,17 +33,24 @@ mx.debug = (function () {
 		}
 	};
 
+	// wrapper for console.warm using stringf
+	main.warnf = function () {
+		if (debug) {
+			console.warn( Template.stringf.apply(Template.stringf, arguments) );
+		}
+	};
+
 	// wrapper for console.log using stringf
 	main.logf = function () {
 		if (debug) {
-			console.log( Template.stringf.apply(stringf, arguments) );
+			console.log( Template.stringf.apply(Template.stringf, arguments) );
 		}
 	};
 
 	// same as logf but storing everything in a 
 	// new Error instance.
 	main.errorf = function () {
-		main.log( new Error( Template.stringf.apply(stringf, arguments) ) );
+		main.log( new Error( Template.stringf.apply(Template.stringf, arguments) ) );
 	};
 
 	// helper function for time and timeEnd

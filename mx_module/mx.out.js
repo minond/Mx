@@ -28,6 +28,7 @@
 
 mx.out.register("module", "<div><span>loading module: </span><span class='nmod'>{%0}</span></div>");
 mx.out.register("file", "<div><span>loading file: </span><span class='nmod'>{%0}</span></div>");
+mx.out.register("resource", "<div><span>loading {%type:type} file: </span><span class='nresource'>{%name}</span></div>");
 mx.out.register("component", "<div><span>loading component: </span><span class='ncom'>{%0}</span></div>");
 mx.out.register("global", "<div><span>global variable: </span><span class='gvar'>{%0}</span></div>");
 mx.out.register("method", "<div><span>running method: </span><span class='call'>{%0}</span></div>");

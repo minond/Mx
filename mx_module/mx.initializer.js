@@ -15,12 +15,13 @@ mx.include.setmods = [
 	"player",
 	"gravity",
 	"movement",
-	"placement"
+	"placement",
+	"sound"
 ];
 
+mx.include.module.dependency.debug;
 mx.include.module.dependency.helpers;
 mx.include.module.dependency.url;
-mx.include.module.dependency.debug;
 
 mx.debug.time("register to execute");
 mx.message("loading {%0}", mx.__project__);

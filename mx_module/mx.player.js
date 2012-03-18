@@ -6,11 +6,14 @@
 mx.include.module.dependency.file;
 mx.include.module.dependency.element;
 mx.include.module.dependency.gravity;
+mx.include.module.dependency.sound;
 
 // acts as both the constructor of new players
 // and as the module's scope.
 mx.element.player = (function () {
 	var main = function mx_player_instance () {};
+
+	mx.sound.register("drop.mp3");
 
 	// possible states a player may have
 	// new:			player instance has been created, but not edited in any way
@@ -40,7 +43,9 @@ mx.element.player = (function () {
 	};
 
 	// static properties
-	main.players = 0;
+	main.player_count = 0;
+	main.players = {};
+	main.holder = "holder";
 
 	main.fn = function (name, value) {
 		return main.prototype[ name ] = value;
@@ -53,6 +58,7 @@ mx.element.player = (function () {
 		var raw_data = mx.file.read(filepath);
 		var json_data = raw_data && eval("(" + raw_data + ")");
 		
+		mx.out.resource({ name: file, type: "player" });
 		player_register(file, json_data);
 
 		mx.debug.log("imported player data: ", file, json_data);
@@ -72,9 +78,9 @@ mx.element.player = (function () {
 			main[ loc_player_name ] = function (show) {
 				var player = new mx.element.player;
 
-				player.color(loc_player_data.color);
 				player.height(loc_player_data.height);
 				player.width(loc_player_data.width);
+				player.color(loc_player_data.color);
 				player.build();
 
 				for (var point = 0, max = loc_player_data.points.length; point < max; point++) {
@@ -89,19 +95,16 @@ mx.element.player = (function () {
 					player.show();
 				}
 
+				main.players[ player.holder.id ] = player;
 				return player;
 			};
 		})();
 	};
 
-	var player_block_template = function () {
-		return document.createElement("div");
-	};
-
 	// creates a new holder and sets any needed props
 	var build_player_object = function () {
-		this.holder = player_block_template();
-		this.holder.id = classes.id + main.players++;
+		this.holder = mx.element.block();
+		this.holder.id = classes.id + main.player_count++;
 		this.holder.className = classes.player;
 		mx.gravity.as_solid(this.holder);
 	}
@@ -162,8 +165,13 @@ mx.element.player = (function () {
 
 	// displaye a player on the viewport
 	main.prototype.show = function () {
-		mx.queue.dom.append(this.holder);
-		this.state = States.ready;
+		var me = this;
+
+		mx.queue.global(function () {
+			mx.dom.vp.append(me.holder);
+			mx.sound.play.drop;
+			me.state = States.ready;
+		});
 	};
 
 	// hide a players
@@ -173,7 +181,7 @@ mx.element.player = (function () {
 
 	// player body map appender
 	main.prototype.body_map = function (left_offset, top_offset, piece_color) {
-		var piece = player_block_template();
+		var piece = mx.element.block();
 
 		x(piece).css({
 			backgroundColor: piece_color || this._color,

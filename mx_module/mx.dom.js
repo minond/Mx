@@ -17,8 +17,8 @@ mx.dom = (function () {
 	var type = main.type = manage.const("_2D", "_2_5D");
 	var direction = main.direction = manage.enum(37)("left", "up", "right", "down");
 
-	var viewport = main.viewport = document.createElement("div");
-	var mainport = main.mainport = document.createElement("div");
+	var viewport = main.viewport = mx.element.block();
+	var mainport = main.mainport = mx.element.block();
 	var unit = "px";
 
 	// class names and ids used in the module
@@ -152,7 +152,7 @@ mx.dom = (function () {
 		// build each enviroment element and added to the
 		// append queue.
 		for (var row = 0, max_row = Math.ceil( env_dim.y ); row < max_row; row++) {
-			row_elem = document.createElement("div");
+			row_elem = mx.element.block();
 			row_elem.className = ids.rclass;
 
 			for (var column = 0, max_column = Math.ceil( env_dim.x ); column < max_column; column++) {

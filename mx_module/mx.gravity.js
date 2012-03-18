@@ -14,7 +14,6 @@ mx.gravity = (function () {
 
 	var truthy = ["true"];
 	var falsy = ["false"];
-	var mx_obj_node_holder = "holder";
 
 	var attrs = main.attrs = {
 		solid: "mx_solid_object"
@@ -29,8 +28,8 @@ mx.gravity = (function () {
 
 		if (m(elem).is_node)
 			pass = x(truthy).in_array(elem.getAttribute(attrs.solid));
-		else if (mx_obj_node_holder in elem)
-			pass = x(truthy).in_array(elem[ mx_obj_node_holder ].getAttribute(attrs.solid));
+		else if (mx.element.player.holder in elem)
+			pass = x(truthy).in_array(elem[ mx.element.player.holder ].getAttribute(attrs.solid));
 		else
 			pass = attrs.solid in elem && elem[ attrs.solid ];
 
@@ -46,8 +45,8 @@ mx.gravity = (function () {
 		else
 			elem[ attrs.solid ] = true;
 
-		if (mx_obj_node_holder in elem)
-			as_solid(elem[ mx_obj_node_holder ]);
+		if (mx.element.player.holder in elem)
+			as_solid(elem[ mx.element.player.holder ]);
 
 		return main.is_solid(elem);
 	};
@@ -67,13 +66,13 @@ mx.gravity = (function () {
 					this.offset[0] !== mx.dom.enviroment_dimensions.columns;
 		}, mx.dom.enviroment_dimensions.columns - 1, true);
 
-		var right_wall = mx.storage.select.element(["node"], function () {
+		var left_wall = mx.storage.select.element(["node"], function () {
 			return	this.offset[0] === 0 && 
 					this.offset[1] !== 0 && 
 					this.offset[1] !== mx.dom.enviroment_dimensions.rows;
 		}, mx.dom.enviroment_dimensions.rows - 1, true);
 
-		var left_wall = mx.storage.select.element(["node"], function () {
+		var right_wall = mx.storage.select.element(["node"], function () {
 			return	this.offset[0] === mx.dom.enviroment_dimensions.columns && 
 					this.offset[1] !== 0 && 
 					this.offset[1] !== mx.dom.enviroment_dimensions.rows;
