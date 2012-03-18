@@ -34,14 +34,24 @@ mx.storage = (new mSQL).use({
 	}
 });
 
-
+// query counter/tracker
+mx.storage.count = 1;
 
 // wrapper for mSQL.select from element
-mx.storage.select.element = function (filters, limit, flat) {
-	var ret, msg = "select query execution time";
+mx.storage.select.element = function (columns, filters, limit, flat) {
+	var ret;
+	var msg = Template.stringf("select query execution time (#{%1} @{%0})", 
+		Date.now().toString(), mx.storage.count++);
+
+	if (x(columns).is_function) {
+		filters = arguments[0];
+		limit = arguments[1];
+		flat = arguments[2];
+		columns = "*";
+	}
 
 	mx.debug.time(msg);
-	ret = mx.storage.select("*", "element", filters, limit, flat);
+	ret = mx.storage.select(columns, "element", filters, limit, flat);
 	mx.debug.time(msg);
 
 	return ret;
@@ -49,7 +59,9 @@ mx.storage.select.element = function (filters, limit, flat) {
 
 // wrapper for mSQL.update element
 mx.storage.update.element = function (columns, values, filter) {
-	var ret, msg = "update query execution time";
+	var ret;
+	var msg = Template.stringf("update query execution time (#{%1} @{%0})", 
+		Date.now().toString(), ms.storage.count++);
 
 	mx.debug.time(msg);
 	ret = mx.storage.update("element", columns, values, filter);

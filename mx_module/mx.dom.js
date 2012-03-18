@@ -13,7 +13,7 @@ mx.include.module.dependency.debug;
 // everything that needs to access the dom should
 // go through this module.
 mx.dom = (function () {
-	var main = {};
+	var main = { enviroment_dimensions: {} };
 	var type = main.type = manage.const("_2D", "_2_5D");
 	var direction = main.direction = manage.enum(37)("left", "up", "right", "down");
 
@@ -181,6 +181,8 @@ mx.dom = (function () {
 
 			mx.queue.dom.append(row_elem);
 		}
+
+		main.enviroment_dimensions = { rows: row - 1, columns: column - 1 };
 	}, 1000);
 
 

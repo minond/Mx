@@ -1,36 +1,25 @@
 "use strict";
 
+// project modules
+mx.include.module.dependency.player;
+mx.include.module.dependency.helpers;
+mx.include.module.dependency.storage;
+mx.include.module.dependency.element;
+mx.include.module.dependency.dom;
+mx.include.module.dependency.events;
+mx.include.module.dependency.component;
+mx.include.module.dependency.gravity;
+mx.include.module.dependency.placement;
 
-mx.include.module.helpers;
-mx.include.module.storage;
-mx.include.module.element;
-mx.include.module.dom;
-mx.include.module.events;
-mx.include.module.component;
-mx.include.module.player;
-
-mx.include.component("placement");
-mx.include.component("movement");
-mx.element.player.get("alien");
+// settings, components, and players
 mx.include.settings;
+mx.include.components(project.components);
+mx.element.player.gets(project.players);
 
-mx.dom.vp.initialize({
-	width: 100,
-	height: 70,
-	type: mx.dom.type._2D
-});
-mx.component.movement.initialize();
-mx.globalize();
+// build the viewport and initialize
+// the enviroments
+mx.dom.vp.initialize(project.dom_settings);
+mx.gravity.build_wall();
 
-
-/* ------------------------------------------------------------------
- * main project
- * ------------------------------------------------------------------ */
-
-var alien = new mx.element.player.alien;
-
-alien.show();
-
-//var truck = new mx.element.factory.car.racecar;
-//component.placement.place(truck, 3, 5);
-//queue.dom.append(truck);
+// build a new character
+var alien = new mx.element.player.alien(true);

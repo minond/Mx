@@ -3,16 +3,23 @@
 
 // does now rely on element functions too much, but 
 // does extend the element object.
-mx.include.module.dependency.element;
 mx.include.module.dependency.file;
+mx.include.module.dependency.element;
+mx.include.module.dependency.gravity;
 
 // acts as both the constructor of new players
 // and as the module's scope.
 mx.element.player = (function () {
 	var main = function mx_player_instance () {};
 
-	// static properties
-	main.players = 0;
+	// possible states a player may have
+	// new:			player instance has been created, but not edited in any way
+	// built:		player instance has now be completly build
+	// ready:		player instance has been built and added to the viewport
+	// selected:	player instance has been selected by a user (mx_components/movenent)
+	// acting:		player instance is taking any type of action (mx_components/movenent)
+	// dead:		player instance has been removed from viewport (but not deleted)
+	var States = main.states = manage.enum("new", "built", "ready", "selected", "acting", "dead");
 
 	var classes = main.classes = {
 		player: "mx_player",
@@ -32,6 +39,13 @@ mx.element.player = (function () {
 		width_body: 2
 	};
 
+	// static properties
+	main.players = 0;
+
+	main.fn = function (name, value) {
+		return main.prototype[ name ] = value;
+	};
+
 	// player data importer helper function
 	// {project}/players/{player}.json
 	main.get = function (file) {
@@ -44,11 +58,18 @@ mx.element.player = (function () {
 		mx.debug.log("imported player data: ", file, json_data);
 	};
 
+	// import a list of players
+	main.gets = function (player_array) {
+		for (var i = 0; i < player_array.length; i++) {
+			main.get(player_array[i]);
+		}
+	};
+
 	var player_register = function (player_name, player_data) {
 		(function () {
 			var loc_player_name = player_name;
 			var loc_player_data = player_data;
-			main[ loc_player_name ] = function () {
+			main[ loc_player_name ] = function (show) {
 				var player = new mx.element.player;
 
 				player.color(loc_player_data.color);
@@ -62,6 +83,10 @@ mx.element.player = (function () {
 						loc_player_data.points[ point ].y || 0,
 						loc_player_data.points[ point ].c || null
 					);
+				}
+
+				if (show === true) {
+					player.show();
 				}
 
 				return player;
@@ -78,6 +103,7 @@ mx.element.player = (function () {
 		this.holder = player_block_template();
 		this.holder.id = classes.id + main.players++;
 		this.holder.className = classes.player;
+		mx.gravity.as_solid(this.holder);
 	}
 
 	// takes the player holder and sets required styles
@@ -95,15 +121,6 @@ mx.element.player = (function () {
 				width: this._width + units.unit
 			});
 	};
-
-	// possible states a player may have
-	// new:			player instance has been created, but not edited in any way
-	// built:		player instance has now be completly build
-	// ready:		player instance has been built and added to the viewport
-	// selected:	player instance has been selected by a user (mx_components/movenent)
-	// acting:		player instance is taking any type of action (mx_components/movenent)
-	// dead:		player instance has been removed from viewport (but not deleted)
-	var States = main.states = manage.enum("new", "built", "ready", "selected", "acting", "dead");
 
 	// player's property
 	main.prototype._height;
@@ -177,6 +194,14 @@ mx.element.player = (function () {
 	main.prototype.body_reset = function () {
 		this.holder.innerHTML = "";
 	};
+
+	// for the gravity module
+	main.prototype.gravity = { touching: {
+		side_top: [],
+		side_bottom: [],
+		side_right: [],
+		side_left: []
+	} };
 
 	return main;
 })();

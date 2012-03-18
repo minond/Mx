@@ -12,7 +12,10 @@ mx.include.setmods = [
 	"url", 
 	"file", 
 	"events",
-	"player"
+	"player",
+	"gravity",
+	"movement",
+	"placement"
 ];
 
 mx.include.module.dependency.helpers;

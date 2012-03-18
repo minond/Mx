@@ -133,5 +133,6 @@ mx.element.map.enviroment = {
 // and custom components
 mx.element.color_map = {
 	light_purple: "#BDAEC6",
-	dark_purple: "#732C7B"
+	dark_purple: "#732C7B",
+	salmon: "#E86850"
 };

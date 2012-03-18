@@ -1,3 +1,5 @@
-priority	item		description
-1			movement	movement component that also calculated direction, 
-						position, and player state while moving.
+priority    item        description
+1           placement   places a player in a location and interacts with the
+                        gravity module
+2           movement    movement component that also calculated direction, 
+                        position, and player state while moving.

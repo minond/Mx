@@ -5,6 +5,8 @@
 // some helper scripts may also append to this object
 var mx = {};
 
+// project settings "namespace"
+var project = {};
 
 // default output method all modules
 // should use if any sort of non-ui output
@@ -73,6 +75,7 @@ mx.include = (function (modlist) {
 
 		xhr.open("GET", src, false);
 		xhr.send(null);
+
 		append_script(xhr.responseText);
 		if (loc_load_queue.count) {
 			get_script_content(loc_load_queue.dequeue());
@@ -157,6 +160,13 @@ mx.include = (function (modlist) {
 		nscript( Template.stringf("mx_component/{%0}.js", file) );
 		mx.out.component(file);
 	};
+
+	// array of components
+	main.components = function (comp_array) {
+		for (var i = 0; i < comp_array; i++) {
+			main.component(comp_array[i]);
+		}
+	}
 
 	// component dependecy loader
 	main.component.dependency = function (file) {
