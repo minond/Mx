@@ -8,7 +8,7 @@ mx.events = (function () {
 
 	// currently supported events:
 	var events = [ 	"click", "dblclick", "change", "focus", "keydown",
-					"keypress", "keyup", "mouseleave", "mouseout",
+					"keypress", "keyup", "mouseleave", "mouseout", "mousedown",
 					"mouseover", "mouseup", "mousewheel", "resize",
 					"scroll", "submit", "select" ];
 

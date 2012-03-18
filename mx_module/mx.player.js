@@ -17,6 +17,8 @@ mx.element.player = (function () {
 	var classes = main.classes = {
 		player: "mx_player",
 		body: "mx_player_body_part",
+		body_x: "mx_player_body_part_x",
+		body_y: "mx_player_body_part_y",
 		id: "mx_player_"
 	};
 
@@ -95,7 +97,13 @@ mx.element.player = (function () {
 	};
 
 	// possible states a player may have
-	var States = main.states = manage.enum("new", "built", "ready", "acting", "dead");
+	// new:			player instance has been created, but not edited in any way
+	// built:		player instance has now be completly build
+	// ready:		player instance has been built and added to the viewport
+	// selected:	player instance has been selected by a user (mx_components/movenent)
+	// acting:		player instance is taking any type of action (mx_components/movenent)
+	// dead:		player instance has been removed from viewport (but not deleted)
+	var States = main.states = manage.enum("new", "built", "ready", "selected", "acting", "dead");
 
 	// player's property
 	main.prototype._height;
@@ -159,7 +167,8 @@ mx.element.player = (function () {
 		});
 
 		this.pieces++;
-		piece.setAttribute("body_part", JSON.stringify([ top_offset, left_offset ]));
+		piece.setAttribute(classes.body_x, top_offset);
+		piece.setAttribute(classes.body_y, left_offset);
 		piece.className = classes.body;
 		this.holder.appendChild(piece);
 	};
