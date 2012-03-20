@@ -3,6 +3,9 @@ priority    item        description
                         gravity module
 2           movement    movement component that also calculated direction, 
                         position, and player state while moving.
+3           events      make sure event deligation is working
+                        looks like anonymous method passed will lose variable scope after
+						a second event listener is created.
 
 move get_node out of placement and into element.
 update modules to use this function
