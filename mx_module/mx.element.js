@@ -3,6 +3,7 @@
 
 // every element is stored in an msql instance
 mx.include.module.dependency.storage;
+mx.include.module.dependency.debug;
 
 // main module to building/editing new elements for
 // game. images, divs, and spans are the main building
@@ -119,6 +120,24 @@ mx.element = (function () {
 
 		return value;
 	};
+
+	// returns an element's node
+	main.get_node = function (elem) {
+		var node;
+		var node_warning = "Missing node element, creating new block.";
+
+		if (x(elem).is_node)
+			node = elem;
+		else if (main.player.holder in elem)
+			node = elem[ main.player.holder ];
+		else {
+			mx.debug.warn(node_warning);
+			mx.debug.back_trace();
+			node = main.block();
+		}   
+
+		return node;
+	}; 
 
 	return main;
 })();

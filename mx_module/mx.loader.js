@@ -67,6 +67,8 @@ mx.include = (function (modlist) {
 		
 		node.type = "text/javascript";
 		node.innerHTML = str_script;
+
+		mx.message("loading " + script_name);
 		document.head.appendChild(node);
 	};
 

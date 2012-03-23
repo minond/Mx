@@ -16,7 +16,8 @@ mx.gravity = (function () {
 	var falsy = ["false"];
 
 	var attrs = main.attrs = {
-		solid: "mx_solid_object"
+		solid: "mx_solid_object",
+		wall: "mx_wall_element"
 	}
 
 	// checks if an element should be treated
@@ -114,6 +115,8 @@ mx.gravity = (function () {
 		mx.queue.global(function () {
 			x(wall_nodes).css({
 				backgroundColor: mx.element.color_map.salmon
+			}).attr({
+				className: attrs.wall
 			}).each(function () {
 				as_solid(this);
 			});

@@ -3,8 +3,8 @@ project.components = [];
 project.players = ["alien"];
 
 project.dom_settings = {
-	width: 200,
-	height: 150,
+	width: 400,
+	height: 250,
 	type: mx.dom.type._2D
 };
 

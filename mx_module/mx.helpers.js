@@ -318,6 +318,14 @@
 	// Node methods
 	lambdas.is_node = {};
 
+	// applies all attributes passed
+	// to the current node
+	lambdas.is_node.attr = function (attrs) {
+		for (var attr in attrs)
+			this[ attr ] = attrs[ attr ];
+		return x(this);
+	};
+
 	// applies all css properties passed
 	// in from cssobj to the current node
 	lambdas.is_node.css = function (cssobj) {
@@ -358,6 +366,17 @@
 
 	// NodeList methods
 	lambdas.is_nodelist = {};
+
+	// applies all attr properties passed
+	// in from attrs to the current nodes
+	// @see is_node.attr
+	lambdas.is_nodelist.attr = function (attrs) {
+		for (var m = this.length, i = 0; i < m; i++)
+			for (var attr in attrs) {
+				this[ i ][ attr ] = attrs[ attr ];
+			}
+		return x(this);
+	}
 	
 	// applies all css properties passed
 	// in from cssobj to the current nodes
@@ -428,7 +447,10 @@
 	// @see is_nodelist.css
 	lambdas.is_array.css = lambdas.is_nodelist.css;
 
-	// @see is_nostlist.hide
+	// @see is_nodelist.attr
+	lambdas.is_array.attr = lambdas.is_nodelist.attr;
+
+	// @see is_nodelist.hide
 	lambdas.is_array.hide = lambdas.is_nodelist.hide;
 
 	// @see is_nostlist.show
