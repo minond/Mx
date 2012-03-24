@@ -131,7 +131,7 @@ mx.element = (function () {
 		else if (main.player.holder in elem)
 			node = elem[ main.player.holder ];
 		else {
-			mx.debug.warn(node_warning);
+			mx.debug.warnf(node_warning);
 			mx.debug.back_trace();
 			node = main.block();
 		}   

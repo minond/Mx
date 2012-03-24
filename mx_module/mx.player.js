@@ -22,7 +22,14 @@ mx.element.player = (function () {
 	// selected:	player instance has been selected by a user (mx_components/movenent)
 	// acting:		player instance is taking any type of action (mx_components/movenent)
 	// dead:		player instance has been removed from viewport (but not deleted)
-	var States = main.states = manage.enum("new", "built", "ready", "selected", "acting", "dead");
+	var States = main.states = manage.enum(
+		"new", 
+		"built", 
+		"ready", 
+		"selected", 
+		"acting", 
+		"dead"
+	);
 
 	var classes = main.classes = {
 		player: "mx_player",
@@ -125,12 +132,31 @@ mx.element.player = (function () {
 			});
 	};
 
-	// player's property
+	// height in pixels
 	main.prototype._height;
 	main.prototype._width;
+
+	// height in normal numerical units
+	// used to calculate placements
+	main.prototype.raw_width;
+	main.prototype.raw_height;
+
+	// default color for nodes
 	main.prototype._color;
+
+	// holder is a div element holding all piece elements
+	// that make up the player
 	main.prototype.holder;
+
+	// _holder is a div element in the enviroment that the 
+	// top left hand corner of the holder element is attached to.
+	main.prototype._holder;
+
+	// number of pieces that make up a player
 	main.prototype.pieces = 0;
+
+	// the player element's state
+	// @see States
 	main.prototype.state = States.new;
 
 	// setter for color
@@ -143,6 +169,7 @@ mx.element.player = (function () {
 		if (h)
 			this._height = h * units.height + ((h - 1) * units.height_offset);
 
+		this.raw_height = h;
 		apply_player_dimensions.call(this);
 		return this._height;
 	}
@@ -152,6 +179,7 @@ mx.element.player = (function () {
 		if (w)
 			this._width = w * units.width + ((w - 1) * units.width_offset);
 
+		this.raw_width = w;
 		apply_player_dimensions.call(this);
 		return this._width;
 	};

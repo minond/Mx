@@ -6,6 +6,7 @@ priority    item        description
 3           events      make sure event deligation is working
                         looks like anonymous method passed will lose variable scope after
 						a second event listener is created.
+4           sound       enhance mx sound (http://www.html5rocks.com/en/tutorials/webaudio/games/)
 
 move get_node out of placement and into element.
 update modules to use this function

@@ -116,7 +116,7 @@ mx.gravity = (function () {
 			x(wall_nodes).css({
 				backgroundColor: mx.element.color_map.salmon
 			}).attr({
-				className: attrs.wall
+				mx_gravity: attrs.wall
 			}).each(function () {
 				as_solid(this);
 			});

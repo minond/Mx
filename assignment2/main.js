@@ -18,8 +18,9 @@ mx.include.components(project.components);
 mx.element.player.gets(project.players);
 
 // build the viewport and initialize
-// the enviroments
-mx.dom.vp.initialize(project.dom_settings);
+// the enviroment
+mx.dom.initialize(project.dom_settings);
+mx.placement.initialize();
 mx.gravity.build_wall();
 
 // build a new character

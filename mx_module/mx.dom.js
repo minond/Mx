@@ -113,7 +113,7 @@ mx.dom = (function () {
 	// padding: row padding offset
 	// type: display type (2D, 2.5D)
 	// key_movement: apply arrow key viewport movement
-	vp.initialize = manage.limit(function (settings) {
+	main.initialize = vp.initialize = manage.limit(function (settings) {
 		var dim = suggested_dimensions;
 		var dtype = settings.type || type._2_5D;
 		var row_elem;
@@ -183,7 +183,7 @@ mx.dom = (function () {
 		}
 
 		main.enviroment_dimensions = { rows: row - 1, columns: column - 1 };
-	}, 1000);
+	}, 1);
 
 
 	// the throttled version of this function should

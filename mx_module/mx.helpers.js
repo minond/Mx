@@ -321,8 +321,10 @@
 	// applies all attributes passed
 	// to the current node
 	lambdas.is_node.attr = function (attrs) {
-		for (var attr in attrs)
+		for (var attr in attrs) {
 			this[ attr ] = attrs[ attr ];
+			this.setAttribute( attr, attrs[ attr ] );
+		}
 		return x(this);
 	};
 
@@ -374,6 +376,7 @@
 		for (var m = this.length, i = 0; i < m; i++)
 			for (var attr in attrs) {
 				this[ i ][ attr ] = attrs[ attr ];
+				this[ i ].setAttribute( attr, attrs[ attr ] );
 			}
 		return x(this);
 	}
