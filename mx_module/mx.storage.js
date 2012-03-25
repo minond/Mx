@@ -79,3 +79,10 @@ mx.storage.insert.element = function (newimage) {
 mx.storage.select.element.__defineGetter__("count", function () {
 	return mx.storage.db.element["@data"].length;
 });
+
+// shorcut for a node filter
+mx.storage.select.element.get = function (node) {
+	return mx.storage.select.element(mSQL.QUERY.all, function () {
+		return this.node === node;
+	}, 1)[0];
+};

@@ -25,3 +25,5 @@ mx.gravity.build_wall();
 
 // build a new character
 var alien = new mx.element.player.alien(true);
+
+mx.placement.place(alien);

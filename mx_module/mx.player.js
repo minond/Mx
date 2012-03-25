@@ -113,6 +113,7 @@ mx.element.player = (function () {
 		this.holder = mx.element.block();
 		this.holder.id = classes.id + main.player_count++;
 		this.holder.className = classes.player;
+		this._holder = null;
 		mx.gravity.as_solid(this.holder);
 	}
 
@@ -151,6 +152,7 @@ mx.element.player = (function () {
 	// _holder is a div element in the enviroment that the 
 	// top left hand corner of the holder element is attached to.
 	main.prototype._holder;
+	main.prototype.offset = [];
 
 	// number of pieces that make up a player
 	main.prototype.pieces = 0;

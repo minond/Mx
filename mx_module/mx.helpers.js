@@ -74,6 +74,10 @@
 			return v === mx;
 		},
 
+		_player: function (v) {
+			return v instanceof mx.element.player;
+		},
+
 		_undefined: function (v) {
 			return typeof v === "undefined"
 		}, 
@@ -139,6 +143,14 @@
 		return number;
 	};
 
+	// number methods
+	lambdas.is_number = {};
+
+	// conver a number to a string used in a css property
+	lambdas.is_number.num2px = function () {
+		return this.valueOf().toString() + "px";
+	};
+
 	// Array methods
 	lambdas.is_array = {};
 
@@ -152,6 +164,28 @@
 	// @see is_array.first
 	lambdas.is_array.last = function () {
 		return this[ this.length - 1 ]
+	};
+
+	// compares two arrays for equality
+	lambdas.is_array.eq = function (comp) {
+		if (this.length !== comp.length) 
+			return false;
+
+		for (var i = 0, m = this.length; i < m; i++)
+			if (this[i] !== comp[i])
+				return false;
+
+		return true;
+	};
+
+	// replicates an array
+	lambdas.is_array.copy = function () {
+		var copy = [];
+
+		for (var i = 0, m = this.length; i < m; i++)
+			copy.push(this[i].valueOf());
+
+		return copy;
 	};
 
 	// takes an action upon each element
