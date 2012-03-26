@@ -132,6 +132,10 @@
 
 		};
 
+		manager.trigger.count = function () {
+			return args_manager.stack.length;
+		};
+
 		// and save trigger function
 		return manager.trigger;
 		return manager;

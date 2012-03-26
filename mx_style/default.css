@@ -51,8 +51,8 @@ div#mx_output_holder {
 	bottom: 10px;
 	border: 1px solid #C8C8C8;
 	height: 117px;
-	min-width: 250px;
-	max-width: 250px;
+	min-width: 450px;
+	max-width: 450px;
 	font: 12px Arial;
 	cursor: default;
 	padding: 10px;
@@ -93,7 +93,7 @@ div#mx_output span.call {
 }
 
 div#mx_output span.move {
-	color: salmon;
+	color: #CC0000;
 }
 
 /* ----------------------------------------------------------------------

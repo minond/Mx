@@ -1,5 +1,8 @@
 "use strict";
 
+var alien;
+
+
 // project modules
 mx.include.module.dependency.player;
 mx.include.module.dependency.helpers;
@@ -20,10 +23,11 @@ mx.element.player.gets(project.players);
 // build the viewport and initialize
 // the enviroment
 mx.dom.initialize(project.dom_settings);
+mx.movement.initialize(project.movement_settings);
 mx.placement.initialize();
 mx.gravity.build_wall();
 
 // build a new character
-var alien = new mx.element.player.alien(true);
-
+alien = new mx.element.player.alien(true);
 mx.placement.place(alien);
+mx.movement.select(alien);

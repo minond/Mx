@@ -43,7 +43,7 @@ mx.placement = (function () {
 	};
 
 	// place an element in the viewport
-	var place = main.place = function (elem, proposed_holder_info) {
+	var place = main.place = function (elem, proposed_holder_info, cache_dir) {
 		mx.queue.global(function () {
 			var elem_info = get_size(elem);
 			var end_x, end_y, end_holder;
@@ -73,6 +73,14 @@ mx.placement = (function () {
 					elem._holder = end_holder.node;
 					put(elem, [proposed_holder_info.offset[0], proposed_holder_info.offset[1]]);
 				}
+				else if (m(elem).is_player && cache_dir) {
+					elem.movement[ cache_dir ] = false;
+					mx.sound.play.crash;
+				}
+
+				if (m(elem).is_player) {
+					elem.movement.ready = true;
+				}
 			}
 		});
 	};
@@ -95,78 +103,6 @@ mx.placement = (function () {
 
 		return dimensions;
 	};
-
-	// updates to player element
-	mx.element.player.prototype._move = manage.throttle(function (_this, dir) {
-		_this._move.clear();
-
-		var to_element, to_offset = x(_this.offset).copy();
-
-		// create this new direction
-		if (!(dir in _this.can_move))
-			_this.can_move[ dir ] = true;
-
-		// check if we have tried moving here in the previous move
-		if (!_this.can_move[ dir ])
-			return false;
-
-		if (dir) {
-			switch (dir) {
-				case direction.up:
-					to_offset[1]--;
-					break;
-				case direction.down:
-					to_offset[1]++;
-					break;
-				case direction.left:
-					to_offset[0]--;
-					break;
-				case direction.right:
-					to_offset[0]++;
-					break;
-			}
-
-			to_element = mx.storage.select.element(mSQL.QUERY.all, function () {
-				return x(this.offset).eq(to_offset);
-			}, 1)[0];
-
-			if (to_element && to_element.node) {
-				main.place(_this, to_element);
-
-				// reset all directions and make them available again
-				for (var dir in _this.can_move) {
-					_this.can_move[ dir ] = true;
-				}
-			}
-			else
-				_this.can_move[ dir ] = false;
-
-			_this._move.clear();
-		}
-	}, 75);
-
-	// movent cache
-	mx.element.player.prototype.can_move = {};
-
-	// move a player
-	mx.element.player.prototype.move = function (dir) {
-		this._move(this, dir);
-	};
-
-	// stop a player
-	mx.element.player.prototype.stop = function () {
-		this._move.clear();
-	};
-
-	// short cuts to move in all directions
-	for (var dir in direction) {
-		(function () {
-			var _dir_ = dir;
-			mx.element.player.prototype[ "move_" + _dir_ ] = function () {
-				return this.move( direction[ _dir_ ] );
-			}
-		})();
-	}
 
 	return main;
 })();

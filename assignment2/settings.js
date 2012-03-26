@@ -8,6 +8,11 @@ project.dom_settings = {
 	type: mx.dom.type._2D
 };
 
+project.movement_settings = {
+	clicks: false, 
+	shortcuts: true
+}
+
 mx.element.map.car = {
 	type: mx.element.node.IMG, 
 	root: "cars",
