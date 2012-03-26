@@ -4,7 +4,20 @@
 mx.sound = (function () {
 	var main = { play: {}, pause: {} };
 	var dir = "mx_sounds/";
-	var sounds = {};
+	var sounds = main.sounds = {};
+
+	main.initialize = function (settings) {
+		for (var setting in settings) {
+			if (m(main[ setting ]).is_function && settings[ setting ])
+				main[ setting ](settings[ setting ]);
+		}
+	};
+
+	main.background = function (file) {
+		main.register(file);
+		main.play[ file.split(".")[0] ];
+		sounds[ file.split(".")[0] ].loop = true;
+	};
 
 	// load and ready a new sound
 	main.register = function (file) {

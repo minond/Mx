@@ -11,7 +11,19 @@ project.dom_settings = {
 project.movement_settings = {
 	clicks: false, 
 	shortcuts: true
-}
+};
+
+project.placement_settings = {
+	animate: true
+};
+
+project.gravity_settings = {
+	build_wall: true
+};
+
+project.sound_settings = {
+	background: "forrest.mp3"
+};
 
 mx.element.map.car = {
 	type: mx.element.node.IMG, 

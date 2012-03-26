@@ -14,7 +14,22 @@ mx.placement = (function () {
 	var directions = ["up", "down", "left", "right"];
 	var direction = main.direction = manage.enum.apply(manage, directions);
 
-	main.initialize = function () {
+	var settings = main.settings = {
+		animate: false
+	};
+
+	main.initialize = function (custom_settings) {
+		if (settings)
+			for (var setting in custom_settings)
+				settings[ setting ] = custom_settings[ setting ];
+
+		main.survey();
+
+		if (settings.animate)
+			mx.include.dependency("jquery");
+	};
+
+	main.survey = function () {
 		// calculate the dimensions of the 
 		// enviroment elements
 		sample_node = mx.storage.select.element(["node"], function () {
@@ -30,12 +45,19 @@ mx.placement = (function () {
 	// puts an element in an enviroment node
 	var put = function (elem, offset) {
 		var node = mx.element.get_node(elem);
-		main.initialize();
+		main.survey();
 
-		x(node).css({
-			top: x(node_dimensions.height * offset[1] + offset[1]).num2px(),
-			left: x(node_dimensions.width * offset[0] + offset[0]).num2px()
-		});
+		if (settings.animate)
+			$(node).animate({
+				top: x(node_dimensions.height * offset[1] + offset[1]).num2px(),
+				left: x(node_dimensions.width * offset[0] + offset[0]).num2px()
+			}, 150);
+		else
+			x(node).css({
+				top: x(node_dimensions.height * offset[1] + offset[1]).num2px(),
+				left: x(node_dimensions.width * offset[0] + offset[0]).num2px()
+			});
+
 
 		if (m(elem).is_player) {
 			elem.offset = offset;

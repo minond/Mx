@@ -40,24 +40,44 @@ mx.movement = (function () {
 
 	// keyboard shortcuts
 	main.shortcuts = function () {
+		var keys = [
+			mx.events.shortcuts.left_arrow,
+			mx.events.shortcuts.right_arrow,
+			mx.events.shortcuts.down_arrow,
+			mx.events.shortcuts.up_arrow
+		];
+
 		mx.events.shortcut(mx.events.shortcuts.left_arrow, function () {
-			if (selected_player)
+			if (selected_player) {
+				selected_player._move.clear();
 				selected_player.move_left();
+			}
 		});
 	
 		mx.events.shortcut(mx.events.shortcuts.right_arrow, function () {
-			if (selected_player)
+			if (selected_player) {
+				selected_player._move.clear();
 				selected_player.move_right();
+			}
 		});
 	
 		mx.events.shortcut(mx.events.shortcuts.up_arrow, function () {
-			if (selected_player)
+			if (selected_player) {
+				selected_player._move.clear();
 				selected_player.move_up();
+			}
 		});
 
 		mx.events.shortcut(mx.events.shortcuts.down_arrow, function () {
-			if (selected_player)
+			if (selected_player) {
+				selected_player._move.clear();
 				selected_player.move_down();
+			}
+		});
+
+		mx.events.bind.keyup(function (e) {
+			if (x(keys).in_array(e.keyCode) && selected_player)
+				selected_player._move.clear();
 		});
 
 		return true;
@@ -153,7 +173,7 @@ mx.movement = (function () {
 		// clear the move call stack
 		// the move often this stack the less lag there will be
 		_this._move.clear();
-	}, 200);
+	}, 150);
 
 	// short cuts to move in all directions
 	for (var dir in mx.placement.direction) {

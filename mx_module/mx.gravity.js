@@ -20,6 +20,14 @@ mx.gravity = (function () {
 		wall: "mx_wall_element"
 	}
 
+	main.initialize = function (settings) {
+		if (settings)
+			for (var setting in settings) {
+				if (m(main[ setting ]).is_function && settings[ setting ]) 
+					main[ setting ]();
+			}
+	};
+
 	// checks if an element should be treated
 	// as a solid substance.
 	// a "solid" state determines if two objects

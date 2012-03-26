@@ -153,9 +153,9 @@ mx.include = (function (modlist) {
 	});
 
 	// dependency short cut
-	main.__defineSetter__("dependency", function (file) {
-		nscript( Template.stringf("mx_dependency/{%0}.js", file) );
-	});
+	main.dependency = function (file) {
+		main.file = ( Template.stringf("mx_dependency/{%0}.js", file) );
+	};
 
 	// component short cut
 	main.component = function (file) {

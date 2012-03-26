@@ -24,8 +24,9 @@ mx.element.player.gets(project.players);
 // the enviroment
 mx.dom.initialize(project.dom_settings);
 mx.movement.initialize(project.movement_settings);
-mx.placement.initialize();
-mx.gravity.build_wall();
+mx.placement.initialize(project.placement_settings);
+mx.gravity.initialize(project.gravity_settings);
+mx.sound.initialize(project.sound_settings);
 
 // build a new character
 alien = new mx.element.player.alien(true);
