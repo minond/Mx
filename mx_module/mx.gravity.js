@@ -6,7 +6,7 @@
 mx.include.module.dependency.dom;
 mx.include.module.dependency.element;
 mx.include.module.dependency.events;
-mx.include.module.dependency.player;
+mx.include.module.dependency.character;
 
 // mx's gravitiy engine
 mx.gravity = (function () {
@@ -37,8 +37,8 @@ mx.gravity = (function () {
 
 		if (m(elem).is_node)
 			pass = x(truthy).in_array(elem.getAttribute(attrs.solid));
-		else if (mx.element.player.holder in elem)
-			pass = x(truthy).in_array(elem[ mx.element.player.holder ].getAttribute(attrs.solid));
+		else if (mx.element.character.holder in elem)
+			pass = x(truthy).in_array(elem[ mx.element.character.holder ].getAttribute(attrs.solid));
 		else
 			pass = attrs.solid in elem && elem[ attrs.solid ];
 
@@ -54,8 +54,8 @@ mx.gravity = (function () {
 		else
 			elem[ attrs.solid ] = true;
 
-		if (mx.element.player.holder in elem)
-			as_solid(elem[ mx.element.player.holder ]);
+		if (mx.element.character.holder in elem)
+			as_solid(elem[ mx.element.character.holder ]);
 
 		return main.is_solid(elem);
 	};

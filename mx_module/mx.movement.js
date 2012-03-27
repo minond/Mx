@@ -4,17 +4,17 @@
 mx.include.module.dependency.gravity;
 mx.include.module.dependency.element;
 mx.include.module.dependency.movement;
-mx.include.module.dependency.player;
+mx.include.module.dependency.character;
 mx.include.module.dependency.sound;
 
 mx.movement = (function () {
 	var main = {};
 	var dir_names = {};
-	var selected_player;
+	var selected_character;
 
 	mx.sound.register("crash.mp3");
 	mx.out.register(
-		"player_movement", 
+		"character_movement", 
 		"<div><span>[movement module] </span><span class='move'>{%id}[{%dir}], stack count: {%stack}</span></div>"
 	);
 
@@ -29,11 +29,11 @@ mx.movement = (function () {
 		}
 	};
 
-	main.select = function (player) {
-		if (m(player).is_player)
-			selected_player = player;
+	main.select = function (character) {
+		if (m(character).is_character)
+			selected_character = character;
 		else 
-			selected_player = null;
+			selected_character = null;
 
 		return true;
 	};
@@ -48,36 +48,36 @@ mx.movement = (function () {
 		];
 
 		mx.events.shortcut(mx.events.shortcuts.left_arrow, function () {
-			if (selected_player) {
-				selected_player._move.clear();
-				selected_player.move_left();
+			if (selected_character) {
+				selected_character._move.clear();
+				selected_character.move_left();
 			}
 		});
 	
 		mx.events.shortcut(mx.events.shortcuts.right_arrow, function () {
-			if (selected_player) {
-				selected_player._move.clear();
-				selected_player.move_right();
+			if (selected_character) {
+				selected_character._move.clear();
+				selected_character.move_right();
 			}
 		});
 	
 		mx.events.shortcut(mx.events.shortcuts.up_arrow, function () {
-			if (selected_player) {
-				selected_player._move.clear();
-				selected_player.move_up();
+			if (selected_character) {
+				selected_character._move.clear();
+				selected_character.move_up();
 			}
 		});
 
 		mx.events.shortcut(mx.events.shortcuts.down_arrow, function () {
-			if (selected_player) {
-				selected_player._move.clear();
-				selected_player.move_down();
+			if (selected_character) {
+				selected_character._move.clear();
+				selected_character.move_down();
 			}
 		});
 
 		mx.events.bind.keyup(function (e) {
-			if (x(keys).in_array(e.keyCode) && selected_player)
-				selected_player._move.clear();
+			if (x(keys).in_array(e.keyCode) && selected_character)
+				selected_character._move.clear();
 		});
 
 		return true;
@@ -85,33 +85,33 @@ mx.movement = (function () {
 
 	// click selectors
 	main.clicks = function () {
-		mx.events.click_on(".mx_player_body_part", function () {
-			main.select( mx.element.player.players[ this.parentNode.id ] );
+		mx.events.click_on(".mx_character_body_part", function () {
+			main.select( mx.element.character.characters[ this.parentNode.id ] );
 		});
 
-		mx.events.click_on(".mx_player", function () {
-			main.select( mx.element.player.players[ this.id ] );
+		mx.events.click_on(".mx_character", function () {
+			main.select( mx.element.character.characters[ this.id ] );
 		});
 	};
 
 	// movent cache
-	mx.element.player.prototype.movement = { ready: false };
+	mx.element.character.prototype.movement = { ready: false };
 	for (var dir in mx.placement.direction) {
-		mx.element.player.prototype.movement[ dir ] = true;
+		mx.element.character.prototype.movement[ dir ] = true;
 	}
 
-	// move a player
-	mx.element.player.prototype.move = function (dir) { this._move(this, dir); };
+	// move a character
+	mx.element.character.prototype.move = function (dir) { this._move(this, dir); };
 
-	// stop a player
-	mx.element.player.prototype.stop = function () { this._move.clear(); };
+	// stop a character
+	mx.element.character.prototype.stop = function () { this._move.clear(); };
 
-	// updates to player element
-	mx.element.player.prototype._move = manage.throttle(function (_this, dir) {
+	// updates to character element
+	mx.element.character.prototype._move = manage.throttle(function (_this, dir) {
 		var to_element, to_offset = x(_this.offset).copy();
 		var direction = mx.placement.direction;
 
-		/*mx.out.player_movement({ 
+		/*mx.out.character_movement({ 
 			id: _this.holder.id, 
 			dir: dir_names[ dir ] + ":" + dir, 
 			stack: _this._move.count() 
@@ -180,7 +180,7 @@ mx.movement = (function () {
 		(function () {
 			 var loc_dir = dir;
 
-			 mx.element.player.prototype[ "move_" + loc_dir ] = function () {
+			 mx.element.character.prototype[ "move_" + loc_dir ] = function () {
 				 return this.move( mx.placement.direction[ loc_dir ] );
 			 }
 		 })();

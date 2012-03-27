@@ -74,8 +74,8 @@
 			return v === mx;
 		},
 
-		_player: function (v) {
-			return v instanceof mx.element.player;
+		_character: function (v) {
+			return v instanceof mx.element.character;
 		},
 
 		_undefined: function (v) {

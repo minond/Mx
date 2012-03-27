@@ -12,7 +12,7 @@ mx.include.setmods = [
 	"url", 
 	"file", 
 	"events",
-	"player",
+	"character",
 	"gravity",
 	"movement",
 	"placement",

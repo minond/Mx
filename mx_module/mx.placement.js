@@ -2,7 +2,7 @@
 
 
 mx.include.module.dependency.gravity;
-mx.include.module.dependency.player;
+mx.include.module.dependency.character;
 mx.include.module.dependency.element;
 mx.include.module.dependency.storage;
 mx.include.module.dependency.helpers;
@@ -59,7 +59,7 @@ mx.placement = (function () {
 			});
 
 
-		if (m(elem).is_player) {
+		if (m(elem).is_character) {
 			elem.offset = offset;
 		}
 	};
@@ -76,8 +76,8 @@ mx.placement = (function () {
 				}, 1)[0];
 			}
 
-			if (elem_info.player && proposed_holder_info.node) {
-				// using the player's dimensions, it is placed in the viewport
+			if (elem_info.character && proposed_holder_info.node) {
+				// using the character's dimensions, it is placed in the viewport
 				// wherever there is enough enviroment nodes to hold it.
 				end_x = elem_info.width + proposed_holder_info.offset[0];
 				end_y = elem_info.height + proposed_holder_info.offset[1];
@@ -95,12 +95,12 @@ mx.placement = (function () {
 					elem._holder = end_holder.node;
 					put(elem, [proposed_holder_info.offset[0], proposed_holder_info.offset[1]]);
 				}
-				else if (m(elem).is_player && cache_dir) {
+				else if (m(elem).is_character && cache_dir) {
 					elem.movement[ cache_dir ] = false;
 					mx.sound.play.crash;
 				}
 
-				if (m(elem).is_player) {
+				if (m(elem).is_character) {
 					elem.movement.ready = true;
 				}
 			}
@@ -112,15 +112,15 @@ mx.placement = (function () {
 	var get_size = function (elem) {
 		var node = mx.element.get_node(elem), dimensions = {};
 
-		if (elem instanceof mx.element.player) {
+		if (elem instanceof mx.element.character) {
 			dimensions.width = elem.raw_width;
 			dimensions.height = elem.raw_height;
-			dimensions.player = true;
+			dimensions.character = true;
 		}
 		else {
 			dimensions.width = x(mx.element.gcs(node, "width")).px2num();
 			dimensions.height = x(mx.element.gcs(node, "height")).px2num();
-			dimensions.player = false;
+			dimensions.character = false;
 		}
 
 		return dimensions;

@@ -101,7 +101,7 @@ mx.element = (function () {
 	// used on other modules, however, it is here where
 	// it is set.
 	// @see mx.element
-	main.type = manage.const("env", "building", "player");
+	main.type = manage.const("env", "building", "character");
 
 	// shorthand to document.create for divs
 	main.block = function () {
@@ -128,8 +128,8 @@ mx.element = (function () {
 
 		if (x(elem).is_node)
 			node = elem;
-		else if (main.player.holder in elem)
-			node = elem[ main.player.holder ];
+		else if (main.character.holder in elem)
+			node = elem[ main.character.holder ];
 		else {
 			mx.debug.warnf(node_warning);
 			mx.debug.back_trace();

@@ -20,10 +20,10 @@ div#mx_viewport {
 }
 
 /* ----------------------------------------------------------------------
- * player elements
+ * character elements
  * ---------------------------------------------------------------------- */
 
-div.mx_player {
+div.mx_character {
 	position: absolute;
 	left: 11px;
 	top: 11px;
@@ -32,7 +32,7 @@ div.mx_player {
 	background-color: white;
 }
 
-div.mx_player .mx_player_body_part {
+div.mx_character .mx_character_body_part {
 	position: absolute;
 	border-right: 1px solid transparent;
 	border-bottom: 1px solid transparent;

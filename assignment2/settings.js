@@ -1,6 +1,6 @@
 project.components = [];
 
-project.players = ["alien", "bullet"];
+project.characters = ["alien", "bullet"];
 
 project.dom_settings = {
 	width: 500,
