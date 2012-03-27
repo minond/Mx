@@ -71,9 +71,9 @@ mx.placement = (function () {
 			var end_x, end_y, end_holder;
 
 			if (!proposed_holder_info) {
-				proposed_holder_info = mx.storage.select.element(mSQL.QUERY.all, function () {
+				proposed_holder_info = mx.storage.select.element(["node", "offset"], function () {
 					return this.type === mx.element.type.ENV && !this.node.mx_gravity; 
-				}, 1, true, true)[0];
+				}, 1)[0];
 			}
 
 			if (elem_info.player && proposed_holder_info.node) {
@@ -86,9 +86,9 @@ mx.placement = (function () {
 				--end_x;
 				--end_y;
 
-				end_holder = mx.storage.select.element(mSQL.QUERY.all, function () {
+				end_holder = mx.storage.select.element(["node"], function () {
 					return x(this.offset).eq([end_x, end_y]);
-				}, 1, true, true)[0];
+				}, 1)[0];
 
 				// a holder was found
 				if (end_holder && end_holder.node) {

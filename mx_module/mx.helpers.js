@@ -154,6 +154,14 @@
 	// Array methods
 	lambdas.is_array = {};
 
+	// adds all elements of an array
+	lambdas.is_array.sum = function () {
+		var sum = 0;
+		for (var i = 0; i < this.length; i++)
+			sum += this[i];
+		return sum;
+	};
+
 	// returns the first element in an array
 	// @see is_array.last
 	lambdas.is_array.first = function () {

@@ -3,14 +3,31 @@
 
 (function () {
 	var main = mx.out = {};
+	var query = main.query = {};
 
 	var templates = {};
 	var output = document.getElementById("mx_output");
+	var query_avg = document.getElementById("mx_query_average");
+	var query_avg_last = document.getElementById("mx_query_average_last");
+	var query_total = document.getElementById("mx_query_count");
 
 	var write = manage.throttle(function (template, fname) {
 		output.innerHTML += Template.stringf(templates[ template ], fname);
 		output.scrollTop = 100000;
 	}, 30);
+
+
+	query.average_last = function (v) {
+		query_avg_last.innerHTML = v;
+	};
+
+	query.average = function (v) {
+		query_avg.innerHTML = v;
+	};
+
+	query.count = function (v) {
+		query_total.innerHTML = v;
+	};
 
 	// for custom templates
 	main.register = function (template, template_str) {

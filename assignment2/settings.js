@@ -3,8 +3,8 @@ project.components = [];
 project.players = ["alien"];
 
 project.dom_settings = {
-	width: 400,
-	height: 250,
+	width: 1000,
+	height: 500,
 	type: mx.dom.type._2D
 };
 
@@ -14,7 +14,7 @@ project.movement_settings = {
 };
 
 project.placement_settings = {
-	animate: true
+	animate: 0
 };
 
 project.gravity_settings = {

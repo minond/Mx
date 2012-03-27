@@ -67,6 +67,14 @@ mx.debug = (function () {
 		}
 	};
 
+	// helper function for timing functions
+	main.Timer = function () {
+		var start_time = Date.now();
+		return function () {
+			return Date.now() - start_time;
+		};
+	};
+
 
 	return main;
 })();

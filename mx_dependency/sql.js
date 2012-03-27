@@ -23,6 +23,14 @@ mSQL.prototype.use = function (db) {
 	return this;
 };
 
+mSQL.prototype.temp = function (db) {
+	var backup = this.db;
+	this.db = db;
+	return (function restore_point () {
+		return this.use(backup);
+	}).bind(this);
+};
+
 
 /**
  * @method select

@@ -36,23 +36,34 @@ mx.storage = (new mSQL).use({
 
 // query counter/tracker
 mx.storage.count = 1;
+mx.storage.all = 0;
+mx.storage.avg = 0;
+mx.storage.last_n_max = 10;
+mx.storage.last_n = [];
 
 // wrapper for mSQL.select from element
 mx.storage.select.element = function (columns, filters, limit, flat) {
-	var ret;
-	var msg = Template.stringf("select query execution time (#{%1} @{%0})", 
-		Date.now().toString(), mx.storage.count++);
-
-	if (x(columns).is_function) {
+	if (x(columns).is_function || !columns) {
 		filters = arguments[0];
 		limit = arguments[1];
 		flat = arguments[2];
 		columns = "*";
 	}
 
-	mx.debug.time(msg);
-	ret = mx.storage.select(columns, "element", filters, limit, flat);
-	mx.debug.time(msg);
+	var timer = new mx.debug.Timer;
+	var ret = mx.storage.select(columns, "element", filters, limit, flat);
+
+	if (mx.storage.last_n.length >= mx.storage.last_n_max) {
+		mx.storage.last_n.shift();
+	}
+	
+	mx.storage.last_n.push(timer());
+	mx.storage.all += timer();
+	mx.storage.avg = mx.storage.all / ++mx.storage.count;
+
+	mx.out.query.average( mx.storage.avg.toFixed(3) );
+	mx.out.query.average_last( (x(mx.storage.last_n).sum() / mx.storage.count).toFixed(3) );
+	mx.out.query.count( mx.storage.count );
 
 	return ret;
 };

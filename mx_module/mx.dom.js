@@ -31,7 +31,9 @@ mx.dom = (function () {
 		cfirst: "first_col",
 		clast: "last_col",
 		vpid: "mx_viewport",
-		mpid: "mx_main"
+		mpid: "mx_main",
+		row_index: "mx_row_index",
+		col_index: "mx_col_index"
 	};
 
 	// default settings
@@ -165,6 +167,8 @@ mx.dom = (function () {
 					cell_elem.className += " " + ids.clast;
 
 				row_elem.appendChild(cell_elem);
+				row_elem.setAttribute(ids.row_index, row.toString());
+				cell_elem.setAttribute(ids.col_index, column.toString());
 			}
 
 

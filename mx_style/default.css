@@ -43,12 +43,43 @@ div.mx_player .mx_player_body_part {
  * output div
  * ---------------------------------------------------------------------- */
 
-div#mx_output_holder {
+div#mx_output_query {
 	-webkit-user-select: none;
 	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
 	position: fixed;
 	right: 10px;
 	bottom: 10px;
+	border: 1px solid #C8C8C8;
+	font: 12px Arial;
+	cursor: default;
+	padding: 10px;
+	background-color: white;
+	z-index: 1000;
+}
+
+div#mx_output_query span.mx_output_query_title_title {
+	font-weight: 900;
+	padding-right: 10px;
+}
+
+div#mx_output_query span.mx_output_query_data {
+	width: 40px !important;
+	display: inline-block;
+	color: blue;
+	font-weight: 900;
+}
+
+div#mx_output_query span.mx_output_query_data {
+	padding-left: 5px;
+	padding-right: 9px;
+}
+
+div#mx_output_holder {
+	-webkit-user-select: none;
+	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
+	position: fixed;
+	right: 10px;
+	bottom: 60px;
 	border: 1px solid #C8C8C8;
 	height: 117px;
 	min-width: 450px;

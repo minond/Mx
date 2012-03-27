@@ -111,11 +111,11 @@ mx.movement = (function () {
 		var to_element, to_offset = x(_this.offset).copy();
 		var direction = mx.placement.direction;
 
-		mx.out.player_movement({ 
+		/*mx.out.player_movement({ 
 			id: _this.holder.id, 
 			dir: dir_names[ dir ] + ":" + dir, 
 			stack: _this._move.count() 
-		});
+		});*/
 
 		// clear the move call stack
 		// the move often this stack the less lag there will be
@@ -152,7 +152,7 @@ mx.movement = (function () {
 					break;
 			}
 
-			to_element = mx.storage.select.element(mSQL.QUERY.all, function () {
+			to_element = mx.storage.select.element(["node", "offset"], function () {
 				return x(this.offset).eq(to_offset);
 			}, 1)[0];
 
