@@ -20,6 +20,10 @@ mx.components = (function () {
 	main.register = function (component) {
 		components[ component.name ] = component;
 		mx.message("registered component: {%0}", component.name);
+
+		if (component.ready) {
+			component.initialize();
+		}
 	};
 
 	return main;

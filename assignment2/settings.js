@@ -3,7 +3,7 @@ project.components = ["graph"];
 project.characters = ["alien", "bullet"];
 
 project.dom_settings = {
-	width: 200,
+	width: 600,
 	height: 300,
 	type: mx.dom.type._2D
 };
@@ -14,7 +14,7 @@ project.movement_settings = {
 };
 
 project.placement_settings = {
-	animate: 0
+	animate: true
 };
 
 project.gravity_settings = {

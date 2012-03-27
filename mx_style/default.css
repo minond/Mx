@@ -43,12 +43,21 @@ div.mx_character .mx_character_body_part {
  * output div
  * ---------------------------------------------------------------------- */
 
-div#mx_output_query {
+div#mx_graph {
+	bottom: 10px;
+	height: 20px;
+	max-height: 20px;
+}
+
+div#mx_info {
+	bottom: 65px;
+}
+
+div.mx_output_query {
 	-webkit-user-select: none;
 	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
 	position: fixed;
 	right: 10px;
-	bottom: 10px;
 	border: 1px solid #C8C8C8;
 	font: 12px Arial;
 	cursor: default;
@@ -57,19 +66,27 @@ div#mx_output_query {
 	z-index: 1000;
 }
 
-div#mx_output_query span.mx_output_query_title_title {
+div.mx_output_query span.mx_output_query_title_title {
 	font-weight: 900;
 	padding-right: 10px;
 }
 
-div#mx_output_query span.mx_output_query_data {
+span#mx_output_query_graph {
+	width: 515px;
+	overflow: hidden;
+	display: inline-block;
+	white-space: nowrap;
+	margin-right: 9px;
+}
+
+div.mx_output_query span.mx_output_query_data {
 	width: 40px !important;
 	display: inline-block;
 	color: blue;
 	font-weight: 900;
 }
 
-div#mx_output_query span.mx_output_query_data {
+div.mx_output_query span.mx_output_query_data {
 	padding-left: 5px;
 	padding-right: 9px;
 }
@@ -79,11 +96,11 @@ div#mx_output_holder {
 	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
 	position: fixed;
 	right: 10px;
-	bottom: 60px;
+	bottom: 114px;
 	border: 1px solid #C8C8C8;
-	height: 117px;
-	min-width: 450px;
-	max-width: 450px;
+	height: 150px;
+	min-width: 523px;
+	max-width: 523px;
 	font: 12px Arial;
 	cursor: default;
 	padding: 10px;

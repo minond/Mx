@@ -6,6 +6,11 @@
 	var query = main.query = {};
 
 	var templates = {};
+
+	var graph = document.getElementById("mx_graph");
+	var info = document.getElementById("mx_info");
+	var holder = document.getElementById("mx_output_holder");
+
 	var output = document.getElementById("mx_output");
 	var query_avg = document.getElementById("mx_query_average");
 	var query_avg_last = document.getElementById("mx_query_average_last");
@@ -40,6 +45,12 @@
 
 			templates[ loc_template ] = template_str;
 		})();
+
+		if (mx.debug && !mx.debugging) {
+			holder.style.display = "none";
+			graph.style.display = "none";
+			info.style.display = "none";
+		}
 	}
 })();
 
