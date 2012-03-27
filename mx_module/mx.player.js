@@ -82,7 +82,10 @@ mx.element.player = (function () {
 		(function () {
 			var loc_player_name = player_name;
 			var loc_player_data = player_data;
-			main[ loc_player_name ] = function (show) {
+			main[ loc_player_name ] = function (show, select) {
+				mx.include.module.dependency.placement;
+				mx.include.module.dependency.movement;
+
 				var player = new mx.element.player;
 
 				player.height(loc_player_data.height);
@@ -98,8 +101,12 @@ mx.element.player = (function () {
 					);
 				}
 
-				if (show === true) {
+				if (show) {
 					player.show();
+					mx.placement.place(player);
+
+					if (select)
+						mx.movement.select(player);
 				}
 
 				main.players[ player.holder.id ] = player;
@@ -201,6 +208,7 @@ mx.element.player = (function () {
 			mx.dom.vp.append(me.holder);
 			mx.sound.play.drop;
 			me.state = States.ready;
+			x(me.holder).show();
 		});
 	};
 

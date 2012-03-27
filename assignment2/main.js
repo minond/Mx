@@ -2,7 +2,6 @@
 
 var alien;
 
-
 // project modules
 mx.include.module.dependency.player;
 mx.include.module.dependency.helpers;
@@ -29,6 +28,4 @@ mx.gravity.initialize(project.gravity_settings);
 mx.sound.initialize(project.sound_settings);
 
 // build a new character
-alien = new mx.element.player.alien(true);
-mx.placement.place(alien);
-mx.movement.select(alien);
+alien = new mx.element.player.alien(true, true);

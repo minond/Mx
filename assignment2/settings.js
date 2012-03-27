@@ -1,10 +1,10 @@
 project.components = [];
 
-project.players = ["alien"];
+project.players = ["alien", "bullet"];
 
 project.dom_settings = {
-	width: 1000,
-	height: 500,
+	width: 500,
+	height: 300,
 	type: mx.dom.type._2D
 };
 

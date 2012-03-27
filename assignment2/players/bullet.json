@@ -1,0 +1,10 @@
+{
+	height: 1,
+	width: 1,
+	color: mx.element.color_map.light_purple,
+	points: [
+		/* left antenna */
+		{ x: 1, y: 1, c: "red" },
+		{ x: 2, y: 1, c: "black" }
+	]
+}
