@@ -14,8 +14,8 @@ mx.movement = (function () {
 
 	mx.sound.register("crash.mp3");
 	mx.out.register(
-		"character_movement", 
-		"<div><span>[movement module] </span><span class='move'>{%id}[{%dir}], stack count: {%stack}</span></div>"
+		"character_movement_recalc", 
+		"<div><span>[movement module] </span><span class='move'>view recalculation ({%0}ms)</span></div>"
 	);
 
 	main.initialize = function (settings) {
@@ -110,12 +110,11 @@ mx.movement = (function () {
 	mx.element.character.prototype._move = manage.throttle(function (_this, dir) {
 		var to_element, to_offset = x(_this.offset).copy();
 		var direction = mx.placement.direction;
+		var table = "element";
 
-		/*mx.out.character_movement({ 
-			id: _this.holder.id, 
-			dir: dir_names[ dir ] + ":" + dir, 
-			stack: _this._move.count() 
-		});*/
+		if (_this.view_range_bit) {
+			table = _this.holder.id;
+		}
 
 		// clear the move call stack
 		// the move often this stack the less lag there will be
@@ -132,6 +131,7 @@ mx.movement = (function () {
 
 		// check if we have tried moving here in the previous move
 		if (!_this.movement[ dir ]) {
+			mx.movement.recalculate_character_viewport(_this);
 			mx.sound.play.crash;
 			return false;
 		}
@@ -152,7 +152,7 @@ mx.movement = (function () {
 					break;
 			}
 
-			to_element = mx.storage.select.element(["node", "offset"], function () {
+			to_element = mx.storage.select(["node", "offset"], table, function () {
 				return x(this.offset).eq(to_offset);
 			}, 1)[0];
 
@@ -166,6 +166,7 @@ mx.movement = (function () {
 			else {
 				_this.movement[ dir ] = false;
 				_this._move.clear();
+				mx.movement.recalculate_character_viewport(_this);
 				mx.sound.play.crash;
 			}
 		}
@@ -187,6 +188,45 @@ mx.movement = (function () {
 
 		 dir_names[ mx.placement.direction[ dir ] ] = dir;
 	}
+
+	var recalculate_character_viewport = main.recalculate_character_viewport = function (character) {
+		if (!character.view_area)
+			return false;
+
+		mx.queue.global(function () {
+			var timer = new mx.debug.Timer;
+			var info = { 
+				row: {
+					start: character.offset[1] - character.view_length_vertical,
+					end: character.offset[1] + character.raw_height - 1 + character.view_length_vertical
+				},  
+				column: {
+					start: character.offset[0] - character.view_length_horizontal,
+					end: character.offset[0] + character.raw_width - 1 + character.view_length_horizontal
+				}   
+			};  
+
+			var character_viewport = mx.storage.select.element(mSQL.QUERY.all, function () {
+				var in_row, in_column;
+	
+				in_row = + this.node.parentNode.getAttribute(mx.dom.ids.row_index);
+				in_column = + this.node.getAttribute(mx.dom.ids.col_index);
+	
+				in_row = in_row <= info.row.end && in_row >= info.row.start;
+				in_column = in_column <= info.column.end && in_column >= info.column.start;
+	
+				return in_row && in_column;
+			}, character.view_area);
+	
+			mx.out.character_movement_recalc(timer().toString());
+			mx.storage.db[ character.holder.id ] = { "@data": character_viewport || [] };
+			character.view_range_bit = true;
+
+			for (var move in character.movement) {
+				character.movement[ move ] = true;
+			}
+		});
+	};
 
 	return main;
 })();

@@ -34,7 +34,7 @@ mx.placement = (function () {
 		// enviroment elements
 		sample_node = mx.storage.select.element(["node"], function () {
 			return this.type === mx.element.type.ENV;
-		}, true, true)[0];
+		}, 1, true)[0];
 
 		node_dimensions = {
 			width: x(mx.element.gcs(sample_node, "width")).px2num(),
@@ -69,9 +69,14 @@ mx.placement = (function () {
 		mx.queue.global(function () {
 			var elem_info = get_size(elem);
 			var end_x, end_y, end_holder;
+			var table = "element";
+
+			if (elem.view_range_bit) {
+				table = elem.holder.id;
+			}
 
 			if (!proposed_holder_info) {
-				proposed_holder_info = mx.storage.select.element(["node", "offset"], function () {
+				proposed_holder_info = mx.storage.select(["node", "offset"], table, function () {
 					return this.type === mx.element.type.ENV && !this.node.mx_gravity; 
 				}, 1)[0];
 			}
@@ -86,7 +91,7 @@ mx.placement = (function () {
 				--end_x;
 				--end_y;
 
-				end_holder = mx.storage.select.element(["node"], function () {
+				end_holder = mx.storage.select(["node"], table, function () {
 					return x(this.offset).eq([end_x, end_y]);
 				}, 1)[0];
 
@@ -97,6 +102,7 @@ mx.placement = (function () {
 				}
 				else if (m(elem).is_character && cache_dir) {
 					elem.movement[ cache_dir ] = false;
+					mx.movement.recalculate_character_viewport(elem);
 					mx.sound.play.crash;
 				}
 

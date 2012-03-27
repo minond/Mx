@@ -92,6 +92,10 @@ mx.element.character = (function () {
 				character.width(loc_character_data.width);
 				character.color(loc_character_data.color);
 				character.build();
+				character.view_range(
+					loc_character_data.view.horizontal,
+					loc_character_data.view.vertical
+				);
 
 				for (var point = 0, max = loc_character_data.points.length; point < max; point++) {
 					character.body_map(
@@ -105,8 +109,10 @@ mx.element.character = (function () {
 					character.show();
 					mx.placement.place(character);
 
-					if (select)
+					if (select) {
 						mx.movement.select(character);
+						mx.movement.recalculate_character_viewport(character);
+					}
 				}
 
 				main.characters[ character.holder.id ] = character;
@@ -191,6 +197,17 @@ mx.element.character = (function () {
 		this.raw_width = w;
 		apply_character_dimensions.call(this);
 		return this._width;
+	};
+
+	
+	main.prototype.view_area = 0;
+	main.prototype.view_length_vertical = 0;
+	main.prototype.view_length_horizontal = 0;
+	main.prototype.view_range_bit = false;
+	main.prototype.view_range = function (horizontal, vertical) {
+		this.view_length_horizontal = horizontal;
+		this.view_length_vertical = vertical;
+		this.view_area = (this.raw_width + (horizontal * 2)) * (this.raw_height + (vertical * 2));
 	};
 
 	// holder's contructor

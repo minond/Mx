@@ -166,7 +166,7 @@ mx.include = (function (modlist) {
 
 	// array of components
 	main.components = function (comp_array) {
-		for (var i = 0; i < comp_array; i++) {
+		for (var i = 0; i < comp_array.length; i++) {
 			main.component(comp_array[i]);
 		}
 	}

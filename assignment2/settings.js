@@ -1,9 +1,9 @@
-project.components = [];
+project.components = ["graph"];
 
 project.characters = ["alien", "bullet"];
 
 project.dom_settings = {
-	width: 500,
+	width: 200,
 	height: 300,
 	type: mx.dom.type._2D
 };
