@@ -61,6 +61,7 @@ mx.out.register("file", "loading file", null, "#097054");
 mx.out.register("resource", "loading {%type:type} file", "{%name}", "purple");
 mx.out.register("component", "loading component", null, "green");
 mx.out.register("time", "{%name} time", "{%time}ms", "#666699");
-mx.out.register("project_name", "project name", null, "#55D43F");
+mx.out.register("project_name", "project name", null, "#AD01CB");
 mx.out.register("global", "global variable", null, "brown");
 mx.out.register("method", "running method");
+mx.out.register("initialized", "module initialized", null, "gray");

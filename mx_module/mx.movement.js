@@ -7,23 +7,23 @@ mx.include.module.dependency.movement;
 mx.include.module.dependency.character;
 mx.include.module.dependency.sound;
 
+mx.sound.register("crash.mp3");
+mx.out.register("movement_recal", "movement module", "recalculation completed ({%0}ms)", "#FF1A00");
+
 mx.movement = (function () {
 	var main = {};
 	var dir_names = {};
 	var selected_character;
 
-	mx.sound.register("crash.mp3");
-	mx.out.register("character_movement_recalc", "movement module", "view recalculation ({%0}ms)", "#FF1A00");
+	var settings = main.settings = {
+		clicks: false,
+		shortcuts: false
+	};
 
-	main.initialize = function (settings) {
-		for (var setting in settings) {
-			if (setting in main) {
-				if (m(main[ setting ]).is_function && settings[ setting ])
-					main[ setting ]();
-				else
-					main[ setting ] = settings[ setting ];
-			}
-		}
+	main.initialize = function (custom_settings) {
+		mx.settings.merge(settings, mx.settings.movement);
+		mx.settings.functions(main, settings);
+		mx.out.initialized("movement");
 	};
 
 	main.select = function (character) {
@@ -31,8 +31,6 @@ mx.movement = (function () {
 			selected_character = character;
 		else 
 			selected_character = null;
-
-		return true;
 	};
 
 	// keyboard shortcuts
@@ -90,6 +88,10 @@ mx.movement = (function () {
 			main.select( mx.element.character.characters[ this.id ] );
 		});
 	};
+
+	// ********************************************************************
+	// mx.element.characters.prototype updates start
+	// ********************************************************************
 
 	// movent cache
 	mx.element.character.prototype.movement = { ready: false };
@@ -191,6 +193,10 @@ mx.movement = (function () {
 		 dir_names[ mx.placement.direction[ dir ] ] = dir;
 	}
 
+	// ********************************************************************
+	// mx.element.characters.prototype updates end
+	// ********************************************************************
+
 	var recalculate_character_viewport = main.recalculate_character_viewport = function (character) {
 		if (!character.view_area)
 			return false;
@@ -220,7 +226,7 @@ mx.movement = (function () {
 				return in_row && in_column && this.type === mx.element.type.ENV;
 			}, character.view_area);
 	
-			mx.out.character_movement_recalc(timer().toString());
+			mx.out.movement_recal(timer().toString());
 			mx.storage.db[ character.holder.id ] = { "@data": character_viewport || [] };
 			character.view_range_bit = true;
 

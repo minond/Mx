@@ -18,14 +18,16 @@ mx.gravity = (function () {
 	var attrs = main.attrs = {
 		solid: "mx_solid_object",
 		wall: "mx_wall_element"
-	}
+	};
 
-	main.initialize = function (settings) {
-		if (settings)
-			for (var setting in settings) {
-				if (m(main[ setting ]).is_function && settings[ setting ]) 
-					main[ setting ]();
-			}
+	var settings = main.settings = {
+		build_wall: false
+	};
+
+	main.initialize = function () {
+		mx.settings.merge(settings, mx.settings.gravity);
+		mx.settings.functions(main, settings);
+		mx.out.initialized("gravity");
 	};
 
 	// checks if an element should be treated

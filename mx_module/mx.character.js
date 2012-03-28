@@ -49,6 +49,11 @@ mx.element.character = (function () {
 		width_body: 2
 	};
 
+	main.initialize = function () {
+		main.gets(mx.settings.character.list || []);
+		mx.out.initialized("character");
+	};
+
 	// static properties
 	main.character_count = 0;
 	main.characters = {};
@@ -61,14 +66,12 @@ mx.element.character = (function () {
 	// character data importer helper function
 	// {project}/characters/{character}.json
 	main.get = function (file) {
-		var filepath = Template.stringf("{%0}/characters/{%1}.json", mx.__project__, file);
+		var filepath = Template.stringf("{%0}/characters/{%1}.json", mx.settings.project, file);
 		var raw_data = mx.file.read(filepath);
 		var json_data = raw_data && eval("(" + raw_data + ")");
 		
 		mx.out.resource({ name: file, type: "character" });
 		character_register(file, json_data);
-
-		mx.debug.log("imported character data: ", file, json_data);
 	};
 
 	// import a list of characters
@@ -106,13 +109,14 @@ mx.element.character = (function () {
 				}
 
 				if (show) {
-					character.show();
 					mx.placement.place(character);
 
 					if (select) {
 						mx.movement.select(character);
 						mx.movement.recalculate_character_viewport(character);
 					}
+
+					character.show();
 				}
 
 				main.characters[ character.holder.id ] = character;

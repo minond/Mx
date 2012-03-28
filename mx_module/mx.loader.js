@@ -6,17 +6,8 @@
 var mx = {};
 
 // project settings "namespace"
+mx.settings = {};
 var project = {};
-
-// default output method all modules
-// should use if any sort of non-ui output
-// is needed.
-mx.message = function () {
-	if (mx.debug) {
-		mx.debug.log( Template.stringf.apply(Template, arguments) );
-	}
-};
-
 
 // throttled function used for loading
 // done by mx.include
@@ -26,17 +17,6 @@ mx.load_queue = new function () {
 		fn();
 	}, 200);
 };
-
-
-// main throttled call stack. similar to
-// mx.load_queue, except every module extends
-// from this object and uses the same call queue.
-mx.queue = new function () {
-	this.stack = manage.throttle(function (fn) {
-		fn();
-	});
-};
-
 
 // main loader for mx.
 // includes the following objects:
@@ -125,6 +105,10 @@ mx.include = (function (modlist) {
 		(function () {
 			var locmod = modlist[i];
 
+			// settings
+			mx.settings[ locmod ] = { list: [] };
+
+			// loaders
 			main.module.__defineGetter__(locmod, function () {
 				if (!(locmod in mx.queue))
 					mx.queue[ locmod ] = {};
@@ -154,7 +138,7 @@ mx.include = (function (modlist) {
 
 	// default settings loader
 	main.__defineGetter__("settings", function () {
-		nscript( Template.stringf("{%0}/settings.js", mx.__project__) );
+		nscript( Template.stringf("{%0}/settings.js", mx.settings.project) );
 	});
 
 	// dependency short cut
@@ -165,8 +149,8 @@ mx.include = (function (modlist) {
 	// component short cut
 	main.component = function (file) {
 		loaded[ file ] = true;
-		nscript( Template.stringf("mx_component/{%0}.js", file) );
 		mx.out.component(file);
+		nscript( Template.stringf("mx_component/{%0}.js", file) );
 	};
 
 	// array of components
@@ -198,9 +182,9 @@ mx.include = (function (modlist) {
 
 // the initializer's initializer
 // shortcut for creating module loader shortcuts
-mx.include.__defineSetter__("setmods", function () {
+mx.include.setmods = function () {
 	mx.include = mx.include.apply(mx, arguments);
-});
+};
 
 // adds ever first level property to the global scope
 mx.globalize = function (quiet) {
@@ -237,12 +221,28 @@ mx.globalize = function (quiet) {
 	}
 };
 
+// main throttled call stack. similar to
+// mx.load_queue, except every module extends
+// from this object and uses the same call queue.
+mx.queue = {};
+
 // an anonymous function used along with a throttle
 // and the default queue time
 mx.queue.frame = 1000 / 16;
-mx.queue.anonymous = function (action) {
-	action();
-};
+mx.queue.anonymous = function (action) { action(); };
 
 // global function queue
 mx.queue.global = manage.throttle(mx.queue.anonymous, mx.queue.frame);
+
+// settings manager
+mx.settings.merge = function (custom, defaults) {
+	for (var setting in defaults)
+		custom[ setting ] = defaults[ setting ];
+};
+
+// function auto calling
+mx.settings.functions = function (main, settings) {
+	for (var setting in settings)
+		if (setting in main && !!settings[ setting ] && m(main[ setting ]).is_function)
+			main[ setting ]( settings[ setting ] );
+};

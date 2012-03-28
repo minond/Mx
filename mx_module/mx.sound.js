@@ -4,13 +4,16 @@
 mx.sound = (function () {
 	var main = { play: {}, pause: {} };
 	var dir = "mx_sounds/";
-	var sounds = main.sounds = {};
+	var sounds = {};
 
-	main.initialize = function (settings) {
-		for (var setting in settings) {
-			if (m(main[ setting ]).is_function && settings[ setting ])
-				main[ setting ](settings[ setting ]);
-		}
+	var settings = main.settings = {
+		background: false
+	};
+
+	main.initialize = function () {
+		mx.settings.merge(settings, mx.settings.sound);
+		mx.settings.functions(main, settings);
+		mx.out.initialized("sound");
 	};
 
 	main.background = function (file) {
@@ -34,8 +37,7 @@ mx.sound = (function () {
 			sounds[ loc_name ] = new Audio(loc_src);
 
 			main.play.__defineGetter__(loc_name, function () {
-				if (mx.debugging)
-					return false;
+				if (mx.debugging) return false;
 				sounds[ loc_name ].play();
 			});
 

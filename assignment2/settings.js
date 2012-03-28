@@ -1,28 +1,17 @@
-project.components = ["graph"];
+mx.settings.component.list = ["graph"];
+mx.settings.character.list = ["alien", "bullet"];
 
-project.characters = ["alien", "bullet"];
+mx.settings.movement.clicks = false;
+mx.settings.movement.shortcuts = true;
+mx.settings.placement.animate = true;
+mx.settings.gravity.build_wall = true;
 
-project.dom_settings = {
+mx.settings.sound.background = "forrest.mp3";
+
+mx.settings.dom = project.dom_settings = {
 	width: document.body.offsetWidth - 150,
 	height: document.body.offsetHeight - 150,
 	type: mx.dom.type._2D
-};
-
-project.movement_settings = {
-	clicks: false, 
-	shortcuts: true
-};
-
-project.placement_settings = {
-	animate: true
-};
-
-project.gravity_settings = {
-	build_wall: true
-};
-
-project.sound_settings = {
-	background: "forrest.mp3"
 };
 
 mx.element.map.car = {

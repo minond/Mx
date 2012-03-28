@@ -14,12 +14,16 @@ mx.include.module.dependency.debug;
 // go through this module.
 mx.dom = (function () {
 	var main = { enviroment_dimensions: {} };
+
 	var type = main.type = manage.const("_2D", "_2_5D");
 	var direction = main.direction = manage.enum(37)("left", "up", "right", "down");
 
 	var viewport = main.viewport = mx.element.block();
 	var mainport = main.mainport = mx.element.block();
 	var unit = "px";
+
+	// main holder for all viewport's settings
+	var vp = main.vp = {};
 
 	// class names and ids used in the module
 	// only set during initialization therefore
@@ -39,6 +43,10 @@ mx.dom = (function () {
 	// default settings
 	var defaults = main.defaults = {
 		move_offset: 100,
+		vp_offset: {
+			top: 0,
+			left: 0
+		},
 		styles: {
 			"_2D": "mx_style/2D.css",
 			"_2_5D": "mx_style/2_5D.css"
@@ -48,9 +56,6 @@ mx.dom = (function () {
 			sel: "enviroment"
 		}
 	};
-
-	// main holder for all viewport's settings
-	var vp = main.vp = {};
 
 	// suggested dimensions for the view port. 
 	// custom dimensions will overwrite this setting.
@@ -62,51 +67,6 @@ mx.dom = (function () {
 		p: 40
 	};
 
-	// bind the viewport's movement to the arrow keys.
-	var bind_key_actions = function () {
-		mx.events.shortcut(direction.up, function () {
-			vp.move( direction.up );
-		}); 
-
-		mx.events.shortcut(direction.down, function () {
-			vp.move( direction.down );
-		}); 
-
-		mx.events.shortcut(direction.left, function () {
-			vp.move( direction.left );
-		}); 
-
-		mx.events.shortcut(direction.right, function () {
-			vp.move( direction.right );
-		});
-	};
-
-	// moves the view port in the specified direction
-	vp.move = manage.throttle(function (dir) {
-		vp.move.clear();
-
-		switch (dir) {
-			case direction.up:
-				mx.dom.mainport.scrollTop -= defaults.move_offset;
-				break;
-
-			case direction.down:
-				mx.dom.mainport.scrollTop += defaults.move_offset;
-				break;
-
-			case direction.left:
-				mx.dom.mainport.scrollLeft -= defaults.move_offset;
-				break;
-
-			case direction.right:
-				mx.dom.mainport.scrollLeft += defaults.move_offset;
-				break;
-		}
-	}, 50);
-
-
-	// the viewport is the actual holder for everything in the game
-	// enviroment. enviroment elements are always added as children.
 	// settings:
 	// width: viewport width
 	// height: viewport height
@@ -115,19 +75,35 @@ mx.dom = (function () {
 	// padding: row padding offset
 	// type: display type (2D, 2.5D)
 	// key_movement: apply arrow key viewport movement
+	var settings = main.settings = {
+		width: document.body.offsetWidth - 150,
+		height: document.body.offsetHeight - 150,
+		dtype: type._2D,
+		bind_key_actions: false,
+		x: .09,
+		y: .09,
+		p: 40
+	};
+
+	// the viewport is the actual holder for everything in the game
+	// enviroment. enviroment elements are always added as children.
 	main.initialize = vp.initialize = manage.limit(function (settings) {
+		//mx.settings.merge(settings, mx.settings.dom);
+		//mx.settings.functions(main, settings);
+		mx.out.initialized("dom");
+
 		var dim = suggested_dimensions;
 		var dtype = settings.type || type._2_5D;
 		var row_elem;
 		var cell_elem;
 
-		if ("key_movement" in settings && settings.key_movement) {
-			mx.debug.log("applying arrow key viewport movement");
+		if ("bind_key_actions" in settings && settings.key_movement) {
+			mx.out.dom_message("applying arrow key viewport movement");
 			bind_key_actions();
 		}
 
 		if (dtype in defaults.styles) {
-			mx.debug.log("loading style:", dtype);
+			mx.out.dom_message("loading style: " + dtype);
 			mx.include.style( defaults.styles[ dtype ] );
 		}
 
@@ -143,7 +119,6 @@ mx.dom = (function () {
 		viewport.id = ids.vpid;
 		mainport.id = ids.mpid;
 		
-
 		// calculate the required enviroment element
 		// needed to the give height, width, and dimension
 		var env_dim = {
@@ -189,6 +164,69 @@ mx.dom = (function () {
 		main.enviroment_dimensions = { rows: row - 1, columns: column - 1 };
 	}, 1);
 
+	// bind the viewport's movement to the arrow keys.
+	var bind_key_actions = main.bind_key_actions = function () {
+		mx.events.shortcut(direction.up, function () {
+			vp.move( direction.up );
+		}); 
+
+		mx.events.shortcut(direction.down, function () {
+			vp.move( direction.down );
+		}); 
+
+		mx.events.shortcut(direction.left, function () {
+			vp.move( direction.left );
+		}); 
+
+		mx.events.shortcut(direction.right, function () {
+			vp.move( direction.right );
+		});
+	};
+
+	// moves the view port in the specified direction
+	vp.move = manage.throttle(function (dir) {
+		vp.move.clear();
+
+		switch (dir) {
+			case direction.up:
+				mx.dom.mainport.scrollTop -= defaults.move_offset;
+				break;
+
+			case direction.down:
+				mx.dom.mainport.scrollTop += defaults.move_offset;
+				break;
+
+			case direction.left:
+				mx.dom.mainport.scrollLeft -= defaults.move_offset;
+				break;
+
+			case direction.right:
+				mx.dom.mainport.scrollLeft += defaults.move_offset;
+				break;
+		}
+	}, 50);
+
+	// view port throttled append implementation
+	mx.queue.dom.append = (function () {
+		var queue = function (element) {
+			mx.queue.global(function () {
+				mx.dom.viewport.appendChild( element );
+			});
+		};
+
+		return queue;
+	})();
+
+	// main port queued append method.
+	mx.queue.dom.mp_append = (function () {
+		var queue = function (element) {
+			mx.queue.global(function () {
+				mx.dom.mainport.appendChild( element );
+			});
+		};
+
+		return queue;
+	})();
 
 	// the throttled version of this function should
 	// be used as the default. one when the element
@@ -198,34 +236,12 @@ mx.dom = (function () {
 		mx.dom.viewport.appendChild( element );
 	};
 
-
 	// before ending, append the viewport and the main port
 	// and add both to the document body
 	mainport.appendChild(viewport);
 	document.body.appendChild(mainport);
 
+	mx.out.register("dom_message", "dom module", null, "red");
+
 	return main;
-})();
-
-
-// view port throttled append implementation
-mx.queue.dom.append = (function () {
-	var queue = function (element) {
-		mx.queue.global(function () {
-			mx.dom.viewport.appendChild( element );
-		});
-	};
-
-	return queue;
-})();
-
-// main port queued append method.
-mx.queue.dom.mp_append = (function () {
-	var queue = function (element) {
-		mx.queue.global(function () {
-			mx.dom.mainport.appendChild( element );
-		});
-	};
-
-	return queue;
 })();

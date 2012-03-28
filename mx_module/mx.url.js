@@ -19,8 +19,7 @@ mx.url = (function () {
 		}
 	}
 
-	mx.__project__ = main.load || main.debug;
-
+	mx.settings.project = main.load || main.debug;
 
 	return main;
 })();

@@ -10,6 +10,12 @@ mx.components = (function () {
 
 	// this is the main object holding all components
 	var components = mx.component = {};
+	mx.out.register("component_register", "registered component", null, "brown");
+
+	main.initialize = function () {
+		mx.include.components(mx.settings.component.list || []);
+		mx.out.initialized("components");
+	};
 
 	// a component object is passed in the register
 	// function which storage the new component into the
@@ -19,7 +25,7 @@ mx.components = (function () {
 	// the new componenet or normalize it.
 	main.register = function (component) {
 		components[ component.name ] = component;
-		mx.message("registered component: {%0}", component.name);
+		mx.out.component_register(component.name);
 
 		if (component.ready) {
 			component.initialize();

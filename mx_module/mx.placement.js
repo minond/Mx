@@ -19,10 +19,8 @@ mx.placement = (function () {
 	};
 
 	main.initialize = function (custom_settings) {
-		if (settings)
-			for (var setting in custom_settings)
-				settings[ setting ] = custom_settings[ setting ];
-
+		mx.settings.merge(settings, mx.settings.placement);
+		mx.out.initialized("placement");
 		main.survey();
 
 		if (settings.animate)
@@ -45,19 +43,19 @@ mx.placement = (function () {
 	// puts an element in an enviroment node
 	var put = function (elem, offset) {
 		var node = mx.element.get_node(elem);
+		var top, left;
+
 		main.survey();
 
-		if (settings.animate)
-			$(node).animate({
-				top: x(node_dimensions.height * offset[1] + offset[1]).num2px(),
-				left: x(node_dimensions.width * offset[0] + offset[0]).num2px()
-			}, 150);
-		else
-			x(node).css({
-				top: x(node_dimensions.height * offset[1] + offset[1]).num2px(),
-				left: x(node_dimensions.width * offset[0] + offset[0]).num2px()
-			});
+		top = x(node_dimensions.height * offset[1] + offset[1] + mx.dom.defaults.vp_offset.top).num2px();
+		left = x(node_dimensions.width * offset[0] + offset[0] + mx.dom.defaults.vp_offset.left).num2px();
 
+		if (settings.animate) {
+			$(node).animate({ top: top, left: left }, 150);
+		}
+		else {
+			x(node).css({ top: top, left: left });
+		}
 
 		if (m(elem).is_character) {
 			elem.offset = offset;

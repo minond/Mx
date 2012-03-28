@@ -1,5 +1,5 @@
 priority    item        description
-1           all         create way to easily apply module settings
+1           dom         clean up this module
 2           placement   places a character in a location and interacts with the
                         gravity module
 3           movement    movement component that also calculated direction, 
