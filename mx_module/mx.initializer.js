@@ -22,8 +22,10 @@ mx.include.setmods = [
 mx.include.module.dependency.debug;
 mx.include.module.dependency.helpers;
 mx.include.module.dependency.url;
+mx.include.module.dependency.out;
 
-mx.debug.time("register to execute");
-mx.message("loading {%0}", mx.__project__);
-mx.include.project = mx.__project__;
-mx.debug.time("register to execute");
+var load_time = new mx.debug.Timer;
+
+mx.include.project(mx.__project__);
+mx.out.project_name(mx.__project__);
+mx.out.time({ name: "project load", time: load_time() });

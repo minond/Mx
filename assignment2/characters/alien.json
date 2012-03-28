@@ -4,7 +4,7 @@
 	color: mx.element.color_map.light_purple,
 	view: {
 		horizontal: 10,
-		vertical: 2
+		vertical: 10
 	},
 	points: [
 		/* left antenna */

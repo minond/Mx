@@ -130,6 +130,10 @@ mx.gravity = (function () {
 			});
 		});
 
+		mx.storage.update("element", ["type"], [mx.element.type.BUILDING], function () {
+			return x(wall_nodes).in_array(this.node);
+		});
+
 		main.wall = wall_nodes;
 	};
 

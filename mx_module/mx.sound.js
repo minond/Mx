@@ -15,9 +15,9 @@ mx.sound = (function () {
 
 	main.background = function (file) {
 		main.register(file);
-		return false;
 		main.play[ file.split(".")[0] ];
 		sounds[ file.split(".")[0] ].loop = true;
+		sounds[ file.split(".")[0] ].volume = .2;
 	};
 
 	// load and ready a new sound
@@ -34,12 +34,12 @@ mx.sound = (function () {
 			sounds[ loc_name ] = new Audio(loc_src);
 
 			main.play.__defineGetter__(loc_name, function () {
-				return false;
+				if (mx.debugging)
+					return false;
 				sounds[ loc_name ].play();
 			});
 
 			main.pause.__defineGetter__(loc_name, function () {
-				return false;
 				sounds[ loc_name ].pause();
 			});
 		})();

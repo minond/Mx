@@ -72,11 +72,11 @@ div.mx_output_query span.mx_output_query_title_title {
 }
 
 span#mx_output_query_graph {
-	width: 515px;
+	height: 23px;
+	width: 524px;
 	overflow: hidden;
 	display: inline-block;
 	white-space: nowrap;
-	margin-right: 9px;
 }
 
 div.mx_output_query span.mx_output_query_data {
@@ -118,30 +118,6 @@ div#mx_output {
 
 div#mx_output span {
 	font-weight: 900;
-}
-
-div#mx_output span.ncom {
-	color: green;
-}
-
-div#mx_output span.nmod {
-	color: blue;
-}
-
-div#mx_output span.gvar {
-	color: saddleBrown;
-}
-
-div#mx_output span.nresource {
-	color: purple;
-}
-
-div#mx_output span.call {
-	color: red;
-}
-
-div#mx_output span.move {
-	color: #CC0000;
 }
 
 /* ----------------------------------------------------------------------

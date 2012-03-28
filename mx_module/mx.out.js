@@ -6,6 +6,7 @@
 	var query = main.query = {};
 
 	var templates = {};
+	var template_partrs = "<div><span>[{%0}] </span><span style='color: {%2:black}'>{%1}</span></div>";
 
 	var graph = document.getElementById("mx_graph");
 	var info = document.getElementById("mx_info");
@@ -35,7 +36,8 @@
 	};
 
 	// for custom templates
-	main.register = function (template, template_str) {
+	// main.register = function (template, template_str) {
+	main.register = function (template, title, content, color) {
 		(function () {
 			var loc_template = template;
 
@@ -43,7 +45,7 @@
 				write(loc_template, fname);
 			};
 
-			templates[ loc_template ] = template_str;
+			templates[ loc_template ] = Template.stringf(template_partrs, title, content || "{%0}", color || "red");
 		})();
 
 		if (mx.debug && !mx.debugging) {
@@ -54,9 +56,11 @@
 	}
 })();
 
-mx.out.register("module", "<div><span>[loading module] </span><span class='nmod'>{%0}</span></div>");
-mx.out.register("file", "<div><span>[loading file] </span><span class='nmod'>{%0}</span></div>");
-mx.out.register("resource", "<div><span>[loading {%type:type} file] </span><span class='nresource'>{%name}</span></div>");
-mx.out.register("component", "<div><span>[loading component] </span><span class='ncom'>{%0}</span></div>");
-mx.out.register("global", "<div><span>[global variable] </span><span class='gvar'>{%0}</span></div>");
-mx.out.register("method", "<div><span>[running method] </span><span class='call'>{%0}</span></div>");
+mx.out.register("module", "loading module", null, "blue");
+mx.out.register("file", "loading file", null, "#097054");
+mx.out.register("resource", "loading {%type:type} file", "{%name}", "purple");
+mx.out.register("component", "loading component", null, "green");
+mx.out.register("time", "{%name} time", "{%time}ms", "#666699");
+mx.out.register("project_name", "project name", null, "#55D43F");
+mx.out.register("global", "global variable", null, "brown");
+mx.out.register("method", "running method");

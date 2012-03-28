@@ -67,8 +67,6 @@ mx.include = (function (modlist) {
 		
 		node.type = "text/javascript";
 		node.innerHTML = str_script;
-
-		mx.message("loading " + script_name);
 		document.head.appendChild(node);
 	};
 
@@ -79,9 +77,16 @@ mx.include = (function (modlist) {
 		xhr.open("GET", src, false);
 		xhr.send(null);
 
-		append_script(xhr.responseText, src);
-		if (loc_load_queue.count) {
-			get_script_content(loc_load_queue.dequeue());
+		if (xhr.status === 200) {
+			append_script(xhr.responseText, src);
+			if (loc_load_queue.count) {
+				get_script_content(loc_load_queue.dequeue());
+			}
+		}
+		else {
+			mx.include.dependency("jquery");
+			mx.include.dependency("notify");
+			Alert.alert(Template.stringf("Error: '{%0}'<br />Status: {%1}", src.split("?")[0], xhr.status));
 		}
 	};
 
@@ -183,9 +188,9 @@ mx.include = (function (modlist) {
 	};
 
 	// helper setter for loading a project
-	main.__defineSetter__("project", function (pname) {
+	main.project = function (pname) {
 		nscript( Template.stringf("{%0}/main.js", pname) );
-	});
+	};
 
 	return main;
 });

@@ -36,15 +36,18 @@
 		'position': 'fixed',
 		'top': '0px',
 		'left': '0px',
-		'text-align': 'center'
+		'text-align': 'center',
+		'z-index': 10000
 	};
 
 	Build.css.background = {
-		'background-color': 'black',
-		'opacity': '0.6',
+		'background-color': 'white',
+		'border': '1px solid gray',
+		'opacity': '0.8',
 		'height': '100%',
 		'width': '100%',
-		'position': 'absolute'
+		'position': 'absolute',
+		'box-shadow': '2px 2px 4px rgba(0,0,0,0.2)'
 	};
 
 	Build.css.message = {
@@ -53,7 +56,7 @@
 		'display': 'table-cell',
 		'vertical-align': 'middle',
 		'width': '400px',
-		'color': 'white',
+		'color': 'black',
 		'position': 'relative'
 	};
 
@@ -126,7 +129,8 @@
 	
 	Build.show = function (main) {
 		main.css( {
-			'top': window.innerHeight / 2 - ( main.height() / 2 ) + 'px',
+			// 'top': window.innerHeight / 2 - ( main.height() / 2 ) + 'px',
+			'top': '50px',
 			'left': window.innerWidth / 2 - ( main.width() / 2 ) + 'px'
 		} );
 		

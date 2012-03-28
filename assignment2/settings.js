@@ -3,8 +3,8 @@ project.components = ["graph"];
 project.characters = ["alien", "bullet"];
 
 project.dom_settings = {
-	width: 600,
-	height: 300,
+	width: document.body.offsetWidth - 150,
+	height: document.body.offsetHeight - 150,
 	type: mx.dom.type._2D
 };
 

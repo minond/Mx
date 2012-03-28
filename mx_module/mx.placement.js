@@ -65,7 +65,7 @@ mx.placement = (function () {
 	};
 
 	// place an element in the viewport
-	var place = main.place = function (elem, proposed_holder_info, cache_dir) {
+	var place = main.place = function (elem, proposed_holder_info, cache_dir, no_recalc) {
 		mx.queue.global(function () {
 			var elem_info = get_size(elem);
 			var end_x, end_y, end_holder;
@@ -103,7 +103,9 @@ mx.placement = (function () {
 				else if (m(elem).is_character && cache_dir) {
 					elem.movement[ cache_dir ] = false;
 					mx.movement.recalculate_character_viewport(elem);
-					mx.sound.play.crash;
+
+					if (!no_recalc)
+						place(elem, proposed_holder_info, cache_dir, true);
 				}
 
 				if (m(elem).is_character) {

@@ -13,10 +13,7 @@ mx.movement = (function () {
 	var selected_character;
 
 	mx.sound.register("crash.mp3");
-	mx.out.register(
-		"character_movement_recalc", 
-		"<div><span>[movement module] </span><span class='move'>view recalculation ({%0}ms)</span></div>"
-	);
+	mx.out.register("character_movement_recalc", "movement module", "view recalculation ({%0}ms)", "#FF1A00");
 
 	main.initialize = function (settings) {
 		for (var setting in settings) {
@@ -107,7 +104,7 @@ mx.movement = (function () {
 	mx.element.character.prototype.stop = function () { this._move.clear(); };
 
 	// updates to character element
-	mx.element.character.prototype._move = manage.throttle(function (_this, dir) {
+	mx.element.character.prototype._move = manage.throttle(function (_this, dir, no_recalc) {
 		var to_element, to_offset = x(_this.offset).copy();
 		var direction = mx.placement.direction;
 		var table = "element";
@@ -132,7 +129,10 @@ mx.movement = (function () {
 		// check if we have tried moving here in the previous move
 		if (!_this.movement[ dir ]) {
 			mx.movement.recalculate_character_viewport(_this);
-			mx.sound.play.crash;
+
+			if (!no_recalc)
+				_this._move(_this, dir, true);
+
 			return false;
 		}
 
@@ -167,7 +167,9 @@ mx.movement = (function () {
 				_this.movement[ dir ] = false;
 				_this._move.clear();
 				mx.movement.recalculate_character_viewport(_this);
-				mx.sound.play.crash;
+
+				if (!no_recalc)
+					_this._move(_this, dir, true);
 			}
 		}
 		
@@ -215,7 +217,7 @@ mx.movement = (function () {
 				in_row = in_row <= info.row.end && in_row >= info.row.start;
 				in_column = in_column <= info.column.end && in_column >= info.column.start;
 	
-				return in_row && in_column;
+				return in_row && in_column && this.type === mx.element.type.ENV;
 			}, character.view_area);
 	
 			mx.out.character_movement_recalc(timer().toString());
