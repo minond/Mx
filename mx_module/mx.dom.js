@@ -87,7 +87,8 @@ mx.dom = (function () {
 
 	// the viewport is the actual holder for everything in the game
 	// enviroment. enviroment elements are always added as children.
-	main.initialize = vp.initialize = manage.limit(function (settings) {
+	main.initialize = vp.initialize = manage.limit(function () {
+		var settings = mx.settings.dom;
 		//mx.settings.merge(settings, mx.settings.dom);
 		//mx.settings.functions(main, settings);
 		mx.out.initialized("dom");

@@ -44,13 +44,13 @@ div.mx_character .mx_character_body_part {
  * ---------------------------------------------------------------------- */
 
 div#mx_graph {
-	bottom: 10px;
-	height: 20px;
-	max-height: 20px;
+	bottom: 235px;
+	height: 60px;
+	max-height: 60px;
 }
 
 div#mx_info {
-	bottom: 65px;
+	bottom: 190px;
 }
 
 div.mx_output_query {
@@ -72,7 +72,7 @@ div.mx_output_query span.mx_output_query_title_title {
 }
 
 span#mx_output_query_graph {
-	height: 23px;
+	height: 60px;
 	width: 524px;
 	overflow: hidden;
 	display: inline-block;
@@ -96,7 +96,7 @@ div#mx_output_holder {
 	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
 	position: fixed;
 	right: 10px;
-	bottom: 114px;
+	bottom: 10px;
 	border: 1px solid #C8C8C8;
 	height: 150px;
 	min-width: 523px;

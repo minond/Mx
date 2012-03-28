@@ -18,7 +18,7 @@
 
 			x(offset).css({
 				width: "524px",
-				height: "20px",
+				height: "60px",
 				display: "inline-block"
 			});
 
@@ -28,10 +28,14 @@
 
 	var data_item = function () {
 		var item = mx.element.block();
-		var height = mx.storage.avg * 10;
+		var time = +(x(mx.storage.last_n).sum() / mx.storage.count).toFixed(3);
+		var height = time * 10 / 4;
+		var color = time < 10 ? "#5CA82A" : "#A60C00";
+
+
 
 		if (last_check === mx.storage.count) {
-			height = 1;
+			color = "#05296E";
 			idle_time++;
 
 			if (idle_time > main.MAX_IDLE_TIME) {
@@ -50,7 +54,7 @@
 		x(item).css({
 			height: x(height).num2px(),
 			width: "2px",
-			backgroundColor: "blue",
+			backgroundColor: color,
 			display: "inline-block"
 		});
 

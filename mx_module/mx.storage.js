@@ -41,6 +41,21 @@ mx.storage.avg = 0;
 mx.storage.last_n_max = 10;
 mx.storage.last_n = [];
 
+mx.storage.select.timed = function () {
+	var ret = [], timer = new mx.debug.Timer;
+	ret = mx.storage.select.apply(mx.storage, arguments);
+	
+	mx.storage.last_n.push(timer());
+	mx.storage.all += timer();
+	mx.storage.avg = mx.storage.all / ++mx.storage.count;
+
+	mx.out.query.average( mx.storage.avg.toFixed(3) );
+	mx.out.query.average_last( (x(mx.storage.last_n).sum() / mx.storage.count).toFixed(3) );
+	mx.out.query.count( mx.storage.count );
+
+	return ret;
+};
+
 // wrapper for mSQL.select from element
 mx.storage.select.element = function (columns, filters, limit, flat) {
 	if (x(columns).is_function || !columns) {

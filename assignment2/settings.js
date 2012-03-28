@@ -8,11 +8,9 @@ mx.settings.gravity.build_wall = true;
 
 mx.settings.sound.background = "forrest.mp3";
 
-mx.settings.dom = project.dom_settings = {
-	width: document.body.offsetWidth - 150,
-	height: document.body.offsetHeight - 150,
-	type: mx.dom.type._2D
-};
+mx.settings.dom.width = document.body.offsetWidth - 150;
+mx.settings.dom.height = document.body.offsetHeight - 150;
+mx.settings.dom.type = mx.dom.type._2D;
 
 mx.element.map.car = {
 	type: mx.element.node.IMG, 

@@ -154,7 +154,7 @@ mx.movement = (function () {
 					break;
 			}
 
-			to_element = mx.storage.select(["node", "offset"], table, function () {
+			to_element = mx.storage.select.timed(["node", "offset"], table, function () {
 				return x(this.offset).eq(to_offset);
 			}, 1)[0];
 

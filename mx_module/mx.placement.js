@@ -9,7 +9,7 @@ mx.include.module.dependency.helpers;
 
 mx.placement = (function () {
 	var main = {};
-	var sample_node, node_dimensions;
+	var sample_node, node_dimensions = main.node_dimensions = {};
 
 	var directions = ["up", "down", "left", "right"];
 	var direction = main.direction = manage.enum.apply(manage, directions);
@@ -30,14 +30,13 @@ mx.placement = (function () {
 	main.survey = function () {
 		// calculate the dimensions of the 
 		// enviroment elements
+		if (!sample_node)
 		sample_node = mx.storage.select.element(["node"], function () {
 			return this.type === mx.element.type.ENV;
 		}, 1, true)[0];
 
-		node_dimensions = {
-			width: x(mx.element.gcs(sample_node, "width")).px2num(),
-			height: x(mx.element.gcs(sample_node, "height")).px2num()
-		};
+		node_dimensions.width = x(mx.element.gcs(sample_node, "width")).px2num();
+		node_dimensions.height = x(mx.element.gcs(sample_node, "height")).px2num();
 	};
 
 	// puts an element in an enviroment node
@@ -74,7 +73,7 @@ mx.placement = (function () {
 			}
 
 			if (!proposed_holder_info) {
-				proposed_holder_info = mx.storage.select(["node", "offset"], table, function () {
+				proposed_holder_info = mx.storage.select.timed(["node", "offset"], table, function () {
 					return this.type === mx.element.type.ENV && !this.node.mx_gravity; 
 				}, 1)[0];
 			}
@@ -89,7 +88,7 @@ mx.placement = (function () {
 				--end_x;
 				--end_y;
 
-				end_holder = mx.storage.select(["node"], table, function () {
+				end_holder = mx.storage.select.timed(["node"], table, function () {
 					return x(this.offset).eq([end_x, end_y]);
 				}, 1)[0];
 
