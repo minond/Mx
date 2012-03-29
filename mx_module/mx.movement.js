@@ -109,7 +109,7 @@ mx.movement = (function () {
 	mx.element.character.prototype._move = manage.throttle(function (self, dir, no_recalc) {
 		var to_element, to_offset = x(self.offset).copy();
 		var direction = mx.placement.direction;
-		var table = "element";
+		var table = mx.storage.elements;
 
 		if (self.view_range_bit) {
 			table = self.holder.id;

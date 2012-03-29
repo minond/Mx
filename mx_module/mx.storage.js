@@ -40,6 +40,7 @@ mx.storage.all = 0;
 mx.storage.avg = 0;
 mx.storage.last_n_max = 10;
 mx.storage.last_n = [];
+mx.storage.elements = "element";
 
 mx.storage.select.timed = function () {
 	var ret = [], timer = new mx.debug.Timer;
@@ -66,7 +67,7 @@ mx.storage.select.element = function (columns, filters, limit, flat) {
 	}
 
 	var timer = new mx.debug.Timer;
-	var ret = mx.storage.select(columns, "element", filters, limit, flat);
+	var ret = mx.storage.select(columns, mx.storage.elements, filters, limit, flat);
 
 	if (mx.storage.last_n.length >= mx.storage.last_n_max) {
 		mx.storage.last_n.shift();
@@ -90,7 +91,7 @@ mx.storage.update.element = function (columns, values, filter) {
 		Date.now().toString(), ms.storage.count++);
 
 	mx.debug.time(msg);
-	ret = mx.storage.update("element", columns, values, filter);
+	ret = mx.storage.update(mx.storage.elements, columns, values, filter);
 	mx.debug.time(msg);
 
 	return ret;
@@ -98,7 +99,7 @@ mx.storage.update.element = function (columns, values, filter) {
 
 // wrapper for mSQL.insert into element
 mx.storage.insert.element = function (newimage) {
-	mx.storage.insert.apply(mx.storage, [newimage, "element"]);
+	mx.storage.insert.apply(mx.storage, [newimage, mx.storage.elements]);
 };
 
 // shortcut to db object holding elements in mSQL

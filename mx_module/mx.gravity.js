@@ -124,7 +124,7 @@ mx.gravity = (function () {
 
 		mx.queue.global(function () {
 			x(wall_nodes).css({
-				backgroundColor: mx.element.color_map.salmon
+				// backgroundColor: mx.element.color_map.salmon
 			}).attr({
 				mx_gravity: attrs.wall
 			}).each(function () {
@@ -132,7 +132,7 @@ mx.gravity = (function () {
 			});
 		});
 
-		mx.storage.update("element", ["type"], [mx.element.type.BUILDING], function () {
+		mx.storage.update(mx.storage.elements, ["type"], [mx.element.type.BUILDING], function () {
 			return x(wall_nodes).in_array(this.node);
 		});
 

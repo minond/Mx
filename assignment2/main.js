@@ -15,6 +15,8 @@ mx.include.module.dependency.placement;
 mx.include.module.dependency.movement;
 
 mx.include.settings;
+
+
 mx.dom.initialize();
 mx.components.initialize();
 mx.element.character.initialize();

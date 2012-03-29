@@ -66,7 +66,7 @@ mx.placement = (function () {
 		mx.queue.global(function () {
 			var elem_info = get_size(elem);
 			var end_x, end_y, end_holder, border_nodes = [];
-			var table = "element";
+			var table = mx.storage.elements;
 
 			if (elem.view_range_bit) {
 				table = elem.holder.id;
