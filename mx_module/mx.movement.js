@@ -106,34 +106,34 @@ mx.movement = (function () {
 	mx.element.character.prototype.stop = function () { this._move.clear(); };
 
 	// updates to character element
-	mx.element.character.prototype._move = manage.throttle(function (_this, dir, no_recalc) {
-		var to_element, to_offset = x(_this.offset).copy();
+	mx.element.character.prototype._move = manage.throttle(function (self, dir, no_recalc) {
+		var to_element, to_offset = x(self.offset).copy();
 		var direction = mx.placement.direction;
 		var table = "element";
 
-		if (_this.view_range_bit) {
-			table = _this.holder.id;
+		if (self.view_range_bit) {
+			table = self.holder.id;
 		}
 
 		// clear the move call stack
 		// the move often this stack the less lag there will be
-		_this._move.clear();
+		self._move.clear();
 
 		// check if the element is in the viewport
-		if (!_this.movement.ready) {
+		if (!self.movement.ready) {
 			return false;
 		}
 
 		// create this new direction
-		if (!(dir in _this.movement))
-			_this.movement[ dir ] = true;
+		if (!(dir in self.movement))
+			self.movement[ dir ] = true;
 
 		// check if we have tried moving here in the previous move
-		if (!_this.movement[ dir ]) {
-			mx.movement.recalculate_character_viewport(_this);
+		if (!self.movement[ dir ]) {
+			mx.movement.recalculate_character_viewport(self);
 
 			if (!no_recalc)
-				_this._move(_this, dir, true);
+				self._move(self, dir, true);
 
 			return false;
 		}
@@ -159,25 +159,25 @@ mx.movement = (function () {
 			}, 1)[0];
 
 			if (to_element && to_element.node) {
-				mx.placement.place(_this, to_element, dir);
+				mx.placement.place(self, to_element, dir);
 
 				// reset all directions and make them available again
-				for (var dir in _this.movement)
-					_this.movement[ dir ] = true;
+				for (var dir in self.movement)
+					self.movement[ dir ] = true;
 			}
 			else {
-				_this.movement[ dir ] = false;
-				_this._move.clear();
-				mx.movement.recalculate_character_viewport(_this);
+				self.movement[ dir ] = false;
+				self._move.clear();
+				mx.movement.recalculate_character_viewport(self);
 
 				if (!no_recalc)
-					_this._move(_this, dir, true);
+					self._move(self, dir, true);
 			}
 		}
 		
 		// clear the move call stack
 		// the move often this stack the less lag there will be
-		_this._move.clear();
+		self._move.clear();
 	}, 150);
 
 	// short cuts to move in all directions
@@ -223,7 +223,7 @@ mx.movement = (function () {
 				in_row = in_row <= info.row.end && in_row >= info.row.start;
 				in_column = in_column <= info.column.end && in_column >= info.column.start;
 	
-				return in_row && in_column && this.type === mx.element.type.ENV;
+				return in_row && in_column /* && this.type === mx.element.type.ENV */ ;
 			}, character.view_area);
 	
 			mx.out.movement_recal(timer().toString());

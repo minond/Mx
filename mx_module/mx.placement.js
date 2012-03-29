@@ -65,7 +65,7 @@ mx.placement = (function () {
 	var place = main.place = function (elem, proposed_holder_info, cache_dir, no_recalc) {
 		mx.queue.global(function () {
 			var elem_info = get_size(elem);
-			var end_x, end_y, end_holder;
+			var end_x, end_y, end_holder, border_nodes = [];
 			var table = "element";
 
 			if (elem.view_range_bit) {
@@ -88,9 +88,51 @@ mx.placement = (function () {
 				--end_x;
 				--end_y;
 
-				end_holder = mx.storage.select.timed(["node"], table, function () {
-					return x(this.offset).eq([end_x, end_y]);
-				}, 1)[0];
+				// node borders
+				for (var row = proposed_holder_info.offset[0]; row <= end_x; row++) {
+					// top row
+					border_nodes.push([row, proposed_holder_info.offset[1]]);
+
+					// bottom row
+					border_nodes.push([row, end_y]);
+				}
+
+				for (var column = proposed_holder_info.offset[1] + 1; column < end_y; column++) {
+					// left column
+					border_nodes.push([proposed_holder_info.offset[0], column]);
+
+					// right column
+					border_nodes.push([end_x, column]);
+				}
+
+				// instead of an end node location, 
+				// we'll use the border node's locations to determine 
+				// possible movements. this does assume the last point will be used 
+				// as the end_holder node
+				for (var point = 0, max = border_nodes.length; point < max; point++) {
+					end_holder = mx.storage.select.timed(["node", "type"], table, function () {
+						return x(this.offset).eq( border_nodes[ point ] );
+					}, 1)[0];
+
+					if (!end_holder) {
+						console.log("collision on", border_nodes[ point ]);
+						break;
+					}
+					else if (end_holder.type !== mx.element.type.ENV) {
+						console.log("collision on", border_nodes[ point ], end_holder.node);
+						end_holder.node = false;
+						break;
+					}
+				}
+
+				// NOTE: this query is not really needed as it is done in 
+				// the previous step. compose way of storing the last result
+				// and use instead of doind this
+				if (end_holder && end_holder.node) {
+					end_holder = mx.storage.select.timed(["node"], table, function () {
+						return x(this.offset).eq([end_x, end_y]);
+					}, 1)[0];
+				}
 
 				// a holder was found
 				if (end_holder && end_holder.node) {

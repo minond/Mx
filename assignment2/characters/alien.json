@@ -3,8 +3,8 @@
 	width: 3,
 	color: mx.element.color_map.light_purple,
 	view: {
-		horizontal: 10,
-		vertical: 10
+		horizontal: 5,
+		vertical: 5
 	},
 	points: [
 		/* left antenna */
