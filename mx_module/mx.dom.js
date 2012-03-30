@@ -42,6 +42,7 @@ mx.dom = (function () {
 
 	// default settings
 	var defaults = main.defaults = {
+		node_size: 11,
 		move_offset: 100,
 		vp_offset: {
 			top: 0,
@@ -57,63 +58,41 @@ mx.dom = (function () {
 		}
 	};
 
-	// suggested dimensions for the view port. 
-	// custom dimensions will overwrite this setting.
-	var suggested_dimensions = {
-		h: innerHeight - 80,
-		w: innerWidth - 50,
-		x: .09, //8 / 100,
-		y: .09, //8 / 100,
-		p: 40
-	};
-
 	// settings:
-	// width: viewport width
-	// height: viewport height
-	// x: enviroment element x dimension
-	// y: enviroment element y dimension
-	// padding: row padding offset
-	// type: display type (2D, 2.5D)
-	// key_movement: apply arrow key viewport movement
 	var settings = main.settings = {
-		width: document.body.offsetWidth - 150,
-		height: document.body.offsetHeight - 150,
+		// width: viewport width
+		width: document.body.offsetWidth,
+		// height: viewport height
+		height: document.body.offsetHeight,
+
+		// type: display type (2D, 2.5D)
 		dtype: type._2D,
+
+		// key_movement: apply arrow key viewport movement
 		bind_key_actions: false,
+		center: false,
+
+		// x: enviroment element x dimension
 		x: .09,
+		// y: enviroment element y dimension
 		y: .09,
+		// padding: row padding offset
 		p: 40
 	};
 
 	// the viewport is the actual holder for everything in the game
 	// enviroment. enviroment elements are always added as children.
 	main.initialize = vp.initialize = manage.limit(function () {
-		var settings = mx.settings.dom;
-		//mx.settings.merge(settings, mx.settings.dom);
-		//mx.settings.functions(main, settings);
-		mx.out.initialized("dom");
-
-		var dim = suggested_dimensions;
-		var dtype = settings.type || type._2_5D;
 		var row_elem;
 		var cell_elem;
+		var env_dim = {};
 
-		if ("bind_key_actions" in settings && settings.key_movement) {
-			mx.out.dom_message("applying arrow key viewport movement");
-			bind_key_actions();
+		mx.settings.merge(settings, mx.settings.dom);
+
+		if (settings.dtype in defaults.styles) {
+			mx.out.dom_message("loading style: " + settings.dtype);
+			mx.include.style( defaults.styles[ settings.dtype ] );
 		}
-
-		if (dtype in defaults.styles) {
-			mx.out.dom_message("loading style: " + dtype);
-			mx.include.style( defaults.styles[ dtype ] );
-		}
-
-		// apply custom settings
-		dim.w = settings.width || dim.w;
-		dim.h = settings.height || dim.h;
-		dim.x = settings.x || dim.x;
-		dim.y = settings.y || dim.y;
-		dim.p = settings.padding || dim.p;
 
 		// update the view port and main port's settings
 		viewport.innerHTML = "";
@@ -122,10 +101,8 @@ mx.dom = (function () {
 		
 		// calculate the required enviroment element
 		// needed to the give height, width, and dimension
-		var env_dim = {
-			x: dim.x * dim.w,
-			y: dim.y * dim.h
-		};
+		env_dim.x = settings.x * settings.width;
+		env_dim.y = settings.y * settings.height;
 
 		// build each enviroment element and added to the
 		// append queue.
@@ -150,8 +127,8 @@ mx.dom = (function () {
 
 			// apply a left padding to each row so the first
 			// element line up correctly.
-			if (row && dtype === type._2_5D)
-				x(row_elem).css({ paddingLeft: dim.p * row + unit });
+			if (row && settings.dtype === type._2_5D)
+				x(row_elem).css({ paddingLeft: settings.p * row + unit });
 
 			// apply unique classes to the first and last rows
 			if (row === 0)
@@ -162,7 +139,11 @@ mx.dom = (function () {
 			mx.queue.dom.append(row_elem);
 		}
 
-		main.enviroment_dimensions = { rows: row - 1, columns: column - 1 };
+		main.enviroment_dimensions.rows = row - 1;
+		main.enviroment_dimensions.columns = column - 1;
+
+		mx.settings.functions(main, settings);
+		mx.out.initialized("dom");
 	}, 1);
 
 	// bind the viewport's movement to the arrow keys.
@@ -190,28 +171,61 @@ mx.dom = (function () {
 
 		switch (dir) {
 			case direction.up:
-				mx.dom.mainport.scrollTop -= defaults.move_offset;
+				main.mainport.scrollTop -= defaults.move_offset;
 				break;
 
 			case direction.down:
-				mx.dom.mainport.scrollTop += defaults.move_offset;
+				main.mainport.scrollTop += defaults.move_offset;
 				break;
 
 			case direction.left:
-				mx.dom.mainport.scrollLeft -= defaults.move_offset;
+				main.mainport.scrollLeft -= defaults.move_offset;
 				break;
 
 			case direction.right:
-				mx.dom.mainport.scrollLeft += defaults.move_offset;
+				main.mainport.scrollLeft += defaults.move_offset;
 				break;
 		}
 	}, 50);
+
+	// center the viewport (for use in 2D mode only)
+	main.center = function () {
+		if (settings.dtype !== main.type._2D)
+			return false;
+
+		mx.queue.global(function () {
+			// get the viewport's size
+			var vp_height = x(mx.element.gcs(main.viewport, "height")).px2num();
+			var vp_top_offset = (innerHeight - vp_height) / 2;
+			var vp_left_offset = 0;
+
+			if (mx.debugging)
+				vp_left_offset = (innerWidth - 545 - (main.enviroment_dimensions.columns * main.defaults.node_size)) / 2;
+			else
+				vp_left_offset = (innerWidth - (main.enviroment_dimensions.columns * main.defaults.node_size)) / 2;
+
+			// update the offset for the movement modules
+			if (vp_top_offset > 0)
+				main.defaults.vp_offset.top = vp_top_offset;
+			if (vp_left_offset > 0)
+				main.defaults.vp_offset.left = vp_left_offset;
+
+			// and the mainport itself
+			x(main.mainport).css({
+				paddingTop: x(vp_top_offset).num2px(),
+				paddingLeft: x(vp_left_offset).num2px()
+			});
+		});
+
+		return true;
+	
+	};
 
 	// view port throttled append implementation
 	mx.queue.dom.append = (function () {
 		var queue = function (element) {
 			mx.queue.global(function () {
-				mx.dom.viewport.appendChild( element );
+				main.viewport.appendChild( element );
 			});
 		};
 
@@ -222,7 +236,7 @@ mx.dom = (function () {
 	mx.queue.dom.mp_append = (function () {
 		var queue = function (element) {
 			mx.queue.global(function () {
-				mx.dom.mainport.appendChild( element );
+				main.mainport.appendChild( element );
 			});
 		};
 
@@ -234,7 +248,7 @@ mx.dom = (function () {
 	// should take first priority is this function
 	// to be used.
 	vp.append = function (element) {
-		mx.dom.viewport.appendChild( element );
+		main.viewport.appendChild( element );
 	};
 
 	// before ending, append the viewport and the main port

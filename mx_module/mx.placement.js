@@ -8,6 +8,8 @@ mx.include.module.dependency.storage;
 mx.include.module.dependency.helpers;
 
 mx.placement = (function () {
+	mx.out.register("collision", "collision", null, "royalblue");
+
 	var main = {};
 	var sample_node, node_dimensions = main.node_dimensions = {};
 
@@ -115,13 +117,14 @@ mx.placement = (function () {
 					}, 1)[0];
 
 					if (!end_holder) {
-						console.log("collision on", border_nodes[ point ]);
+						mx.out.collision("recalculation required");
 						break;
 					}
 					else if (end_holder.type !== mx.element.type.ENV) {
-						console.log("collision on", border_nodes[ point ], end_holder.node);
-						end_holder.node = false;
-						break;
+						// end_holder.node = false;
+						// break;
+						mx.out.collision("no recalculation required");
+						return false;
 					}
 				}
 
