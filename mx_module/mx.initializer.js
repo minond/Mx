@@ -1,6 +1,5 @@
 "use strict";
 
-
 mx.include.setmods([
 	"component",
 	"debug", 
@@ -20,12 +19,9 @@ mx.include.setmods([
 ]);
 
 mx.include.module.dependency.debug;
-mx.include.module.dependency.helpers;
 mx.include.module.dependency.url;
-mx.include.module.dependency.out;
 
-var load_time = new mx.debug.Timer;
-
+mx.load_time = new mx.debug.Timer(mx.load_time);
 mx.include.project(mx.settings.project);
 mx.out.project_name(mx.settings.project);
-mx.out.time({ name: "project load", time: load_time() });
+mx.out.time({ name: "project load", time: mx.load_time() });

@@ -75,7 +75,7 @@
 		},
 
 		_character: function (v) {
-			return v instanceof mx.element.character;
+			return mx.element && mx.element.character && v instanceof mx.element.character;
 		},
 
 		_undefined: function (v) {

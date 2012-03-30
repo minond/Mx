@@ -5,9 +5,11 @@
 // some helper scripts may also append to this object
 var mx = {};
 
+// for calculating load time
+mx.load_time = Date.now();
+
 // project settings "namespace"
 mx.settings = {};
-var project = {};
 
 // throttled function used for loading
 // done by mx.include

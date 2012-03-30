@@ -15,6 +15,7 @@ mx.debug = (function () {
 
 	// 'debug' in the url in the main debug flag
 	debug = mx.debugging = !!mx.url.debug;
+	document.body.className = debug.toString();
 
 	// timer storage
 	var timing = {};
@@ -68,8 +69,8 @@ mx.debug = (function () {
 	};
 
 	// helper function for timing functions
-	main.Timer = function () {
-		var start_time = Date.now();
+	main.Timer = function (time) {
+		var start_time = time || Date.now();
 		return function () {
 			return Date.now() - start_time;
 		};

@@ -233,6 +233,16 @@ mx.movement = (function () {
 			for (var move in character.movement) {
 				character.movement[ move ] = true;
 			}
+
+			if (mx.debugging) {
+				x(mx.storage.select.element()).css({
+					backgroundColor: "white"
+				});
+
+				x(character_viewport).css({
+					backgroundColor: "royalblue"
+				});
+			}
 		});
 	};
 

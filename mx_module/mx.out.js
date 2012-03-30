@@ -47,12 +47,6 @@
 
 			templates[ loc_template ] = Template.stringf(template_partrs, title, content || "{%0}", color || "red");
 		})();
-
-		if (mx.debug && !mx.debugging) {
-			holder.style.display = "none";
-			graph.style.display = "none";
-			info.style.display = "none";
-		}
 	}
 })();
 

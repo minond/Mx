@@ -23,13 +23,22 @@ div#mx_viewport {
  * character elements
  * ---------------------------------------------------------------------- */
 
-div.mx_character {
+body.true div.mx_character {
 	position: absolute;
 	left: 11px;
 	top: 11px;
 	border: 1px dotted red;
 	z-index: 1;
-	background-color: white;
+	background-color: transparent;
+}
+
+body.false div.mx_character {
+	position: absolute;
+	left: 11px;
+	top: 11px;
+	border: 1px dotted transparent;
+	z-index: 1;
+	background-color: transparent;
 }
 
 div.mx_character .mx_character_body_part {
@@ -42,6 +51,10 @@ div.mx_character .mx_character_body_part {
 /* ----------------------------------------------------------------------
  * output div
  * ---------------------------------------------------------------------- */
+
+body.false .debugging {
+	display: none;
+}
 
 div#mx_graph {
 	bottom: 235px;
