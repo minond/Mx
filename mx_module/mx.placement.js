@@ -37,8 +37,10 @@ mx.placement = (function () {
 			return this.type === mx.element.type.ENV;
 		}, 1, true)[0];
 
-		node_dimensions.width = x(mx.element.gcs(sample_node, "width")).px2num();
-		node_dimensions.height = x(mx.element.gcs(sample_node, "height")).px2num();
+		if (sample_node) {
+			node_dimensions.width = x(mx.element.gcs(sample_node, "width")).px2num();
+			node_dimensions.height = x(mx.element.gcs(sample_node, "height")).px2num();
+		}
 	};
 
 	// puts an element in an enviroment node

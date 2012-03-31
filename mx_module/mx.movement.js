@@ -27,8 +27,10 @@ mx.movement = (function () {
 	};
 
 	main.select = function (character) {
-		if (m(character).is_character)
+		if (m(character).is_character) {
 			selected_character = character;
+			main.recalculate_character_viewport(character);
+		}
 		else 
 			selected_character = null;
 	};
@@ -235,6 +237,7 @@ mx.movement = (function () {
 			}
 
 			if (mx.debugging) {
+				/*
 				x(mx.storage.select.element()).css({
 					backgroundColor: "white"
 				});
@@ -242,6 +245,7 @@ mx.movement = (function () {
 				x(character_viewport).css({
 					backgroundColor: "royalblue"
 				});
+				*/
 			}
 		});
 	};

@@ -171,5 +171,6 @@ mx.element.map.enviroment = {
 mx.element.color_map = {
 	light_purple: "#BDAEC6",
 	dark_purple: "#732C7B",
-	salmon: "#E86850"
+	salmon: "#E86850",
+	gray: "gray"
 };

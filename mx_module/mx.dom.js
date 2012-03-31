@@ -202,7 +202,7 @@ mx.dom = (function () {
 			if (mx.debugging)
 				vp_left_offset = (innerWidth - 545 - (main.enviroment_dimensions.columns * main.defaults.node_size)) / 2;
 			else
-				vp_left_offset = (innerWidth - (main.enviroment_dimensions.columns * main.defaults.node_size)) / 2;
+				vp_left_offset = (innerWidth - 10 - (main.enviroment_dimensions.columns * main.defaults.node_size)) / 2;
 
 			// update the offset for the movement modules
 			if (vp_top_offset > 0)

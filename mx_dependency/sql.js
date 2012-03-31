@@ -140,9 +140,9 @@ mSQL.prototype.select = function (fields, table, filters, limit, flat) {
  * @param array of values
  * @param function filter
  */
-mSQL.prototype.update = function (table, columns, values, filter) {
+mSQL.prototype.update = function (table, columns, values, filter, limit) {
 	var data;
-
+	var matched = 0;
 
 	if (!(columns instanceof Array && values instanceof Array)) {
 		return false;
@@ -162,6 +162,11 @@ mSQL.prototype.update = function (table, columns, values, filter) {
 			for (var j = 0, r = columns.length; j < r; j++) {
 				data[i][ columns[j] ] = values[j];
 			}
+
+			matched++;
+
+			if (limit && matched >= limit)
+				break;
 		}
 	}
 

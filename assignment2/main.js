@@ -1,7 +1,5 @@
 "use strict";
 
-var alien;
-
 // project modules
 mx.include.module.dependency.character;
 mx.include.module.dependency.helpers;
@@ -25,5 +23,8 @@ mx.placement.initialize();
 mx.gravity.initialize();
 mx.sound.initialize();
 
+var maze_string = mx.component.maze.generate(3, 3);
+var maze_points = mx.component.maze.display(maze_string);
+
 // build a new character
-alien = new mx.element.character.alien(true, true);
+var alien = new mx.element.character.alien(true, true);

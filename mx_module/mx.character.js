@@ -113,7 +113,6 @@ mx.element.character = (function () {
 
 					if (select) {
 						mx.movement.select(character);
-						mx.movement.recalculate_character_viewport(character);
 					}
 
 					character.show();
