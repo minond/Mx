@@ -76,19 +76,12 @@ var Template = (function (global_scope) {
 	};
 
 	// shortcut/helper function
-	main.stringf = function (str) {
+	global_scope.stringf = main.stringf = function (str) {
 		main.register(str, str);
 		if (typeof arguments[1] === "object")
 			return main.build(str, arguments[1]);
 		else
 			return main.build.apply(main, arguments);
-	};
-
-	main.stringf.as_global = function () {
-		if ('stringf' in global_scope)
-			throw new Error('cannot overwrite stringf variable in global scope');
-		else
-			global_scope.stringf = main.stringf;
 	};
 
 	return main;

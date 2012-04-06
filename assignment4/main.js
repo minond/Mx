@@ -23,7 +23,7 @@ mx.placement.initialize();
 mx.gravity.initialize();
 mx.sound.initialize();
 
-var maze_string = mx.component.maze.generate(3, 3);
+var maze_string = mx.component.maze.generate(mx.url.mw || 5, mx.url.mh || 5);
 var maze_points = mx.component.maze.display(maze_string);
 
 // build a new character

@@ -1,3 +1,6 @@
+// http://weblog.jamisbuck.org/2011/1/27/maze-generation-growing-tree-algorithm
+// http://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap
+
 (function () {
 	mx.out.register("maze", "maze component");
 
