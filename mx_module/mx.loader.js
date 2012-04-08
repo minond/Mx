@@ -34,7 +34,7 @@ mx.include.register = (function () {
 	var directories = {};
 	directories[ mx.include.MODULE ] = "mx_module/mx.{%0}.js";
 	directories[ mx.include.COMPONENT ] = "mx_component/mx.{%0}.js";
-	directories[ mx.include.PROJECT ] = "{%0}/main.js";
+	directories[ mx.include.PROJECT ] = "mx_project/{%0}/main.js";
 
 	var file_type = {};
 
