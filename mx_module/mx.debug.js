@@ -1,81 +1,52 @@
 "use strict";
 
-
-mx.include.module.dependency.url;
-
-// global debugging flag.
-mx.debugging;
-
-// wrapper for console.log
-// methods do check if debugging is enabled/flagged
-// in the enviroment before any output happens.
-mx.debug = (function () {
-	var main = {};
-	var debug;
-
-	// 'debug' in the url in the main debug flag
-	debug = mx.debugging = !!mx.url.debug;
-	document.body.className = debug.toString();
-
-	// timer storage
-	var timing = {};
-
-	// wrapper for console.track
-	main.back_trace = function () {
-		if (debug) {
-			console.trace();
-		}
+(function (self) {
+	// debugging is turned off by default
+	// most methods will check this setting
+	// before doing anything
+	var settings = {
+		debugging: false
 	};
 
-	// wrapper for console.log
-	main.log = function () {
-		if (debug) {
-			console.log.apply(console, arguments);
-		}
-	};
+	var main = self.module.register("debug", settings);
 
-	// wrapper for console.warm using stringf
-	main.warnf = function () {
-		if (debug) {
-			console.warn( Template.stringf.apply(Template.stringf, arguments) );
-		}
-	};
+	// timer tracking map
+	var clocks = {};
 
-	// wrapper for console.log using stringf
-	main.logf = function () {
-		if (debug) {
-			console.log( Template.stringf.apply(Template.stringf, arguments) );
-		}
-	};
-
-	// same as logf but storing everything in a 
-	// new Error instance.
-	main.errorf = function () {
-		main.log( new Error( Template.stringf.apply(Template.stringf, arguments) ) );
-	};
-
-	// helper function for time and timeEnd
-	main.time = function (what) {
-		if (debug) {
-			if (what in timing) {
-				console.timeEnd(what);
-				delete timing[ what ];
+	// toggle function for time and timeEnd
+	main.time = function (watch) {
+		if (main.settings.debugging) {
+			if (watch in clocks) {
+				console.timeEnd(watch);
+				delete clocks[ watch ];
 			}
 			else {
-				timing[ what ] = 1;
-				console.time(what);
+				clocks[ watch ] = 1;
+				console.time(watch);
 			}
 		}
+
+		return !!settings.debugging;
 	};
 
-	// helper function for timing functions
+	// similar to the time method except 
+	// this returns a time value in milliseconds
+	// a start time can be passed, otherwise 
+	// the current time is used as a start time.
 	main.Timer = function (time) {
 		var start_time = time || Date.now();
+
 		return function () {
 			return Date.now() - start_time;
 		};
 	};
 
-
-	return main;
-})();
+	// parses a message string using additional 
+	// arguments and outputs to console
+	main.logf = function (template) {
+		if (main.settings.debugging)
+			console.log(stringf.apply(stringf, (mh.arg_unshift(arguments, template))));
+	
+		return !!settings.debugging;
+	};
+})(mx);

@@ -1,250 +1,251 @@
-"use strict";
+var mx = {
+	// settings helper functions namespage
+	settings: {},
 
+	// module helper functions namespace
+	module: {},
 
-// main holder for all modules in the library
-// some helper scripts may also append to this object
-var mx = {};
+	// module loader funtions namespace
+	include: {},
 
-// for calculating load time
-mx.load_time = Date.now();
-
-// project settings "namespace"
-mx.settings = {};
-
-// throttled function used for loading
-// done by mx.include
-// everything should go through this method.
-mx.load_queue = new function () {
-	this.stack = manage.throttle(function (fn) {
-		fn();
-	}, 200);
+	// global and module method call stack
+	stack: {}
 };
 
-// main loader for mx.
-// includes the following objects:
-// module, component, library
-// module includes any mx modules
-// component includes any custom components
-// and library includes all possible dependancies
-// and should also be a helper funciton 
-// for including additional js file into the 
-// project.
-mx.include = (function (modlist) {
-	var main = {};
-	var loaded = {};
-	var loc_load_queue = new manage.structure.queue;
 
-	var nscript = function (src) {
-		loaded[ src ] = true;
+// file types for register method
+mx.include = manage.const("module", "component", "module_parent", "project", "style", "css");
 
-		loc_load_queue.enqueue(src);
+// loader functions
+// used for modules, components and any other file types
+mx.include.module = {};
+mx.include.component = {};
+mx.include.file = {};
 
-		if (loc_load_queue.count === 1) {
-			get_script_content(src + "?" + Date.now());
+// cache flag
+mx.include.cache = false;
+
+// used to register a module or component
+mx.include.register = (function () {
+	"use strict";
+	
+	// directories where modules and components
+	// are stored
+	var directories = {};
+	directories[ mx.include.MODULE ] = "mx_module/mx.{%0}.js";
+	directories[ mx.include.COMPONENT ] = "mx_component/mx.{%0}.js";
+	directories[ mx.include.PROJECT ] = "{%0}/main.js";
+
+	var file_type = {};
+
+	// javascript files
+	file_type.js = {};
+	file_type.js.node_tag = "script";
+	file_type.js.node_type = "text/javascript";
+
+	// css files
+	file_type.css = {};
+	file_type.css.node_tag = "style";
+	file_type.css.node_type = "text/css";
+
+	// requests a javascript file via a synchronous request and
+	// appends to head as a script element
+	var load_file = function (url, type) {
+		var loader = new XMLHttpRequest;
+		var script = document.createElement(file_type[ type ].node_tag);
+		var success = false;
+
+		loader.open("GET", !mx.include.cache ? url + "?" + Date.now() : url, false);
+		loader.send(null);
+		script.type = file_type[ type ].node_type;
+
+		if (loader.status === 200) {
+			document.head.appendChild(script);
+			script.innerHTML = loader.responseText;
+			success = true;
 		}
-	};
-
-	var append_script = function (str_script, script_name) {
-		var node = document.createElement("script");
 		
-		node.type = "text/javascript";
-		node.innerHTML = str_script;
-		document.head.appendChild(node);
+		return success;
 	};
 
-	var get_script_content = function (src) {
-		var xhr = new XMLHttpRequest;
-		loc_load_queue.dequeue();
+	// components and modules are only loaded once
+	// even if multiple requests are made to load it
+	var loaded_files = [];
 
-		xhr.open("GET", src, false);
-		xhr.send(null);
+	return function (name, type, holder) {
+		var url;
 
-		if (xhr.status === 200) {
-			append_script(xhr.responseText, src);
-			if (loc_load_queue.count) {
-				get_script_content(loc_load_queue.dequeue());
-			}
+		switch (type) {
+			// modules and components are tracked
+			case mx.include.MODULE:
+			case mx.include.COMPONENT:
+				url = stringf(directories[ type ], name);
+				holder = holder || mx.include.module;
+
+				// settings register for modules only
+				if (type === mx.include.MODULE)
+					mx.settings.module[ name ] = {};
+
+				break;
+
+			// and so are module parent objects
+			case mx.include.MODULE_PARENT:
+				if (holder)
+					holder[ name ] = {};
+				else
+					mx.include.module[ name ] = {};
+				break;
+
+			// for the main project, the url is generate
+			// and it is loaded right away
+			case mx.include.PROJECT:
+				url = stringf(directories[ type ], name);
+				return load_file(url, 'js');
+
+			// css files
+			case mx.include.CSS:
+			case mx.include.STYLE:
+				return load_file(name, 'css');
+
+			default:
+				// files are loaded right away
+				return load_file(name, 'js');
 		}
-		else {
-			mx.include.dependency("jquery");
-			mx.include.dependency("notify");
-			Alert.alert(Template.stringf("Error: '{%0}'<br />Status: {%1}", src.split("?")[0], xhr.status));
-		}
-	};
 
-	var cscript = (function (href) {
-		loaded[ href ] = true;
-
-		mx.load_queue.stack(function () {
-			var node = document.createElement("link");
-			node.type = "text/css";
-			node.rel = "stylesheet";
-			node.href = href + "?" + Date.now();
-			document.head.appendChild(node);
-		});
-	});
-
-
-
-	// shorcut getters for all modules
-	var load_module = main.module = function (mod) {
-		loaded[ mod ] = true;
-		nscript("mx_module/mx." + mod + ".js");
-		mx.out.module(mod);
-	}
-
-	// load limit function used within modules
-	// to prevent loading the same resource
-	// multiple times.
-	var load_module_once = main.module.dependency = function (mod) {
-		if (!(mod in loaded))
-			load_module(mod);
-	}
-
-
-	// short cuts for all modules
-	for (var i = 0; i < modlist.length; i++) {
+		// loader register
 		(function () {
-			var locmod = modlist[i];
+			var loc_url = url;
+			var loc_name = name;
 
-			// settings
-			mx.settings[ locmod ] = { list: [] };
+			(holder || mx.include).__defineGetter__(loc_name, function () {
+				if (!mh.in_array(name, loaded_files)) {
+					var success = false;
 
-			// loaders
-			main.module.__defineGetter__(locmod, function () {
-				if (!(locmod in mx.queue))
-					mx.queue[ locmod ] = {};
-				load_module( locmod );
-			});
+					// dont load it again
+					loaded_files.push(name);
+					load_file(url, 'js');
 
-			main.module.dependency.__defineGetter__(locmod, function () {
-				if (!(locmod in mx.queue))
-					mx.queue[ locmod ] = {};
-				load_module_once( locmod );
+					// if this is a module, initialize it
+					if (loc_name in mx) {
+						if (mx[ loc_name ].initialize && mtype(mx[ loc_name ].initialize).is_function) {
+							mx[ loc_name ].initialize();
+						}
+					}
+
+					return success;
+				}
 			});
 		})();
-	}
-
-
-
-	// helper setter for file loader
-	main.__defineSetter__("file", function (file) {
-		mx.out.file(file);
-		nscript( file );
-	});
-
-	// settings loader
-	main.__defineSetter__("settings", function (file) {
-		nscript( file );
-	});
-
-	// default settings loader
-	main.__defineGetter__("settings", function () {
-		nscript( Template.stringf("{%0}/settings.js", mx.settings.project) );
-	});
-
-	// dependency short cut
-	main.dependency = function (file) {
-		main.file = ( Template.stringf("mx_dependency/{%0}.js", file) );
 	};
-
-	// component short cut
-	main.component = function (file) {
-		loaded[ file ] = true;
-		mx.out.component(file);
-		nscript( Template.stringf("mx_component/{%0}.js", file) );
-	};
-
-	// array of components
-	main.components = function (comp_array) {
-		for (var i = 0; i < comp_array.length; i++) {
-			main.component(comp_array[i]);
-		}
-	}
-
-	// component dependecy loader
-	main.component.dependency = function (file) {
-		if (!(file in loaded))
-			main.component(file);
-	};
-
-	// helper setter for style sheet loader
-	main.style = function (href) {
-		cscript( href );
-	};
-
-	// helper setter for loading a project
-	main.project = function (pname) {
-		nscript( Template.stringf("{%0}/main.js", pname) );
-	};
-
-	return main;
-});
+})();
 
 
-// the initializer's initializer
-// shortcut for creating module loader shortcuts
-mx.include.setmods = function () {
-	mx.include = mx.include.apply(mx, arguments);
+// an anonymous function used along with a throttle
+// and the default stack time
+mx.stack.frame_rate = 1000 / 16;
+mx.stack.anonymous = function mx_stack (action) {
+	if (mtype(action).is_function)
+		action();
 };
 
-// adds ever first level property to the global scope
-mx.globalize = function (quiet) {
-	delete mx.globalize;
-	Template.stringf.as_global();
-	
-	// elements
-	for (var section in mx.element.map) {
-		if (!(section in mx.element.factory)) {
-			for (var element in mx.element.map[ section ].elements) {
-				(function () {
-					var loc_section = section;
-					var loc_element = element;
+// global function stack
+mx.stack.global = manage.throttle(
+	mx.stack.anonymous,
+	mx.stack.frame_rate
+);
 
-					if (!(section in mx.element.factory))
-						mx.element.factory[ section ] = {};
+// settings for all modules
+mx.settings.module = {};
 
-					mx.element.factory[ section ][ element ] = function () {
-						return mx.element.factory(loc_element, loc_section);
-					};
-				})();
+// settings manager
+mx.settings.merge = function (module) {
+	"use strict";
+
+	var default_settings = module.settings;
+	var custom_settings = mx.settings.module[ module.name ];
+
+	for (var setting in custom_settings) {
+		default_settings[ setting ] = custom_settings[ setting ];
+	}
+
+	for (var setting in default_settings) {
+		custom_settings[ setting ] = default_settings[ setting ];
+	}
+};
+
+// settings manager for a list of settings
+mx.settings.mass_merge = function (settings) {
+	for (var setting in settings) {
+	    if (mtype(settings[ setting ]).is_object) {
+	        // check if this is module setting
+	        if (setting in mx.settings.module) {
+	            // if so apply custom settings
+	            mh.merge(
+	                mx.settings.module[ setting ],
+	                settings[ setting ]
+	            );
 			}
 		}
 	}
-
-	// modules
-	for (var item in mx) {
-		window[ item ] = mx[ item ];
-
-		if (!quiet) {
-			mx.debug.logf("added {%0} to global scope", item);
-			mx.out.global(item);
-		}
-	}
-};
-
-// main throttled call stack. similar to
-// mx.load_queue, except every module extends
-// from this object and uses the same call queue.
-mx.queue = {};
-
-// an anonymous function used along with a throttle
-// and the default queue time
-mx.queue.frame = 1000 / 16;
-mx.queue.anonymous = function (action) { action(); };
-
-// global function queue
-mx.queue.global = manage.throttle(mx.queue.anonymous, mx.queue.frame);
-
-// settings manager
-mx.settings.merge = function (custom, defaults) {
-	for (var setting in defaults)
-		custom[ setting ] = defaults[ setting ];
 };
 
 // function auto calling
-mx.settings.functions = function (main, settings) {
-	for (var setting in settings)
-		if (setting in main && !!settings[ setting ] && m(main[ setting ]).is_function)
+mx.settings.functions = function (main) {
+	"use strict";
+
+	var settings = main.settings;
+
+	for (var setting in settings) {
+		if (setting in main && settings[ setting ] && mtype(main[ setting ]).is_function) {
 			main[ setting ]( settings[ setting ] );
+		}
+	}
 };
+
+// for calculating load time
+mx.settings.load_time = Date.now();
+
+// adds a blank objects under mx with a name
+// could also do some other normilization for modules
+mx.module.register = function (module_name, settings) {
+	// create a blank module object
+	// every module should have the
+	// following properties:
+	mx[ module_name ] = {
+		name: module_name,
+		settings: settings || {},
+		initialize: null
+	};
+
+	// by default the initialize method only
+	// applies custom settings and initializes
+	// auto run functions, however, this should
+	// not be over writen
+	mx[ module_name ].initialize = function () {
+		mx.settings.merge(mx[ module_name ]);
+		mx.settings.functions(mx[ module_name ]);
+		mx.out.initialized_module(module_name);
+	};
+
+	// check the global flag
+	if (mx.module.global) {
+		window[ module_name ] = mx[ module_name ];
+	}
+
+	// apply default settings
+	mx.settings.module[ module_name ] = settings;
+
+	return mx[ module_name ];
+};
+
+// register method for constructor objects
+// the constructor is saved in mx and the
+// prototype is returned so it can be worked on
+mx.module.constructor = function (name) {
+	mx[ name ] = function mxConstructor () {};
+	return mx[ name ];
+};
+
+// flag for determining if a module should be added
+// to the global namespace or just under the mx object
+mx.module.global = true;
