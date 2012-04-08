@@ -5,7 +5,7 @@
 mx.include.register("component", mx.include.MODULE);
 mx.include.register("debug", mx.include.MODULE);
 mx.include.register("dom", mx.include.MODULE);
-mx.include.register("enviroment", mx.include.MODULE_PARENT);
+mx.include.register("enviroment", mx.include.MODULE_PARENT, mx);
 mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("placement", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("movement", mx.include.MODULE, mx.include.module.enviroment);

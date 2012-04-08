@@ -1,8 +1,5 @@
 "use strict";
 
-if (!mx.enviroment) {
-	mx.enviroment = {};
-}
 
 (function (self) {
 	// every element is stored in an msql instance

@@ -90,11 +90,11 @@ mx.include.register = (function () {
 
 			// and so are module parent objects
 			case mx.include.MODULE_PARENT:
+				mx.include.module[ name ] = {};
 				if (holder)
 					holder[ name ] = {};
-				else
-					mx.include.module[ name ] = {};
-				break;
+
+				return true;
 
 			// for the main project, the url is generate
 			// and it is loaded right away
