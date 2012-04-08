@@ -1,115 +1,70 @@
 "use strict";
 
 
-mx.include.module.dependency.debug;
+/**
+ * Example:
+ * 
+ * // everything is based on objects
+ * var elem = { offset: [1, 4], etc... };
+ * 
+ * // create a new element storage section
+ * // and set the offset key as the hash key
+ * mx.storage.register("element", "offset");
+ * 
+ * // saving just requires the element to be 
+ * // passed to the save method
+ * mx.storage.save.element(elem);
+ * 
+ * // and getting an element just requires
+ * // the raw hash value
+ * elem = mx.storage.get.element([1, 4]);
+ */
 
+(function (self) {
+	var settings = {
+		keys: {}
+	};
 
-// currently storing everything into one element object
-// could separate different elements into separate object
-// in the future. should add a separate table to store
-// user(s) information. could also hook up to sessionStorage
-// for caching of basic data. could also keep a view state
-mx.storage = (new mSQL).use({
-	element: {
-		"@description": {
-			// should be same as Node.id
-			id: String,
+	var main = self.module.register("storage", settings);
 
-			// from mx.element.type
-			type: Number,
+	// every type of elements stores are kept 
+	// in this object with their own key as a namespace
+	var storage = {};
 
-			// array of view port coordinates
-			offset: Array,
+	// save an element namespace
+	main.save = {};
 
-			// reference to element, Node
-			node: Node,
+	// retreive an element namespace
+	main.get = {};
 
-			// reference to parent element
-			// note: father is not always the same as
-			// Node.parentNode
-			father: Node
-		},
+	// create a new storage section
+	main.register = function (name, hash_key) {
+		if (name in storage)
+			return false;
 
-		"@data": []
-	}
-});
+		// save the getter object key
+		settings.keys[ name ] = hash_key;
 
-// query counter/tracker
-mx.storage.count = 1;
-mx.storage.all = 0;
-mx.storage.avg = 0;
-mx.storage.last_n_max = 10;
-mx.storage.last_n = [];
-mx.storage.elements = "element";
+		// and create a new namespace
+		storage[ name ] = {};
 
-mx.storage.select.timed = function () {
-	var ret = [], timer = new mx.debug.Timer;
-	ret = mx.storage.select.apply(mx.storage, arguments);
-	
-	mx.storage.last_n.push(timer());
-	mx.storage.all += timer();
-	mx.storage.avg = mx.storage.all / ++mx.storage.count;
+		// create a new getter and setter set
+		// of methods for the new element type
+		main.save[ name ] = function (element) {
+			// when saving an element to the storage
+			// object, use the hash key specified
+			storage[ name ][ element[ settings.keys[ name ] ].toString() ] = element;
+		};
 
-	mx.out.query.average( mx.storage.avg.toFixed(3) );
-	mx.out.query.average_last( (x(mx.storage.last_n).sum() / mx.storage.count).toFixed(3) );
-	mx.out.query.count( mx.storage.count );
+		main.get[ name ] = function (value_check) {
+			value_check = value_check.toString();
 
-	return ret;
-};
-
-// wrapper for mSQL.select from element
-mx.storage.select.element = function (columns, filters, limit, flat) {
-	if (x(columns).is_function || !columns) {
-		filters = arguments[0];
-		limit = arguments[1];
-		flat = arguments[2];
-		columns = "*";
-	}
-
-	var timer = new mx.debug.Timer;
-	var ret = mx.storage.select(columns, mx.storage.elements, filters, limit, flat);
-
-	if (mx.storage.last_n.length >= mx.storage.last_n_max) {
-		mx.storage.last_n.shift();
-	}
-	
-	mx.storage.last_n.push(timer());
-	mx.storage.all += timer();
-	mx.storage.avg = mx.storage.all / ++mx.storage.count;
-
-	mx.out.query.average( mx.storage.avg.toFixed(3) );
-	mx.out.query.average_last( (x(mx.storage.last_n).sum() / mx.storage.count).toFixed(3) );
-	mx.out.query.count( mx.storage.count );
-
-	return ret;
-};
-
-// wrapper for mSQL.update element
-mx.storage.update.element = function (columns, values, filter) {
-	var ret;
-	var msg = Template.stringf("update query execution time (#{%1} @{%0})", 
-		Date.now().toString(), ms.storage.count++);
-
-	mx.debug.time(msg);
-	ret = mx.storage.update(mx.storage.elements, columns, values, filter);
-	mx.debug.time(msg);
-
-	return ret;
-};
-
-// wrapper for mSQL.insert into element
-mx.storage.insert.element = function (newimage) {
-	mx.storage.insert.apply(mx.storage, [newimage, mx.storage.elements]);
-};
-
-// shortcut to db object holding elements in mSQL
-mx.storage.select.element.__defineGetter__("count", function () {
-	return mx.storage.db.element["@data"].length;
-});
-
-// shorcut for a node filter
-mx.storage.select.element.get = function (node) {
-	return mx.storage.select.element(mSQL.QUERY.all, function () {
-		return this.node === node;
-	}, 1)[0];
-};
+			// getters just check hash value
+			for (var element in storage[ name ]) {
+				if (element === value_check) {
+					return storage[ name ][ element ];
+				}
+			}
+		};
+	};
+})(mx);

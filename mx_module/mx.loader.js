@@ -123,7 +123,7 @@ mx.include.register = (function () {
 
 					// dont load it again
 					loaded_files.push(name);
-					load_file(url, 'js');
+					success = load_file(url, 'js');
 
 					// if this is a module, initialize it
 					if (loc_name in mx) {
