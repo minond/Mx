@@ -1,0 +1,13 @@
+priority    item        description
+1           dom         clean up this module
+2           placement   places a character in a location and interacts with the
+                        gravity module
+3           movement    movement component that also calculated direction, 
+                        position, and character state while moving.
+4           events      make sure event deligation is working
+                        looks like anonymous method passed will lose variable scope after
+						a second event listener is created.
+5           sound       enhance mx sound (http://www.html5rocks.com/en/tutorials/webaudio/games/)
+
+move get_node out of placement and into element.
+update modules to use this function
