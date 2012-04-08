@@ -205,13 +205,23 @@ mx.settings.functions = function (main) {
 // for calculating load time
 mx.settings.load_time = Date.now();
 
+// project information
+mx.settings.project_name;
+mx.settings.project_load_success;
+mx.settings.project_load_error = "Could not load {%0:project}.";
+
 // adds a blank objects under mx with a name
 // could also do some other normilization for modules
-mx.module.register = function (module_name, settings) {
+mx.module.register = function (module_name, settings, holder) {
+	"use strict";
+
+	// mx is the default module namespace
+	holder = holder || mx;
+
 	// create a blank module object
 	// every module should have the
 	// following properties:
-	mx[ module_name ] = {
+	holder[ module_name ] = {
 		name: module_name,
 		settings: settings || {},
 		initialize: null
@@ -221,7 +231,7 @@ mx.module.register = function (module_name, settings) {
 	// applies custom settings and initializes
 	// auto run functions, however, this should
 	// not be over writen
-	mx[ module_name ].initialize = function () {
+	holder[ module_name ].initialize = function () {
 		mx.settings.merge(mx[ module_name ]);
 		mx.settings.functions(mx[ module_name ]);
 		mx.out.initialized_module(module_name);
@@ -229,21 +239,24 @@ mx.module.register = function (module_name, settings) {
 
 	// check the global flag
 	if (mx.module.global) {
-		window[ module_name ] = mx[ module_name ];
+		window[ module_name ] = holder[ module_name ];
 	}
 
 	// apply default settings
 	mx.settings.module[ module_name ] = settings;
 
-	return mx[ module_name ];
+	return holder[ module_name ];
 };
 
 // register method for constructor objects
 // the constructor is saved in mx and the
 // prototype is returned so it can be worked on
-mx.module.constructor = function (name) {
-	mx[ name ] = function mxConstructor () {};
-	return mx[ name ];
+mx.module.constructor = function (name, holder) {
+	"use strict";
+
+	holder = holder || mx;
+	holder[ name ] = function mxConstructor () {};
+	return holder[ name ];
 };
 
 // flag for determining if a module should be added

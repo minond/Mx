@@ -42,10 +42,19 @@
 	};
 
 	// parses a message string using additional 
-	// arguments and outputs to console
+	// arguments and outputs to console log
 	main.logf = function (template) {
 		if (main.settings.debugging)
 			console.log(stringf.apply(stringf, (mh.arg_unshift(arguments, template))));
+	
+		return !!settings.debugging;
+	};
+
+	// parses a message string using additional 
+	// arguments and outputs to console warn
+	main.warnf = function (template) {
+		if (main.settings.debugging)
+			console.warn(stringf.apply(stringf, (mh.arg_unshift(arguments, template))));
 	
 		return !!settings.debugging;
 	};

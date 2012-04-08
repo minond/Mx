@@ -35,7 +35,10 @@ mx.settings.load_time = new mx.debug.Timer(mx.settings.load_time);
 mx.settings.project_name = mx.url.mx_parameter.load;
 
 // register it and load it
-mx.include.register(mx.settings.project_name, mx.include.PROJECT);
+mx.settings.project_load_success = mx.include.register(
+	mx.settings.project_name, 
+	mx.include.PROJECT
+);
 
 // set all the settings passed through the request url
 mx.settings.mass_merge(mx.url.mx_parameter);
@@ -49,3 +52,16 @@ if (!mx.settings.module.debug.debugging.bool) {
 // finally output some of the loading information
 mx.out.project_name(mx.settings.project_name);
 mx.out.project_load(mx.settings.load_time());
+
+// loaded project check
+if (!mx.settings.project_name) {
+	document.body.innerHTML = stringf(
+		mx.settings.project_load_error
+	);
+}
+else if (!mx.settings.project_load_success) {
+	document.body.innerHTML = stringf(
+		mx.settings.project_load_error,
+		mx.settings.project_name
+	);
+}
