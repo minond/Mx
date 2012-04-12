@@ -126,11 +126,13 @@ mx.include.register = (function () {
 					success = load_file(url, 'js');
 
 					// if this is a module, initialize it
+					/* NOTE: there is an issue with the settings being overwritten
 					if (loc_name in mx) {
 						if (mx[ loc_name ].initialize && mtype(mx[ loc_name ].initialize).is_function) {
 							mx[ loc_name ].initialize();
 						}
 					}
+					*/
 
 					return success;
 				}
@@ -232,8 +234,8 @@ mx.module.register = function (module_name, settings, holder) {
 	// auto run functions, however, this should
 	// not be over writen
 	holder[ module_name ].initialize = function () {
-		mx.settings.merge(mx[ module_name ]);
-		mx.settings.functions(mx[ module_name ]);
+		mx.settings.merge(holder[ module_name ]);
+		mx.settings.functions(holder[ module_name ]);
 		mx.out.initialized_module(module_name);
 	};
 
@@ -243,7 +245,7 @@ mx.module.register = function (module_name, settings, holder) {
 	}
 
 	// apply default settings
-	mx.settings.module[ module_name ] = settings;
+	mh.merge(mx.settings.module[ module_name ], settings);
 
 	return holder[ module_name ];
 };

@@ -25,11 +25,29 @@
 		salmon: 		"#E86850"
 	};
 
-	main.block = function (cname) {
-		var elem = document.createElement(main.node_map.DIV);
-		elem.className = settings.classes.mx_base + " " + (cname || "");
+	main.factory = function (props) {
+		var elem;
+
+		if (!props) {
+			props = {};
+		}
+
+		props.type = props.type || main.node_map.DIV;
+		elem = document.createElement(props.type);
+
+		delete props.type;
+
+		for (var prop in props)
+			elem[ prop ] = props[ prop ];
 
 		return elem;
+	};
+
+	main.block = function (cname) {
+		return main.factory({
+			type: main.node_map.DIV,
+			className: mh.sconcat(settings.classes.mx_base, cname)
+		});
 	};
 
 	// enviroment elements

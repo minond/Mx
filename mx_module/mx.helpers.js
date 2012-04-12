@@ -6,6 +6,28 @@
 // and is not part of a particular one.
 var mh = {};
 
+// concatenates a string but checks for fasly values
+mh.concat = function () {
+	var full_string = [];
+	var args = this.to_array(arguments);
+	var glue = args.pop();
+
+	for (var i = 0, max = args.length; i < max; i++) {
+		if (args[i]) {
+			full_string.push(args[i]);
+		}
+	}
+
+	return full_string.join(glue);
+};
+
+// @see mh.concat
+mh.sconcat = function () {
+	var args = this.to_array(arguments);
+	args.push(" ");
+	return this.concat.apply(this, args);
+};
+
 // checks array for value
 mh.in_array = function (needle, haystack) {
 	var match = false;
@@ -33,6 +55,8 @@ mh.merge = function (merge_into, merge_from) {
 		for (var prop in merge_from) {
 			if (!(prop in merge_into))
 				merge_into[ prop ] = merge_from[ prop ];
+			else
+				this.merge(merge_into[ prop ], merge_from[ prop ]);
 		}
 	}
 

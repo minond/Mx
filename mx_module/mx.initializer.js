@@ -28,19 +28,16 @@ mx.include.module.out;
 mx.include.module.debug;
 mx.include.module.url;
 
+mx.out.initialize();
+mx.debug.initialize();
+mx.url.initialize();
+
 // start gathering some of the load data
-mx.settings.load_time = new mx.debug.Timer(mx.settings.load_time);
+mx.settings.load_time = mx.debug.Timer(mx.settings.load_time);
 
 // get the project settings from the request url
+// and set all the settings passed through the request url
 mx.settings.project_name = mx.url.mx_parameter.load;
-
-// register it and load it
-mx.settings.project_load_success = mx.include.register(
-	mx.settings.project_name, 
-	mx.include.PROJECT
-);
-
-// set all the settings passed through the request url
 mx.settings.mass_merge(mx.url.mx_parameter);
 
 // if not in debug mode, out messages are
@@ -49,19 +46,27 @@ if (!mx.settings.module.debug.debugging.bool) {
 	mx.settings.module.out.message.route_to = mx.stack.anonymous;
 }
 
-// finally output some of the loading information
-mx.out.project_name(mx.settings.project_name);
-mx.out.project_load(mx.settings.load_time());
-
 // loaded project check
 if (!mx.settings.project_name) {
 	document.body.innerHTML = stringf(
 		mx.settings.project_load_error
 	);
 }
-else if (!mx.settings.project_load_success) {
-	document.body.innerHTML = stringf(
-		mx.settings.project_load_error,
-		mx.settings.project_name
+else {
+	// register it and load it
+	mx.settings.project_load_success = mx.include.register(
+		mx.settings.project_name, 
+		mx.include.PROJECT
 	);
+
+	// finally output some of the loading information
+	mx.out.project_name(mx.settings.project_name);
+	mx.out.project_load(mx.settings.load_time());
+
+	if (!mx.settings.project_load_success) {
+		document.body.innerHTML = stringf(
+			mx.settings.project_load_error,
+			mx.settings.project_name
+		);
+	}
 }
