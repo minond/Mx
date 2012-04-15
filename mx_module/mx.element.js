@@ -52,11 +52,12 @@
 
 	// enviroment elements
 	self.storage.register("enviroment_element", "offset");
-	main.enviroment_element = function (offset) {
-		var elem_s = {
-			node: main.block(settings.classes.enviroment_element),
+	main.as_enviroment_element = function (node, x_offset, y_offset) {
+		return {
+			// node: main.block(settings.classes.enviroment_element),
+			node: node,
 			type: main.type_map.ENVIROMENT,
-			offset: offset
+			offset: [x_offset, y_offset]
 		};
 	};
 

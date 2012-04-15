@@ -36,6 +36,15 @@
 		// property-value separator
 		var value = "=";
 
+		// array property check
+		var array = "[]";
+
+		// javascript eval check
+		var javascript = /\[!(.+?)\]/;
+
+		// holders
+		var prop_name, prop_value, prop_holder;
+
 		mh.for_each(lines, function (i, line) {
 			line = line.trim();
 
@@ -57,14 +66,35 @@
 					}
 
 					else {
-						// this is a property/value line
+						prop_name = line.split(value)[0].trim();
+						prop_value = line.split(value)[1].trim();
+
+						// holder/section check
 						if (current_section)
-							ini[ current_section ][ line.split(value)[0].trim() ] =
-								line.split(value)[1].trim();
-						
+							prop_holder = ini[ current_section ];
 						else
-							ini[ line.split(value)[0].trim() ] =
-								line.split(value)[1].trim();
+							prop_holder = ini
+
+						// special value checks
+						if (prop_value.match(javascript)) {
+							prop_value = eval(prop_value.match(javascript)[1]);
+						}
+
+						// array check
+						if (prop_name.substr(prop_name.length - 2, prop_name.length) === array) {
+							// update the property name
+							prop_name = prop_name.substr(0, prop_name.length - 2);
+
+							// this is an array value
+							if (prop_name in prop_holder)
+								prop_holder[ prop_name ].push(prop_value);
+							else
+								prop_holder[ prop_name ] = [prop_value];
+						}
+						else {
+							// this is a property/value line
+							prop_holder[ prop_name ] = prop_value;
+						}
 					}
 				}
 			}

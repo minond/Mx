@@ -1,129 +1,96 @@
 "use strict";
 
+(function (self) {
+	self.include.module.file;
+	self.out.register("character_load", {
+		title: "Loaded Character"
+	});
 
-// does now rely on element functions too much, but 
-// does extend the element object.
-mx.include.module.dependency.file;
-mx.include.module.dependency.element;
-mx.include.module.dependency.gravity;
-mx.include.module.dependency.sound;
-
-// acts as both the constructor of new characters
-// and as the module's scope.
-mx.element.character = (function () {
-	var main = function mx_character_instance () {};
-
-	mx.sound.register("drop.mp3");
+	// Character is a constructor, not a module
+	var main = self.module.constructor("Character");
 
 	// possible states a character may have
-	// new:			character instance has been created, but not edited in any way
-	// built:		character instance has now be completly build
-	// ready:		character instance has been built and added to the viewport
-	// selected:	character instance has been selected by a user (mx_components/movenent)
-	// acting:		character instance is taking any type of action (mx_components/movenent)
-	// dead:		character instance has been removed from viewport (but not deleted)
-	var States = main.states = manage.enum(
-		"new", 
-		"built", 
-		"ready", 
-		"selected", 
-		"acting", 
-		"dead"
-	);
+	// new: character instance has been created, but not edited in any way
+	// built: character instance has now be completly build
+	// ready: character instance has been built and added to the viewport
+	// selected: character instance has been selected by a user (mx_components/movenent)
+	// acting: character instance is taking any type of action (mx_components/movenent)
+	// dead: character instance has been removed from viewport (but not deleted)
+	main.static.states = manage.enum("new", "build", "ready", "selected", "acting", "dead");
 
-	var classes = main.classes = {
-		character: "mx_character",
-		body: "mx_character_body_part",
-		body_x: "mx_character_body_part_x",
-		body_y: "mx_character_body_part_y",
-		id: "mx_character_"
-	};
+	// character counter
+	var character_count = 0;
 
-	var units = main.units = {
-		unit: "px",
-		height: 10,
-		height_offset: 1,
-		height_body: 2,
-		width: 10,
-		width_offset: 1,
-		width_body: 2
-	};
+	// character holder
+	var characters = {};
 
-	main.initialize = function () {
-		main.gets(mx.settings.character.list || []);
-		mx.out.initialized("character");
-	};
-
-	// static properties
-	main.character_count = 0;
-	main.characters = {};
-	main.holder = "holder";
-
-	main.fn = function (name, value) {
-		return main.prototype[ name ] = value;
-	};
-
-	// character data importer helper function
-	// {project}/characters/{character}.json
-	main.get = function (file) {
-		var filepath = Template.stringf("{%0}/characters/{%1}.json", mx.settings.project, file);
-		var raw_data = mx.file.read(filepath);
-		var json_data = raw_data && eval("(" + raw_data + ")");
-		
-		mx.out.resource({ name: file, type: "character" });
-		character_register(file, json_data);
-	};
-
-	// import a list of characters
-	main.gets = function (character_array) {
-		for (var i = 0; i < character_array.length; i++) {
-			main.get(character_array[i]);
-		}
-	};
-
-	var character_register = function (character_name, character_data) {
+	// parse character data and build new character
+	// constructor short-cut
+	var register_character = function (name, data) {
 		(function () {
-			var loc_character_name = character_name;
-			var loc_character_data = character_data;
-			main[ loc_character_name ] = function (show, select) {
-				mx.include.module.dependency.placement;
-				mx.include.module.dependency.movement;
+			var loc_name = name;
+			var loc_data = data;
+			var loc_main = main;
+			var loc_self = self;
+			
+			main.static[ loc_name ] = function (show, select) {
+				loc_self.include.module.enviroment.placement;
+				loc_self.include.module.enviroment.movement;
 
-				var character = new mx.element.character;
+				var character = new loc_main.static;
 
-				character.height(loc_character_data.height);
-				character.width(loc_character_data.width);
-				character.color(loc_character_data.color);
+				// get the character ready to be built
+				character.set_height(loc_data.height);
+				character.set_width(loc_data.width);
+				character.set_color(loc_data.color);
+				character.set_view_range(loc_data.view.horizontal, loc_data.view.vertical);
+
+				// build it
 				character.build();
-				character.view_range(
-					loc_character_data.view.horizontal,
-					loc_character_data.view.vertical
-				);
 
-				for (var point = 0, max = loc_character_data.points.length; point < max; point++) {
-					character.body_map(
-						loc_character_data.points[ point ].x || 0,
-						loc_character_data.points[ point ].y || 0,
-						loc_character_data.points[ point ].c || null
-					);
-				}
+				// and draw it's points
+				mh(loc_data.points).for_each(function (i, point) {
+					character.new_body_map(point.x || 0, point.y || 0, point.c || null);
+				});
 
 				if (show) {
-					mx.placement.place(character);
+					mx.enviroment.placement.place(character);
 
 					if (select) {
-						mx.movement.select(character);
+						mx.enviroment.movement.select(character);
 					}
 
 					character.show();
 				}
 
-				main.characters[ character.holder.id ] = character;
+				// save the character
+				loc_main.static.characters[ character.holder.id ] = character;
+
+				// done
 				return character;
 			};
 		})();
 	};
 
+	// character data importer helper function
+	// mx_product/{project}/characters/{character}.json
+	main.static.load = function () {
+		var file_path, raw_data, data;
+		
+		mh(arguments).for_each(function (i, file) {
+			file_path = stringf("mx_project/{%0}/characters/{%1}.json", mx.settings.project_name, file);
+			raw_data = mx.file.read(filepath);
+
+			if (raw_data) {
+				data = eval("(" + raw_data + ")");
+				register_character(file, data);
+				mx.out.character_load(file);
+			}
+		});
+	};
+
+})(mx);
+		
 	// creates a new holder and sets any needed props
 	var build_character_object = function () {
 		this.holder = mx.element.block();

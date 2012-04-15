@@ -258,7 +258,7 @@ mx.module.constructor = function (name, holder) {
 
 	holder = holder || mx;
 	holder[ name ] = function mxConstructor () {};
-	return holder[ name ];
+	return { static: holder[ name ], public: holder[ name ].prototype };
 };
 
 // flag for determining if a module should be added

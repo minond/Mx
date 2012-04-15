@@ -50,7 +50,7 @@
 	main.display = manage.const("2D", "2.5D");
 
 	// set display default
-	settings.enviromentport.display = main.display['2D'];
+	settings.enviromentport.display = main.display["2D"];
 
 	// main holders
 	main.holder = {
@@ -102,6 +102,14 @@
 					className: settings.classes.env_cell
 				});
 
+				// store element
+				self.storage.save.enviroment_element(
+					self.enviroment.element.as_enviroment_element(
+						cell_elem, column, row
+					)
+				);
+
+				// and display it
 				row_elem.appendChild(cell_elem);
 			}
 

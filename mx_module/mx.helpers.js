@@ -111,6 +111,27 @@ mh.arg_unshift = function (list, newelem) {
 	return temp;
 };
 
+// sets style properties
+mh.css = function (elem, css) {
+	this.for_each(css, function (prop, value) {
+		elem.style[ prop ] = value;
+	});
+};
+
+// pixel string to number
+mh.px2num = function (px) {
+	return +px.replace("px", "");
+};
+
+// number to pixel string
+mh.num2px = function (num) {
+	var px;
+
+	if (mtype(+num).is_number) 
+		px = num.toString() + "px";
+
+	return px;
+};
 
 // m: wrapper for a typeof function
 var mtype = (function () {
@@ -120,7 +141,7 @@ var mtype = (function () {
 	// @see you_are
 	var is = {
 		_number: function (v) {
-			return typeof v === 'number' || v instanceof Number; 
+			return (typeof v === 'number' || v instanceof Number) && !isNaN(v);
 		},
 
 		_string: function (v) {
