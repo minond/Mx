@@ -1,7 +1,8 @@
 {
 	height: 2,
 	width: 3,
-	color: mx.element.color_map.light_purple,
+	block_size: 5,
+	color: mx.enviroment.element.color_map.light_purple,
 	view: {
 		horizontal: 5,
 		vertical: 5
@@ -36,16 +37,16 @@
 		{ x: 13, y: 7 },
 
 		/* left eye */
-		{ x: 5, y: 5, c: mx.element.color_map.dark_purple },
-		{ x: 5, y: 4, c: mx.element.color_map.dark_purple },
-		{ x: 4, y: 5, c: mx.element.color_map.dark_purple },
-		{ x: 4, y: 4, c: mx.element.color_map.dark_purple },
+		{ x: 5, y: 5, c: mx.enviroment.element.color_map.dark_purple },
+		{ x: 5, y: 4, c: mx.enviroment.element.color_map.dark_purple },
+		{ x: 4, y: 5, c: mx.enviroment.element.color_map.dark_purple },
+		{ x: 4, y: 4, c: mx.enviroment.element.color_map.dark_purple },
 
 		/* right eye */
-		{ x: 9, y: 5, c: mx.element.color_map.dark_purple },
-		{ x: 9, y: 4, c: mx.element.color_map.dark_purple },
-		{ x: 10, y: 5, c: mx.element.color_map.dark_purple },
-		{ x: 10, y: 4, c: mx.element.color_map.dark_purple },
+		{ x: 9, y: 5, c: mx.enviroment.element.color_map.dark_purple },
+		{ x: 9, y: 4, c: mx.enviroment.element.color_map.dark_purple },
+		{ x: 10, y: 5, c: mx.enviroment.element.color_map.dark_purple },
+		{ x: 10, y: 4, c: mx.enviroment.element.color_map.dark_purple },
 
 		/* body */
 		{ x: 3, y: 8 },

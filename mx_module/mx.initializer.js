@@ -11,7 +11,7 @@ mx.include.register("placement", mx.include.MODULE, mx.include.module.enviroment
 mx.include.register("movement", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("gravity", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
-mx.include.register("character", mx.include.MODULE, mx.include.module.enviroment);
+mx.include.register("character", mx.include.MODULE);
 mx.include.register("sound", mx.include.MODULE);
 mx.include.register("events", mx.include.MODULE);
 mx.include.register("file", mx.include.MODULE);
@@ -43,7 +43,7 @@ mx.settings.mass_merge(mx.url.mx_parameter);
 // if not in debug mode, out messages are
 // ignored and not sent anywhere
 if (!mx.settings.module.debug.debugging.bool) {
-	mx.settings.module.out.message.route_to = mx.stack.anonymous;
+	mx.settings.module.set("out.message.route_to", mx.stack.anonymous);
 }
 
 // loaded project check

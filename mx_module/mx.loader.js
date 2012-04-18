@@ -126,13 +126,11 @@ mx.include.register = (function () {
 					success = load_file(url, 'js');
 
 					// if this is a module, initialize it
-					/* NOTE: there is an issue with the settings being overwritten
 					if (loc_name in mx) {
 						if (mx[ loc_name ].initialize && mtype(mx[ loc_name ].initialize).is_function) {
 							mx[ loc_name ].initialize();
 						}
 					}
-					*/
 
 					return success;
 				}
@@ -156,22 +154,64 @@ mx.stack.global = manage.throttle(
 	mx.stack.frame_rate
 );
 
+mx.settings.separator = ".";
+
 // settings for all modules
-mx.settings.module = {};
+mx.settings.module = (function () {
+	var settings = {};
+	var new_setting = {}
+
+	var save_new_setting  = function (module, setting, value) {
+		if (module in settings) {
+			settings[ module ].push({
+				setting: setting,
+				value: value
+			});
+		}
+		else {
+			settings[ module ] = [];
+			save_new_setting(module, setting, value);
+		}
+	};
+
+	new_setting.set = function (setting, value) {
+		var parts = setting.split(mx.settings.separator);
+		var module = parts.shift();
+		var settings = parts.join(mx.settings.separator);
+
+		save_new_setting(module, settings, value);
+	};
+
+	new_setting.get = function (module) {
+		return module ? settings[ module ] : settings;
+	};
+
+	return new_setting;
+})();
 
 // settings manager
 mx.settings.merge = function (module) {
 	"use strict";
 
 	var default_settings = module.settings;
-	var custom_settings = mx.settings.module[ module.name ];
+	var custom_settings = mx.settings.module.get(module.name);
+	var setting, value, parts;
 
-	for (var setting in custom_settings) {
-		default_settings[ setting ] = custom_settings[ setting ];
-	}
+	if (custom_settings) {
+		mh.for_each(custom_settings, function (i, data) {
+			default_settings = module.settings;
 
-	for (var setting in default_settings) {
-		custom_settings[ setting ] = default_settings[ setting ];
+			// walk to the setting
+			parts = data.setting.split(mx.settings.separator);
+			mh.for_each(parts, function (i, section) {
+				if (i !== parts.length - 1) {
+					default_settings = default_settings[ section ];
+				}
+			});
+
+			// and update the setting value
+			default_settings[ parts[ parts.length - 1 ] ] = data.value;
+		});
 	}
 };
 
@@ -184,7 +224,8 @@ mx.settings.mass_merge = function (settings) {
 	            // if so apply custom settings
 	            mh.merge(
 	                mx.settings.module[ setting ],
-	                settings[ setting ]
+	                settings[ setting ],
+					true
 	            );
 			}
 		}
@@ -258,6 +299,11 @@ mx.module.constructor = function (name, holder) {
 
 	holder = holder || mx;
 	holder[ name ] = function mxConstructor () {};
+
+	if (mx.module.global) {
+		window[ name ] = holder[ name ];
+	}
+
 	return { static: holder[ name ], public: holder[ name ].prototype };
 };
 

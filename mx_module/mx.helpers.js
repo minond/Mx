@@ -50,10 +50,10 @@ mh.rest = function (list) {
 
 // merges properties and values of an object
 // into another object
-mh.merge = function (merge_into, merge_from) {
+mh.merge = function (merge_into, merge_from, overwrite) {
 	if (mtype(merge_from).is_object && mtype(merge_into).is_object) {
 		for (var prop in merge_from) {
-			if (!(prop in merge_into))
+			if (!(prop in merge_into) || overwrite)
 				merge_into[ prop ] = merge_from[ prop ];
 			else
 				this.merge(merge_into[ prop ], merge_from[ prop ]);
@@ -73,6 +73,15 @@ mh.for_each = function (list, action) {
 		for (var prop in list)
 			action(prop, list[ prop ]);
 	}
+};
+
+mh.map = function (list, action) {
+	var ret = [];
+	this.for_each(list, function (a, b) {
+		ret.push(action(a, b));
+	});
+
+	return ret;
 };
 
 // creates a new array with items in first argument
@@ -113,8 +122,26 @@ mh.arg_unshift = function (list, newelem) {
 
 // sets style properties
 mh.css = function (elem, css) {
-	this.for_each(css, function (prop, value) {
-		elem.style[ prop ] = value;
+	var elements = mtype(elem).is_nodelist ? elem : [elem];
+
+	this.for_each(elements, function (i, node) {
+		mh.for_each(css, function (prop, value) {
+			node.style[ prop ] = value;
+		});
+	});
+};
+
+// display shortcut
+mh.show = function (node) {
+	this.css(node, {
+		display: ""
+	});
+};
+
+// display shortcut
+mh.hide = function (node) {
+	this.css(node, {
+		display: "node"
 	});
 };
 
@@ -206,7 +233,7 @@ var mtype = (function () {
 		},
 
 		_character: function (v) {
-			return mx.element && mx.element.character && v instanceof mx.element.character;
+			return mx.Character && v instanceof mx.Character;
 		},
 
 		_undefined: function (v) {

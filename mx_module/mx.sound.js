@@ -23,7 +23,11 @@
 		var src = settings.directory + filename;
 		var name = filename.split(".")[0];
 
-		main[ name ] = new Audio(src);
+		if (!mx.settings.module.debug.debugging.bool)
+			main[ name ] = new Audio(src);
+		else
+			main[ name ] = { play: new Function };
+
 		return name;
 	};
 

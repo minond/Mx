@@ -66,7 +66,7 @@
 	main.gcs = function (node, prop) {
 		var value, css_dec = getComputedStyle(node);
 
-		if (css_dec && m(prop).is_string) {
+		if (css_dec && mtype(prop).is_string) {
 			value = css_dec.getPropertyValue(prop);
 		}
 

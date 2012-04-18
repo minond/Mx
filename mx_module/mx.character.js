@@ -1,7 +1,15 @@
 "use strict";
 
 (function (self) {
+	self.include.module.dom;
+	self.include.module.out;
 	self.include.module.file;
+	self.include.module.sound;
+	self.include.module.enviroment.element;
+
+	// when a character is displayed a "drop" sound is played
+	self.sound.register("drop.mp3");
+
 	self.out.register("character_load", {
 		title: "Loaded Character"
 	});
@@ -9,20 +17,29 @@
 	// Character is a constructor, not a module
 	var main = self.module.constructor("Character");
 
+	// settings property
+	main.static.settings = {
+		classes: {
+			char_id: "character_{%0}",
+			char_class: "character_holder",
+			piece_class: "character_piece"
+		}
+	};
+
 	// possible states a character may have
-	// new: character instance has been created, but not edited in any way
-	// built: character instance has now be completly build
-	// ready: character instance has been built and added to the viewport
-	// selected: character instance has been selected by a user (mx_components/movenent)
-	// acting: character instance is taking any type of action (mx_components/movenent)
-	// dead: character instance has been removed from viewport (but not deleted)
+	// 1. new: character instance has been created, but not edited in any way
+	// 2. built: character instance has now be completly build
+	// 3. ready: character instance has been built and added to the viewport
+	// 4. selected: character instance has been selected by a user (mx_components/movenent)
+	// 5. acting: character instance is taking any type of action (mx_components/movenent)
+	// 6. dead: character instance has been removed from viewport (but not deleted)
 	main.static.states = manage.enum("new", "build", "ready", "selected", "acting", "dead");
 
 	// character counter
 	var character_count = 0;
 
 	// character holder
-	var characters = {};
+	main.static.characters = {};
 
 	// parse character data and build new character
 	// constructor short-cut
@@ -34,8 +51,8 @@
 			var loc_self = self;
 			
 			main.static[ loc_name ] = function (show, select) {
-				loc_self.include.module.enviroment.placement;
-				loc_self.include.module.enviroment.movement;
+				// loc_self.include.module.enviroment.placement;
+				// loc_self.include.module.enviroment.movement;
 
 				var character = new loc_main.static;
 
@@ -43,13 +60,14 @@
 				character.set_height(loc_data.height);
 				character.set_width(loc_data.width);
 				character.set_color(loc_data.color);
+				character.set_block_size(loc_data.block_size);
 				character.set_view_range(loc_data.view.horizontal, loc_data.view.vertical);
 
 				// build it
 				character.build();
 
 				// and draw it's points
-				mh(loc_data.points).for_each(function (i, point) {
+				mh.for_each(loc_data.points, function (i, point) {
 					character.new_body_map(point.x || 0, point.y || 0, point.c || null);
 				});
 
@@ -73,168 +91,129 @@
 	};
 
 	// character data importer helper function
-	// mx_product/{project}/characters/{character}.json
+	// mx_character/{character}.json
 	main.static.load = function () {
 		var file_path, raw_data, data;
 		
-		mh(arguments).for_each(function (i, file) {
-			file_path = stringf("mx_project/{%0}/characters/{%1}.json", mx.settings.project_name, file);
-			raw_data = mx.file.read(filepath);
+		mh.for_each(arguments, function (i, file) {
+			file_path = stringf("mx_characters/{%0}.json", file);
+			raw_data = mx.file.read(file_path);
 
 			if (raw_data) {
 				data = eval("(" + raw_data + ")");
-				register_character(file, data);
 				mx.out.character_load(file);
+				register_character(file, data);
 			}
 		});
 	};
 
-})(mx);
-		
-	// creates a new holder and sets any needed props
-	var build_character_object = function () {
-		this.holder = mx.element.block();
-		this.holder.id = classes.id + main.character_count++;
-		this.holder.className = classes.character;
-		this._holder = null;
-		mx.gravity.as_solid(this.holder);
-	}
-
-	// takes the character holder and sets required styles
-	var apply_character_dimensions = function () {
-		if (!this.holder)
-			return false;
-
-		if (this._height)
-			x(this.holder).css({
-				height: this._height + units.unit
-			});
-
-		if (this._width)
-			x(this.holder).css({
-				width: this._width + units.unit
-			});
+	// prototype properties
+	main.public.offset = [];
+	main.public.holder = null;
+	main.public.height = 0;
+	main.public.width = 0;
+	main.public.block_size = 0;
+	main.public.color = self.enviroment.element.color_map.salmon;
+	main.public.view = {
+		set: false,
+		area: 0,
+		vertical: 0,
+		horizontal: 0
 	};
 
-	// height in pixels
-	main.prototype._height;
-	main.prototype._width;
+	// character state
+	main.public.state = main.static.states.new;
 
-	// height in normal numerical units
-	// used to calculate placements
-	main.prototype.raw_width;
-	main.prototype.raw_height;
+	// prototype methods
+	main.public.build = function () {
+		// creates a new holder and sets any needed props
+		this.holder = self.enviroment.element.block();
+		this.holder.id = stringf(main.static.settings.classes.char_id, character_count++);
+		this.holder.className = main.static.settings.classes.char_class;
+		// self.enviroment.gravitiy.as_solid(this);
 
-	// default color for nodes
-	main.prototype._color;
+		// takes the character holder and sets required styles
+		mh.css(this.holder, {
+			height: mh.num2px(this.height * self.dom.settings.enviromentport.node_size.height),
+			width: mh.num2px(this.width * self.dom.settings.enviromentport.node_size.width),
+		});
 
-	// holder is a div element holding all piece elements
-	// that make up the character
-	main.prototype.holder;
-
-	// _holder is a div element in the enviroment that the 
-	// top left hand corner of the holder element is attached to.
-	main.prototype._holder;
-	main.prototype.offset = [];
-
-	// number of pieces that make up a character
-	main.prototype.pieces = 0;
-
-	// the character element's state
-	// @see States
-	main.prototype.state = States.new;
-
-	// setter for color
-	main.prototype.color = function (c) {
-		return this._color = c;
+		// update the instance's state
+		this.state = main.static.states.built;
 	};
 
-	// setter for height
-	main.prototype.height = function (h) {
-		if (h)
-			this._height = h * units.height + ((h - 1) * units.height_offset);
-
-		this.raw_height = h;
-		apply_character_dimensions.call(this);
-		return this._height;
-	}
-
-	// setter for width
-	main.prototype.width = function (w) {
-		if (w)
-			this._width = w * units.width + ((w - 1) * units.width_offset);
-
-		this.raw_width = w;
-		apply_character_dimensions.call(this);
-		return this._width;
+	// color setter
+	main.public.set_color = function (color) {
+		this.color = color;
+		return this;
 	};
 
-	
-	main.prototype.view_area = 0;
-	main.prototype.view_length_vertical = 0;
-	main.prototype.view_length_horizontal = 0;
-	main.prototype.view_range_bit = false;
-	main.prototype.view_range = function (horizontal, vertical) {
-		this.view_length_horizontal = horizontal;
-		this.view_length_vertical = vertical;
-		this.view_area = (this.raw_width + (horizontal * 2)) * (this.raw_height + (vertical * 2));
+	// block size setter
+	main.public.set_block_size = function (size) {
+		this.block_size = size;
+		return this;
 	};
 
-	// holder's contructor
-	main.prototype.build = function () {
-		build_character_object.call(this);
-		apply_character_dimensions.call(this);
-		this.state = States.built;
+	// height setter
+	main.public.set_height = function (height) {
+		this.height = height;
+		return this;
 	};
 
-	// displaye a character on the viewport
-	main.prototype.show = function () {
-		var me = this;
+	// width setter
+	main.public.set_width = function (width) {
+		this.width = width;
+		return this;
+	};
 
-		mx.queue.global(function () {
-			mx.dom.vp.append(me.holder);
-			mx.sound.play.drop;
-			me.state = States.ready;
-			x(me.holder).show();
+	// view range setter
+	main.public.set_view_range = function (horizontal, vertical) {
+		this.view.horizontal = horizontal;
+		this.view.vertical = vertical;
+		this.view.area = 
+			(this.width + Math.pow(horizontal, 2)) * 
+			(this.height + Math.pow(vertical, 2));
+
+		return this;
+	};
+
+	// display the holder
+	main.public.show = function () {
+		var character = this;
+
+		mx.stack.global(function () {
+			self.dom.append(character.holder);
+			self.sound.drop.play();
+			mh.show(character.holder);
+			character.state = main.static.states.ready;
 		});
 	};
 
-	// hide a characters
-	main.prototype.hide = function () {
-		x(this.holder).hide();
+	// hide the holder
+	main.public.hide = function () {
+		mh.hide(this.holder);
 	};
 
 	// character body map appender
-	main.prototype.body_map = function (left_offset, top_offset, piece_color) {
-		var piece = mx.element.block();
+	// adds a point to the character's body
+	main.public.new_body_map = function (left, top, color) {
+		var piece = self.enviroment.element.block();
+		var block = this.block_size !== 1 ? this.block_size - 1 : 1;
 
-		x(piece).css({
-			backgroundColor: piece_color || this._color,
-			width: units.width_body + units.unit,
-			height: units.height_body + units.unit,
-			top: top_offset * units.height_body + units.unit,
-			left: left_offset * units.width_body + units.unit
+		mh.css(piece, {
+			backgroundColor: color || this.color,
+			// width: mh.num2px(this.width),
+			// height: mh.num2px(this.height),
+			left: mh.num2px(left * block),
+			top: mh.num2px(top * block)
 		});
 
-		this.pieces++;
-		piece.setAttribute(classes.body_x, top_offset);
-		piece.setAttribute(classes.body_y, left_offset);
-		piece.className = classes.body;
+		piece.className = main.static.settings.classes.piece_class;
 		this.holder.appendChild(piece);
 	};
 
-	// body map reset
-	main.prototype.body_reset = function () {
+	// clears a character's body pieces
+	main.public.reset_body_map = function () {
 		this.holder.innerHTML = "";
 	};
-
-	// for the gravity module
-	main.prototype.gravity = { touching: {
-		side_top: [],
-		side_bottom: [],
-		side_right: [],
-		side_left: []
-	} };
-
-	return main;
-})();
+})(mx);

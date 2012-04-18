@@ -1,7 +1,8 @@
 {
 	height: 1,
 	width: 1,
-	color: mx.element.color_map.light_purple,
+	block_size: 1,
+	color: mx.enviroment.element.color_map.light_purple,
 	view: {
 		horizontal: 30,
 		vertical: 0
