@@ -1,16 +1,10 @@
 "use strict";
 
 
-// NOTE: url2 and out2 are initialized in this script
+// NOTE: url and out are initialized in this script
 mx.include.register("component", mx.include.MODULE);
 mx.include.register("debug", mx.include.MODULE);
 mx.include.register("dom", mx.include.MODULE);
-mx.include.register("enviroment", mx.include.MODULE_PARENT, mx);
-mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
-mx.include.register("placement", mx.include.MODULE, mx.include.module.enviroment);
-mx.include.register("movement", mx.include.MODULE, mx.include.module.enviroment);
-mx.include.register("gravity", mx.include.MODULE, mx.include.module.enviroment);
-mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("character", mx.include.MODULE);
 mx.include.register("sound", mx.include.MODULE);
 mx.include.register("events", mx.include.MODULE);
@@ -18,12 +12,16 @@ mx.include.register("file", mx.include.MODULE);
 mx.include.register("url", mx.include.MODULE);
 mx.include.register("http", mx.include.MODULE);
 mx.include.register("storage", mx.include.MODULE);
-mx.include.register("helpers", mx.include.MODULE);
 mx.include.register("out", mx.include.MODULE);
+mx.include.register("enviroment", mx.include.MODULE_PARENT, mx);
+mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
+mx.include.register("placement", mx.include.MODULE, mx.include.module.enviroment);
+mx.include.register("movement", mx.include.MODULE, mx.include.module.enviroment);
+mx.include.register("gravity", mx.include.MODULE, mx.include.module.enviroment);
+mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
 
 // mx depends on a few modules by default
 // so those are loaded right away
-mx.include.module.helpers;
 mx.include.module.out;
 mx.include.module.debug;
 mx.include.module.url;
