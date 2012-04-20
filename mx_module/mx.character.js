@@ -51,8 +51,8 @@
 			var loc_self = self;
 			
 			main.static[ loc_name ] = function (show, select) {
-				// loc_self.include.module.enviroment.placement;
-				// loc_self.include.module.enviroment.movement;
+				loc_self.include.module.enviroment.placement;
+				loc_self.include.module.enviroment.movement;
 
 				var character = new loc_main.static;
 
@@ -61,18 +61,21 @@
 				character.set_width(loc_data.width);
 				character.set_color(loc_data.color);
 				character.set_block_size(loc_data.block_size);
-				character.set_view_range(loc_data.view.horizontal, loc_data.view.vertical);
 
 				// build it
 				character.build();
 
 				// and draw it's points
 				mh.for_each(loc_data.points, function (i, point) {
-					character.new_body_map(point.x || 0, point.y || 0, point.c || null);
+					character.new_body_map(
+						point.x || 0,
+						point.y || 0,
+						point.c || null
+					);
 				});
 
 				if (show) {
-					mx.enviroment.placement.place(character);
+					mx.enviroment.placement.place(character, [0, 0]);
 
 					if (select) {
 						mx.enviroment.movement.select(character);
@@ -114,12 +117,6 @@
 	main.public.width = 0;
 	main.public.block_size = 0;
 	main.public.color = self.enviroment.element.color_map.salmon;
-	main.public.view = {
-		set: false,
-		area: 0,
-		vertical: 0,
-		horizontal: 0
-	};
 
 	// character state
 	main.public.state = main.static.states.new;
@@ -166,17 +163,6 @@
 		return this;
 	};
 
-	// view range setter
-	main.public.set_view_range = function (horizontal, vertical) {
-		this.view.horizontal = horizontal;
-		this.view.vertical = vertical;
-		this.view.area = 
-			(this.width + Math.pow(horizontal, 2)) * 
-			(this.height + Math.pow(vertical, 2));
-
-		return this;
-	};
-
 	// display the holder
 	main.public.show = function () {
 		var character = this;
@@ -202,10 +188,13 @@
 
 		mh.css(piece, {
 			backgroundColor: color || this.color,
-			// width: mh.num2px(this.width),
-			// height: mh.num2px(this.height),
 			left: mh.num2px(left * block),
 			top: mh.num2px(top * block)
+		});
+
+		mh.attr(piece, {
+			x: left,
+			y: top
 		});
 
 		piece.className = main.static.settings.classes.piece_class;
@@ -215,5 +204,11 @@
 	// clears a character's body pieces
 	main.public.reset_body_map = function () {
 		this.holder.innerHTML = "";
+	};
+
+	// returns a character's holder node
+	main.static.get_holder = function (elem) {
+		if (mtype(elem).is_character)
+			return elem.holder;
 	};
 })(mx);

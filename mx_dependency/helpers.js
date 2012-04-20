@@ -75,12 +75,24 @@ mh.for_each = function (list, action) {
 	}
 };
 
+// map/filter method
 mh.map = function (list, action) {
 	var ret = [];
+
 	this.for_each(list, function (a, b) {
 		ret.push(action(a, b));
 	});
 
+	return ret;
+};
+
+// iterator shortcut
+mh.times = function (count, action) {
+	var ret = [];
+
+	for (var i = 0; i < count; i++)
+		ret.push(action(i));
+	
 	return ret;
 };
 
@@ -131,6 +143,16 @@ mh.css = function (elem, css) {
 	});
 };
 
+mh.attr = function (elem, attr) {
+	var elements = mtype(elem).is_nodelist ? elem : [elem];
+
+	this.for_each(elements, function (i, node) {
+		mh.for_each(attr, function (prop, value) {
+			node.setAttribute(prop, value);
+		});
+	});
+};
+
 // display shortcut
 mh.show = function (node) {
 	this.css(node, {
@@ -141,7 +163,7 @@ mh.show = function (node) {
 // display shortcut
 mh.hide = function (node) {
 	this.css(node, {
-		display: "node"
+		display: "none"
 	});
 };
 
@@ -234,6 +256,10 @@ var mtype = (function () {
 
 		_character: function (v) {
 			return mx.Character && v instanceof mx.Character;
+		},
+
+		_module: function (v) {
+			return is._object(v) && "initialize" in v;
 		},
 
 		_undefined: function (v) {

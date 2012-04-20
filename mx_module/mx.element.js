@@ -22,7 +22,9 @@
 	main.color_map = {
 		light_purple: 	"#BDAEC6",
 		dark_purple: 	"#732C7B",
-		salmon: 		"#E86850"
+		salmon: 		"#E86850",
+		yellow:			"#FFFF66",
+		white:			"white"
 	};
 
 	main.factory = function (props) {

@@ -1,3 +1,8 @@
+"use strict";
+
+// the core of mx only holds methods for handling
+// setting objects, module and constructor registration,
+// a function call stack manager, and a script loader.
 var mx = {
 	// settings helper functions namespage
 	settings: {},
@@ -12,9 +17,13 @@ var mx = {
 	stack: {}
 };
 
+// for calculating load time
+mx.settings.load_time = Date.now();
 
 // file types for register method
 mx.include = manage.const("module", "component", "module_parent", "project", "style", "css");
+
+mx.include.force = {};
 
 // loader functions
 // used for modules, components and any other file types
@@ -27,16 +36,10 @@ mx.include.cache = false;
 
 // used to register a module or component
 mx.include.register = (function () {
-	"use strict";
-	
-	// directories where modules and components
-	// are stored
-	var directories = {};
-	directories[ mx.include.MODULE ] = "mx_module/mx.{%0}.js";
-	directories[ mx.include.COMPONENT ] = "mx_component/mx.{%0}.js";
-	directories[ mx.include.PROJECT ] = "mx_project/{%0}/main.js";
-
-	var file_type = {};
+	// directories where modules and 
+	// components are stored
+	var directories = mx.include.directories = {};
+	var file_type = mx.include.file_type = {};
 
 	// javascript files
 	file_type.js = {};
@@ -116,24 +119,40 @@ mx.include.register = (function () {
 		(function () {
 			var loc_url = url;
 			var loc_name = name;
+			var initialized = false;
+
+			mx.include.force.__defineGetter__(loc_name, function () {
+				var success = false;
+
+				// dont load it again
+				loaded_files.push(name);
+				success = load_file(url, 'js');
+
+				// if this is a module, initialize it
+				if (loc_name in mx) {
+					if (mx[ loc_name ].initialize && mtype(mx[ loc_name ].initialize).is_function) {
+						mx[ loc_name ].initialize();
+					}
+				}
+				else {
+					mh.for_each(mx, function (mod_name) {
+						if (mx[ mod_name ] && !mtype(mx[ mod_name ]).is_module && loc_name in mx[ mod_name ]) {
+							if (mx[ mod_name ][ loc_name ].initialize && mtype(mx[ mod_name ][ loc_name ].initialize).is_function) {
+								mx[ mod_name ][ loc_name ].initialize();
+							}
+						}
+					});
+				}
+
+				return success;
+			});
 
 			(holder || mx.include).__defineGetter__(loc_name, function () {
 				if (!mh.in_array(name, loaded_files)) {
-					var success = false;
-
-					// dont load it again
-					loaded_files.push(name);
-					success = load_file(url, 'js');
-
-					// if this is a module, initialize it
-					if (loc_name in mx) {
-						if (mx[ loc_name ].initialize && mtype(mx[ loc_name ].initialize).is_function) {
-							mx[ loc_name ].initialize();
-						}
-					}
-
-					return success;
+					return mx.include.force[ loc_name ];
 				}
+
+				return false;
 			});
 		})();
 	};
@@ -191,8 +210,6 @@ mx.settings.module = (function () {
 
 // settings manager
 mx.settings.merge = function (module) {
-	"use strict";
-
 	var default_settings = module.settings;
 	var custom_settings = mx.settings.module.get(module.name);
 	var setting, value, parts;
@@ -234,8 +251,6 @@ mx.settings.mass_merge = function (settings) {
 
 // function auto calling
 mx.settings.functions = function (main) {
-	"use strict";
-
 	var settings = main.settings;
 
 	for (var setting in settings) {
@@ -245,19 +260,14 @@ mx.settings.functions = function (main) {
 	}
 };
 
-// for calculating load time
-mx.settings.load_time = Date.now();
-
 // project information
 mx.settings.project_name;
 mx.settings.project_load_success;
-mx.settings.project_load_error = "Could not load {%0:project}.";
+mx.settings.project_load_error;
 
 // adds a blank objects under mx with a name
 // could also do some other normilization for modules
 mx.module.register = function (module_name, settings, holder) {
-	"use strict";
-
 	// mx is the default module namespace
 	holder = holder || mx;
 
@@ -274,11 +284,14 @@ mx.module.register = function (module_name, settings, holder) {
 	// applies custom settings and initializes
 	// auto run functions, however, this should
 	// not be over writen
-	holder[ module_name ].initialize = function () {
+	holder[ module_name ].initialize = manage.limit(function () {
 		mx.settings.merge(holder[ module_name ]);
 		mx.settings.functions(holder[ module_name ]);
-		mx.out.initialized_module(module_name);
-	};
+
+		if (mx.out && mx.out.initialized_module) {
+			mx.out.initialized_module(module_name);
+		}
+	}, 1);
 
 	// check the global flag
 	if (mx.module.global) {
@@ -295,8 +308,6 @@ mx.module.register = function (module_name, settings, holder) {
 // the constructor is saved in mx and the
 // prototype is returned so it can be worked on
 mx.module.constructor = function (name, holder) {
-	"use strict";
-
 	holder = holder || mx;
 	holder[ name ] = function mxConstructor () {};
 
@@ -304,9 +315,12 @@ mx.module.constructor = function (name, holder) {
 		window[ name ] = holder[ name ];
 	}
 
-	return { static: holder[ name ], public: holder[ name ].prototype };
+	return {
+		static: holder[ name ], 
+		public: holder[ name ].prototype
+	};
 };
 
 // flag for determining if a module should be added
 // to the global namespace or just under the mx object
-mx.module.global = true;
+mx.module.global = false;

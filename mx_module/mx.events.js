@@ -1,10 +1,9 @@
 "use strict";
 
 
-mx.include.module.dependency.dom;
-
-mx.events = (function () {
-	var main = {};
+(function (self) {
+	var settings = {};
+	var main = self.module.register("events", settings);
 
 	// currently supported events:
 	var events = [ 	"click", "dblclick", "change", "focus", "keydown",
@@ -15,29 +14,29 @@ mx.events = (function () {
 	// for each event we store a flag to let us know if
 	// it has already been registered to prevent multiple
 	// event listeners.
-	var types_registry = main.types = {};
+	main.types = {};
 
 	// we also keep a list of all events attached to each
 	// event type.
-	var event_registry = main.events = {};
+	main.events = {};
 
 	// api for adding methods
-	var bind = main.bind = function (type, action) {
+	main.bind = function (type, action) {
 		// set the event listener if necessary
-		if (!types_registry[ type ])
+		if (!main.types[ type ])
 			bind_event(type);
 
 		// mark the event type as a registered event
-		types_registry[ type ] = true;
+		main.types[ type ] = true;
 
 		// and add the new event to the list of actions
-		event_registry[ type ].push(action);
+		main.events[ type ].push(action);
 	};
 
 	// shortcuts for all events
 	for (var i = 0, max = events.length; i < max; i++) {
-		types_registry[ events[i] ] = false;
-		event_registry[ events[i] ] = [];
+		main.types[ events[i] ] = false;
+		main.events[ events[i] ] = [];
 
 		(function () {
 			var _type = events[i];
@@ -49,24 +48,27 @@ mx.events = (function () {
 
 	// manages binding event listeners to the mx main port
 	var bind_event = function (type) {
-		if (type in event_registry) {
+		if (type in main.events) {
 			document.body.addEventListener(type, function (e) {
 				var _event = e;
 				var _elem = this;
-				if (event_registry[ type ].length)
-					x(event_registry[ type ]).each(function () {
-						this.call(_elem, _event);
+				if (main.events[ type ].length)
+					mh.for_each(main.events[ type ], function (i, action) {
+						action.call(_elem, _event);
 					});
+					// x(main.events[ type ]).each(function () {
+						// this.call(_elem, _event);
+					// });
 			}, false);
 		}
 	};
 
 
 	// bind an action to a specific key press event
-	var shortcut = main.shortcut = (function () {
+	main.shortcut = (function () {
 		var shortcuts = {};
 
-		bind.keydown(function (e) {
+		main.bind.keydown(function (e) {
 			for (var sc in shortcuts) {
 				if (e.keyCode.toString() === sc)
 					shortcuts[ sc ](e);
@@ -74,22 +76,25 @@ mx.events = (function () {
 		});
 
 		return function (keycode, action) {
-			if (m(keycode).is_array) {
-				x(keycode).each(function () {
-					shortcut(this.valueOf(), action);
+			if (mtype(keycode).is_array) {
+				mh.for_each(keycode, function (i, code) {
+					main.shortcut(code, action);
 				});
+				// x(keycode).each(function () {
+					// shortcut(this.valueOf(), action);
+				// });
 			}
-			else if (m(keycode).is_int && m(action).is_function) {
+			else if (mtype(keycode).is_int && mtype(action).is_function) {
 				shortcuts[ keycode ] = action;
 			}
 		}
 	})();
 
 	// bind an action to a dom selector
-	var click_on = main.click_on = (function () {
+	main.click_on = (function () {
 		var clicks = {};
 
-		bind.click(function (e) {
+		main.bind.click(function (e) {
 			for (var ck in clicks) {
 				if ("webkitMatchesSelector" in e.target && e.target.webkitMatchesSelector(ck))
 					clicks[ ck ].call(e.target, e);
@@ -97,22 +102,20 @@ mx.events = (function () {
 		});
 
 		return function (selector, action) {
-			if (m(selector).is_array) {
-				x(selector).each(function () {
-					click_on(this.valueOf(), action);
+			if (mtype(selector).is_array) {
+				mh.for_each(selector, function (i, sel) {
+					click_on(sel, action);
 				});
+				// x(selector).each(function () {
+					// click_on(this.valueOf(), action);
+				// });
 			}
-			else if (m(selector).is_string && m(action).is_function) {
+			else if (mtype(selector).is_string && mtype(action).is_function) {
 				clicks[ selector ] = action;
 			}
 		}
 	})();
-
-	return main;
-})();
-
-
-
+})(mx);
 
 
 mx.events.shortcuts = {

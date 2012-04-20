@@ -1,182 +1,124 @@
 "use strict";
 
+(function (self) {
+	self.include.module.dom;
+	self.include.module.storage;
+	self.include.module.character;
+	self.include.module.enviroment.element;
 
-mx.include.module.dependency.gravity;
-mx.include.module.dependency.character;
-mx.include.module.dependency.element;
-mx.include.module.dependency.storage;
-mx.include.module.dependency.helpers;
+	var settings = {};
+	var main = self.module.register("placement", settings, mx.enviroment);
 
-mx.placement = (function () {
-	mx.out.register("collision", "collision", null, "royalblue");
+	// helper function. takes an array of node arrays
+	// and returns an array of nodes
+	var flatten_node_array = function (list) {
+		var ret = [];
 
-	var main = {};
-	var sample_node, node_dimensions = main.node_dimensions = {};
+		mh.for_each(list, function (i, val) {
+			mh.for_each(val, function (i, node) {
+				ret.push(node);
+			});
+		});
 
-	var directions = ["up", "down", "left", "right"];
-	var direction = main.direction = manage.enum.apply(manage, directions);
-
-	var settings = main.settings = {
-		animate: false
+		return ret;
 	};
 
-	main.initialize = function (custom_settings) {
-		mx.settings.merge(settings, mx.settings.placement);
-		mx.out.initialized("placement");
-		main.survey();
+	// helper function. mark/tag element as used
+	// helper function. mark/tag element as unused
+	var mark_used = function (offset, used) {
+		var node = self.storage.get.enviroment_element(offset);
 
-		if (settings.animate)
-			mx.include.dependency("jquery");
-	};
+		if (!node) {
+			return false;
+		}
 
-	main.survey = function () {
-		// calculate the dimensions of the 
-		// enviroment elements
-		if (!sample_node)
-		sample_node = mx.storage.select.element(["node"], function () {
-			return this.type === mx.element.type.ENV;
-		}, 1, true)[0];
+		node.used = used;
 
-		if (sample_node) {
-			node_dimensions.width = x(mx.element.gcs(sample_node, "width")).px2num();
-			node_dimensions.height = x(mx.element.gcs(sample_node, "height")).px2num();
+		if (self.debug.settings.debugging) {
+			mh.css(node.node, {
+				backgroundColor: used ? 
+					self.enviroment.element.color_map.yellow : 
+					self.enviroment.element.color_map.white
+			});
 		}
 	};
 
-	// puts an element in an enviroment node
-	var put = function (elem, offset) {
-		var node = mx.element.get_node(elem);
-		var top, left;
+	// make all characters hold their locaion elements
+	self.Character.prototype.surrounding_elements = [];
 
-		main.survey();
+	main.place = manage.throttle(function (elem, on) {
+		var holder, height, width, valid_location = true;
+		var on_node = self.storage.get.enviroment_element(on);
+		var n_array = [on], h_array, w_array;
 
-		top = x(node_dimensions.height * offset[1] + offset[1] + mx.dom.defaults.vp_offset.top).num2px();
-		left = x(node_dimensions.width * offset[0] + offset[0] + mx.dom.defaults.vp_offset.left).num2px();
-
-		if (settings.animate) {
-			$(node).animate({ top: top, left: left }, 150);
-		}
-		else {
-			x(node).css({ top: top, left: left });
+		if (!mtype(elem).is_character || !mtype(on).is_array || !on_node) {
+			return false;
 		}
 
-		if (m(elem).is_character) {
-			elem.offset = offset;
-		}
-	};
+		main.place.clear();
 
-	// place an element in the viewport
-	var place = main.place = function (elem, proposed_holder_info, cache_dir, no_recalc) {
-		mx.queue.global(function () {
-			var elem_info = get_size(elem);
-			var end_x, end_y, end_holder, border_nodes = [];
-			var table = mx.storage.elements;
+		height = elem.height;
+		width = elem.width;
 
-			if (elem.view_range_bit) {
-				table = elem.holder.id;
+		// now find all nodes around the element
+		var h_array = mh.times(height - 1, function (i) {
+			return [
+				[on[0], on[1] + i + 1],
+				[on[0] + width - 1, on[1] + i + 1]
+			];
+		});
+
+		var w_array = mh.times(width - 1, function (i) {
+			return [
+				[on[0] + i + 1, on[1]],
+				[on[0] + i + 1, on[1] + height - 1]
+			];
+		});
+
+		// combine into one list
+		n_array = n_array.concat(flatten_node_array(h_array));
+		n_array = n_array.concat(flatten_node_array(w_array));
+
+		// n_array now holds a list of the elements surrounding nodes
+		// now check all of those nodes and make sure
+		// this element can be placed in the requested
+		// location
+		mh.for_each(n_array, function (i, offset) {
+			var loc = self.storage.get.enviroment_element(offset);
+
+			if (!loc) {
+				valid_location = false;
 			}
-
-			if (!proposed_holder_info) {
-				proposed_holder_info = mx.storage.select.timed(["node", "offset"], table, function () {
-					return this.type === mx.element.type.ENV && !this.node.mx_gravity; 
-				}, 1)[0];
-			}
-
-			if (elem_info.character && proposed_holder_info.node) {
-				// using the character's dimensions, it is placed in the viewport
-				// wherever there is enough enviroment nodes to hold it.
-				end_x = elem_info.width + proposed_holder_info.offset[0];
-				end_y = elem_info.height + proposed_holder_info.offset[1];
-
-				// zero index
-				--end_x;
-				--end_y;
-
-				// node borders
-				for (var row = proposed_holder_info.offset[0]; row <= end_x; row++) {
-					// top row
-					border_nodes.push([row, proposed_holder_info.offset[1]]);
-
-					// bottom row
-					border_nodes.push([row, end_y]);
-				}
-
-				for (var column = proposed_holder_info.offset[1] + 1; column < end_y; column++) {
-					// left column
-					border_nodes.push([proposed_holder_info.offset[0], column]);
-
-					// right column
-					border_nodes.push([end_x, column]);
-				}
-
-				// instead of an end node location, 
-				// we'll use the border node's locations to determine 
-				// possible movements. this does assume the last point will be used 
-				// as the end_holder node
-				for (var point = 0, max = border_nodes.length; point < max; point++) {
-					end_holder = mx.storage.select.timed(["node", "type"], table, function () {
-						return x(this.offset).eq( border_nodes[ point ] );
-					}, 1)[0];
-
-					if (!end_holder) {
-						mx.out.collision("recalculation required");
-						break;
-					}
-					else if (end_holder.type !== mx.element.type.ENV) {
-						// end_holder.node = false;
-						// break;
-						mx.out.collision("no recalculation required");
-						return false;
-					}
-				}
-
-				// NOTE: this query is not really needed as it is done in 
-				// the previous step. compose way of storing the last result
-				// and use instead of doind this
-				if (end_holder && end_holder.node) {
-					end_holder = mx.storage.select.timed(["node"], table, function () {
-						return x(this.offset).eq([end_x, end_y]);
-					}, 1)[0];
-				}
-
-				// a holder was found
-				if (end_holder && end_holder.node) {
-					elem._holder = end_holder.node;
-					put(elem, [proposed_holder_info.offset[0], proposed_holder_info.offset[1]]);
-				}
-				else if (m(elem).is_character && cache_dir) {
-					elem.movement[ cache_dir ] = false;
-					mx.movement.recalculate_character_viewport(elem);
-
-					if (!no_recalc)
-						place(elem, proposed_holder_info, cache_dir, true);
-				}
-
-				if (m(elem).is_character) {
-					elem.movement.ready = true;
-				}
+			else if (loc.type !== mx.enviroment.element.type_map.ENVIROMENT) {
+				valid_location = false;
 			}
 		});
-	};
 
-	// calculates the size of a given element so that
-	// possible placement can be allowed or rejected.
-	var get_size = function (elem) {
-		var node = mx.element.get_node(elem), dimensions = {};
+		// if valid, mode the element
+		if (valid_location) {
+			// storage location data
+			// clean old information if any
+			if (elem.surrounding_elements && mtype(elem.surrounding_elements).is_array) {
+				mh.for_each(elem.surrounding_elements, function (i, offset) {
+					mark_used(offset, false);
+				});
+			};
 
-		if (elem instanceof mx.element.character) {
-			dimensions.width = elem.raw_width;
-			dimensions.height = elem.raw_height;
-			dimensions.character = true;
+			// and use up the new data
+			elem.offset = on;
+			elem.surrounding_elements = n_array.concat(on);
+			mh.for_each(elem.surrounding_elements, function (i, offset) {
+				mark_used(offset, true);
+			});
+
+			holder = self.Character.get_holder(elem);
+
+			mh.css(holder, {
+				top: on[1] * self.dom.settings.enviromentport.node_size.height,
+				left: on[0] * self.dom.settings.enviromentport.node_size.width
+			});
 		}
-		else {
-			dimensions.width = x(mx.element.gcs(node, "width")).px2num();
-			dimensions.height = x(mx.element.gcs(node, "height")).px2num();
-			dimensions.character = false;
-		}
 
-		return dimensions;
-	};
-
-	return main;
-})();
+		return valid_location;
+	}, 50);
+})(mx);

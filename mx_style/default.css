@@ -104,16 +104,16 @@ div.mx_output_query span.mx_output_query_data {
 	padding-right: 9px;
 }
 
-div#mx_output_holder {
+div.mx_out_holder {
 	-webkit-user-select: none;
 	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
 	position: fixed;
 	right: 10px;
-	bottom: 10px;
+	top: 10px;
 	border: 1px solid #C8C8C8;
-	height: 150px;
-	min-width: 523px;
-	max-width: 523px;
+	height: 180px;
+	min-width: 423px;
+	max-width: 423px;
 	font: 12px Arial;
 	cursor: default;
 	padding: 10px;
@@ -121,16 +121,12 @@ div#mx_output_holder {
 	z-index: 1000;
 }
 
-div#mx_output {
+div.mx_out {
 	height: 100%;
 	width: 100%;
 	overflow-y: scroll;
 	overflow-x: hidden;
 	white-space: nowrap;
-}
-
-div#mx_output span {
-	font-weight: 900;
 }
 
 /* ----------------------------------------------------------------------

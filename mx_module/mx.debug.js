@@ -5,7 +5,8 @@
 	// most methods will check this setting
 	// before doing anything
 	var settings = {
-		debugging: false
+		debugging: false,
+		cname: "debugging"
 	};
 
 	var main = self.module.register("debug", settings);
@@ -36,8 +37,32 @@
 	main.Timer = function (time) {
 		var start_time = time || Date.now();
 
-		return function () {
-			return Date.now() - start_time;
+		return function (all, pre) {
+			var time = Date.now() - start_time;
+			var ret = time;
+			pre = pre || 2;
+
+			if (all) {
+				ret = {
+					// raw times
+					microseconds: time * 1000,
+					milliseconds: time,
+					seconds: time / 1000,
+					minutes: time / 1000 / 60,
+					hours: time / 1000 / 60 / 60,
+					days: time / 1000 / 60 / 60 / 24,
+
+					// text
+					microseconds_str: time * 1000 + " microsecond(s)",
+					milliseconds_str: time + " millisecond(s)",
+					seconds_str: (time / 1000).toFixed(pre) + " second(s)",
+					minutes_str: (time / 1000 / 60).toFixed(pre) + " minute(s)",
+					hours_str: (time / 1000 / 60 / 60).toFixed(pre)  + " hour(s)",
+					days_str: (time / 1000 / 60 / 60 / 24).toFixed(pre) + " day(s)",
+				};
+			}
+
+			return ret;
 		};
 	};
 

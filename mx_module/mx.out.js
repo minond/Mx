@@ -6,12 +6,31 @@
 // string for quick message templating.
 (function (self) {
 	var settings = {
+		// build the output section
+		generate: true,
+
+		// message output variables
 		message: {
-			generate: true,
+			// lower case enforce
+			as_lowercase: true,
+
+			// for writing
 			id: "mx_output",
+
+			// classes
+			out_class: "mx_out",
+			holder_class: "mx_out_holder",
+
+			// for production mode
 			route_to: null,
+
+			// scroll to bottom offset
 			scroll_to: 10000,
-			template: "<div>[{%title}] <span style='color: {%color}'>{%content}</span></div>",
+
+			// default template
+			template: "<div><b>[{%title}]</b> <span style='color: {%color}'>{%content}</span></div>",
+
+			// default template settings
 			default_template: {
 				color: "blue",
 				title: "message",
@@ -23,6 +42,7 @@
 	var main = self.module.register("out", settings);
 
 	var template_map = {};
+	var write_link = null;
 
 	// appends a new message to the output holder element
 	// if a route to method has been set it will send the 
@@ -38,10 +58,20 @@
 		variables.unshift(template_map[ template_name ]);
 		message_str = stringf.apply(Template, variables);
 
+		if (settings.message.as_lowercase) {
+			message_str = message_str.toLowerCase();
+		}
+
 		if (!settings.message.route_to) {
-			if (document.getElementById(settings.message.id)) {
-				document.getElementById(settings.message.id).innerHTML += message_str;
-				document.getElementById(settings.message.id).scrollTop = settings.message.scroll_to;
+			if (!write_link) {
+				if (document.getElementById(settings.message.id)) {
+					write_link = document.getElementById(settings.message.id);
+				}
+			}
+
+			if (write_link) {
+				write_link.innerHTML += message_str;
+				write_link.scrollTop = settings.message.scroll_to;
 			}
 		}
 		else {
@@ -54,6 +84,26 @@
 
 		return message_str;
 	});
+
+	// output elements generator
+	main.generate = manage.limit(function () {
+		self.include.module.debug;
+		self.include.module.enviroment.element;
+
+		var msg_holder = self.enviroment.element.factory({
+			type: self.enviroment.element.node_map.DIV,
+			className: mh.sconcat(settings.message.holder_class, self.debug.settings.cname)
+		});
+
+		var msg_out = self.enviroment.element.factory({
+			type: self.enviroment.element.node_map.DIV,
+			className: mh.sconcat(settings.message.out_class, self.debug.settings.cname),
+			id: settings.message.id
+		});
+
+		msg_holder.appendChild(msg_out);
+		document.body.appendChild(msg_holder);
+	}, 1);
 
 	// register a template string to a property in module
 	// used to quickly call the message method for a module
@@ -75,22 +125,22 @@
 
 		return main[ template_name ];
 	};
+
+	main.pause = function () {
+		write.pause();
+	};
+
+	main.resume = function () {
+		write.resume();
+	};
+
+	main.clear = function (no_html) {
+		write.clear();
+
+		if (!no_html) {
+			if (document.getElementById(settings.message.id)) {
+				document.getElementById(settings.message.id).innerHTML = "";
+			}
+		}
+	};
 })(mx);
-
-// some default outputs
-// current project's name
-mx.out.register("project_name", {
-	title: "Project Name"
-});
-
-// how log it took from loading mx to'
-// loading the main project file
-mx.out.register("project_load", {
-	title: "Project Load Time",
-	content: "{%0}ms"
-});
-
-// for the default initialize module method
-mx.out.register("initialized_module", {
-	title: "Module Initialized"
-});
