@@ -24,6 +24,7 @@ mx.include.register("placement", mx.include.MODULE, mx.include.module.enviroment
 mx.include.register("movement", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("gravity", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
+mx.include.register("earth", mx.include.MODULE, mx.include.module.enviroment);
 
 // add all modules to the global scope
 mx.module.global = false;

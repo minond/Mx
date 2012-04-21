@@ -1,8 +1,8 @@
 div.mx_env_row div.mx_env_cell {
 	height: 9px;
 	width: 9px;
-	border-bottom: 1px solid limegreen;
-	border-right: 1px solid limegreen;
+	border-bottom: 1px solid #dddddd;
+	border-right: 1px solid #dddddd;
 	display: inline-block;
 }
 

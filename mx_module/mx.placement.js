@@ -46,7 +46,7 @@
 	// make all characters hold their locaion elements
 	self.Character.prototype.surrounding_elements = [];
 
-	main.place = manage.throttle(function (elem, on) {
+	main.place = manage.throttle(function (elem, on, valid_callback) {
 		var holder, height, width, valid_location = true;
 		var on_node = self.storage.get.enviroment_element(on);
 		var n_array = [on], h_array, w_array;
@@ -96,27 +96,32 @@
 
 		// if valid, mode the element
 		if (valid_location) {
-			// storage location data
-			// clean old information if any
-			if (elem.surrounding_elements && mtype(elem.surrounding_elements).is_array) {
+			if (!valid_callback) {
+				// storage location data
+				// clean old information if any
+				if (elem.surrounding_elements && mtype(elem.surrounding_elements).is_array) {
+					mh.for_each(elem.surrounding_elements, function (i, offset) {
+						mark_used(offset, false);
+					});
+				};
+
+				// and use up the new data
+				elem.offset = on;
+				elem.surrounding_elements = n_array.concat(on);
 				mh.for_each(elem.surrounding_elements, function (i, offset) {
-					mark_used(offset, false);
+					mark_used(offset, true);
 				});
-			};
 
-			// and use up the new data
-			elem.offset = on;
-			elem.surrounding_elements = n_array.concat(on);
-			mh.for_each(elem.surrounding_elements, function (i, offset) {
-				mark_used(offset, true);
-			});
+				holder = self.Character.get_holder(elem);
 
-			holder = self.Character.get_holder(elem);
-
-			mh.css(holder, {
-				top: on[1] * self.dom.settings.enviromentport.node_size.height,
-				left: on[0] * self.dom.settings.enviromentport.node_size.width
-			});
+				mh.css(holder, {
+					top: on[1] * self.dom.settings.enviromentport.node_size.height,
+					left: on[0] * self.dom.settings.enviromentport.node_size.width
+				});
+			}
+			else {
+				valid_callback(elem, on);
+			}
 		}
 
 		return valid_location;

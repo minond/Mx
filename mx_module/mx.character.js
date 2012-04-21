@@ -93,13 +93,15 @@
 		})();
 	};
 
-	// character data importer helper function
 	// mx_character/{character}.json
+	main.static.directory = "mx_characters/{%0}.json";
+
+	// character data importer helper function
 	main.static.load = function () {
 		var file_path, raw_data, data;
 		
 		mh.for_each(arguments, function (i, file) {
-			file_path = stringf("mx_characters/{%0}.json", file);
+			file_path = stringf(main.static.directory, file);
 			raw_data = mx.file.read(file_path);
 
 			if (raw_data) {

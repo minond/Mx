@@ -40,7 +40,7 @@
 		var array = "[]";
 
 		// javascript eval check
-		var javascript = /\[!(.+?)\]/;
+		var javascript = /^\[!(.+?)\]$/;
 
 		// holders
 		var prop_name, prop_value, prop_holder;

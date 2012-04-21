@@ -309,7 +309,11 @@ mx.module.register = function (module_name, settings, holder) {
 // prototype is returned so it can be worked on
 mx.module.constructor = function (name, holder) {
 	holder = holder || mx;
-	holder[ name ] = function mxConstructor () {};
+	holder[ name ] = function mxConstructor (args) {
+		if (holder[ name ].prototype.__constructor) {
+			holder[ name ].prototype.__constructor.apply(this, arguments);
+		}
+	};
 
 	if (mx.module.global) {
 		window[ name ] = holder[ name ];
