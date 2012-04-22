@@ -41,8 +41,8 @@
 		enviromentport: {
 			display: null,
 			dimension: {
-				height: 10,
-				width: 20
+				height: 20,
+				width: 90
 			},
 			node_size: {
 				height: null,
@@ -207,7 +207,7 @@
 
 	// throttled append
 	self.stack.enviromentport_append = function (node) {
-		mx.stack.global(function () {
+		self.stack.global(function () {
 			main.append(node);
 		});
 	}

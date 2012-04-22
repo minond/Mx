@@ -42,6 +42,26 @@ mh.in_array = function (needle, haystack) {
 	return match;
 };
 
+// @see .in_array
+mh.in_array_hard = function (needle, haystack) {
+	var match = false;
+
+	if (!mtype(needle).is_object && !mtype(needle).is_array) {
+		return this.in_array(needle, haystack);
+	}
+
+	for (var i = 0, max = haystack.length; i < max; i++) {
+		if (mtype(haystack[ i ]).is_object || mtype(haystack[ i ]).is_array) {
+			if (JSON.stringify(haystack[ i ]) === JSON.stringify(needle)) {
+				match = true;
+				break;
+			}
+		}
+	}
+
+	return match;
+};
+
 // returns all but the first element in a
 // array or arguments object
 mh.rest = function (list) {
@@ -63,6 +83,18 @@ mh.merge = function (merge_into, merge_from, overwrite) {
 	return merge_into;
 };
 
+// between checker
+mh.between = function (check, from, to, including) {
+	var between = false;
+
+	if (including && check >= from && check <= to)
+		between = true;
+	else if (check > from && check < to)
+		between = true;
+
+	return between;
+};
+
 // iterates over an array or object
 mh.for_each = function (list, action) {
 	if (mtype(list).is_array || mtype(list).is_arguments) {
@@ -75,12 +107,24 @@ mh.for_each = function (list, action) {
 	}
 };
 
-// map/filter method
+// map method
 mh.map = function (list, action) {
 	var ret = [];
 
 	this.for_each(list, function (a, b) {
 		ret.push(action(a, b));
+	});
+
+	return ret;
+};
+
+// filter method
+mh.filter = function (list, test) {
+	var ret = [];
+
+	this.for_each(list, function (a, b) {
+		if (test(a, b))
+			ret.push(b);
 	});
 
 	return ret;
@@ -110,7 +154,7 @@ mh.to_array = function (list) {
 // convert a "truthy" value into a boolean
 mh.truthy = function (val) {
 	return !this.falsy(val);
-}
+};
 
 // convert a "falsy" value into a boolean
 mh.falsy = function (val) {
@@ -118,7 +162,41 @@ mh.falsy = function (val) {
 		val,
 		[0, "0", false, "false", null, "null", undefined, "undefined"]
 	);
-}
+};
+
+// class check
+mh.has_class = function (elem, cname) {
+	return this.in_array(
+		cname,
+		elem.className.split(" ")
+	);
+};
+
+// class add
+mh.add_class = function (elem, cname) {
+	if (!this.has_class(elem, cname)) 
+		elem.className = this.sconcat(elem.className, cname);
+};
+
+// class remove
+mh.remove_class = function (elem, cname) {
+	if (this.has_class(elem, cname)) {
+		elem.className = this.filter(
+			elem.className.split(" "),
+			function (a, b) {
+				return b !== cname;
+			}
+		).join(" ");
+	}
+};
+
+// add/remove class
+mh.toggle_class = function (elem, cname) {
+	if (this.has_class(elem, cname))
+		this.remove_class(elem, cname);
+	else
+		this.add_class(elem, cname);
+};
 
 // returns all but first (array) arguments
 mh.arg_shift = function (list) {

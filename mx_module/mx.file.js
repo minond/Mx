@@ -6,13 +6,16 @@
 	self.include.module.http;
 
 	var main = self.module.register("file");
+	var url = "{%0}?{%1}";
 
 	// makes an http request to a file 
 	// and returns it's content
 	// request in synchronous and uses the GET
 	// method with default headers
 	main.read = function (file_name) {
-		return self.http.async_get(file_name);
+		return self.http.async_get(
+			stringf(url, file_name, !self.include.cache ? Date.now() : '')
+		);
 	};
 
 	// parse an ini file

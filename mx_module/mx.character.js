@@ -75,10 +75,10 @@
 				});
 
 				if (show) {
-					mx.enviroment.placement.place(character, [0, 0]);
+					self.enviroment.placement.place(character, [0, 0]);
 
 					if (select) {
-						mx.enviroment.movement.select(character);
+						self.enviroment.movement.select(character);
 					}
 
 					character.show();
@@ -102,11 +102,11 @@
 		
 		mh.for_each(arguments, function (i, file) {
 			file_path = stringf(main.static.directory, file);
-			raw_data = mx.file.read(file_path);
+			raw_data = self.file.read(file_path);
 
 			if (raw_data) {
 				data = eval("(" + raw_data + ")");
-				mx.out.character_load(file);
+				self.out.character_load(file);
 				register_character(file, data);
 			}
 		});
@@ -169,7 +169,7 @@
 	main.public.show = function () {
 		var character = this;
 
-		mx.stack.global(function () {
+		self.stack.global(function () {
 			self.dom.append(character.holder);
 			self.sound.drop.play();
 			mh.show(character.holder);
@@ -206,6 +206,23 @@
 	// clears a character's body pieces
 	main.public.reset_body_map = function () {
 		this.holder.innerHTML = "";
+	};
+
+	// offset fixer
+	main.public.normalize = function (obj) {
+		var me = this;
+		var current;
+
+		this.normalization = obj;
+
+		mh.for_each(obj, function (offset, amount) {
+			mh.for_each(me.holder.childNodes, function (i, node) {
+				if (node && node.style) {
+					current = mh.px2num(node.style[ offset ]);
+					node.style[ offset ] = mh.num2px( current + amount );
+				}
+			});
+		});
 	};
 
 	// returns a character's holder node

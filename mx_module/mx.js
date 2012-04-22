@@ -21,7 +21,7 @@ var mx = {
 mx.settings.load_time = Date.now();
 
 // file types for register method
-mx.include = manage.const("module", "component", "module_parent", "project", "style", "css");
+mx.include = manage.const("module", "component", "module_parent", "project", "style", "css", "dependency");
 
 mx.include.force = {};
 
@@ -53,7 +53,7 @@ mx.include.register = (function () {
 
 	// requests a javascript file via a synchronous request and
 	// appends to head as a script element
-	var load_file = function (url, type) {
+	var load_file = function (url, type, ret_node) {
 		var loader = new XMLHttpRequest;
 		var script = document.createElement(file_type[ type ].node_tag);
 		var success = false;
@@ -68,7 +68,7 @@ mx.include.register = (function () {
 			success = true;
 		}
 		
-		return success;
+		return !ret_node ? success : script;
 	};
 
 	// components and modules are only loaded once
@@ -105,10 +105,14 @@ mx.include.register = (function () {
 				url = stringf(directories[ type ], name);
 				return load_file(url, 'js');
 
+			case mx.include.DEPENDENCY:
+				url = stringf(directories[ type ], name);
+				return load_file(url, 'js');
+
 			// css files
 			case mx.include.CSS:
 			case mx.include.STYLE:
-				return load_file(name, 'css');
+				return load_file(name, 'css', true);
 
 			default:
 				// files are loaded right away

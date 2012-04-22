@@ -7,7 +7,7 @@
 	self.include.module.enviroment.element;
 
 	var settings = {};
-	var main = self.module.register("placement", settings, mx.enviroment);
+	var main = self.module.register("placement", settings, self.enviroment);
 
 	// helper function. takes an array of node arrays
 	// and returns an array of nodes
@@ -23,30 +23,12 @@
 		return ret;
 	};
 
-	// helper function. mark/tag element as used
-	// helper function. mark/tag element as unused
-	var mark_used = function (offset, used) {
-		var node = self.storage.get.enviroment_element(offset);
-
-		if (!node) {
-			return false;
-		}
-
-		node.used = used;
-
-		if (self.debug.settings.debugging) {
-			mh.css(node.node, {
-				backgroundColor: used ? 
-					self.enviroment.element.color_map.yellow : 
-					self.enviroment.element.color_map.white
-			});
-		}
-	};
-
-	// make all characters hold their locaion elements
-	self.Character.prototype.surrounding_elements = [];
-
-	main.place = manage.throttle(function (elem, on, valid_callback) {
+	// takes an element and a requested location
+	// if location is available and element can fit
+	// in the requested location it is moved there.
+	// a "valid_callback" parameter can be passed which 
+	// cancels the movement and calls the function instead
+	main.place = manage.throttle(function (elem, on, valid_callback, force) {
 		var holder, height, width, valid_location = true;
 		var on_node = self.storage.get.enviroment_element(on);
 		var n_array = [on], h_array, w_array;
@@ -86,22 +68,20 @@
 		mh.for_each(n_array, function (i, offset) {
 			var loc = self.storage.get.enviroment_element(offset);
 
-			if (!loc) {
-				valid_location = false;
-			}
-			else if (loc.type !== mx.enviroment.element.type_map.ENVIROMENT) {
+			if (!loc || !mh.in_array(self.enviroment.element.type_map.ENVIROMENT, loc.type)
+				|| mh.in_array(self.enviroment.element.type_map.SOLID, loc.type)) {
 				valid_location = false;
 			}
 		});
 
 		// if valid, mode the element
 		if (valid_location) {
-			if (!valid_callback) {
+			if (!valid_callback || force) {
 				// storage location data
 				// clean old information if any
 				if (elem.surrounding_elements && mtype(elem.surrounding_elements).is_array) {
 					mh.for_each(elem.surrounding_elements, function (i, offset) {
-						mark_used(offset, false);
+						self.enviroment.element.as_used(offset, false);
 					});
 				};
 
@@ -109,7 +89,7 @@
 				elem.offset = on;
 				elem.surrounding_elements = n_array.concat(on);
 				mh.for_each(elem.surrounding_elements, function (i, offset) {
-					mark_used(offset, true);
+					self.enviroment.element.as_used(offset, true);
 				});
 
 				holder = self.Character.get_holder(elem);
@@ -119,11 +99,15 @@
 					left: on[0] * self.dom.settings.enviromentport.node_size.width
 				});
 			}
-			else {
+
+			if (valid_callback) {
 				valid_callback(elem, on);
 			}
 		}
 
 		return valid_location;
 	}, 50);
+
+	// make all characters hold their locaion elements
+	self.Character.prototype.surrounding_elements = [];
 })(mx);

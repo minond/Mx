@@ -9,7 +9,10 @@
 		keyboard_listener: true
 	};
 
-	var main = self.module.register("movement", settings, mx.enviroment);
+	var main = self.module.register("movement", settings, self.enviroment);
+
+	// constant directions
+	main.direction = manage.enum("up", "down", "left", "right");
 
 	// holds current main character
 	var current_selection;

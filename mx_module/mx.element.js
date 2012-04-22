@@ -18,7 +18,7 @@
 
 	// maps
 	main.node_map = manage.const("div");
-	main.type_map = manage.const("enviroment");
+	main.type_map = manage.const("enviroment", "solid");
 	main.color_map = {
 		light_purple: 	"#BDAEC6",
 		dark_purple: 	"#732C7B",
@@ -58,9 +58,37 @@
 		return {
 			// node: main.block(settings.classes.enviroment_element),
 			node: node,
-			type: main.type_map.ENVIROMENT,
+			type: [main.type_map.ENVIROMENT],
 			offset: [x_offset, y_offset]
 		};
+	};
+
+	// this is an enviroment element that can not
+	// be passed through
+	main.as_solid = function (offset) {
+		var cell = self.storage.get.enviroment_element(offset);
+
+		if (!cell)
+			return false;
+
+		if (!mh.in_array(main.type_map.SOLID, cell.type))
+			cell.type.push(main.type_map.SOLID);
+
+		return true;
+	};
+
+	// this can be any element that temporarily
+	// acts as a solid element but can change at any moment
+	// such as an element a character is currently standing on
+	main.as_used = function (offset, used) {
+		var cell = self.storage.get.enviroment_element(offset);
+
+		if (!cell)
+			return false;
+
+		cell.used = used || true;
+
+		return true;
 	};
 
 	// returns an element's css property value

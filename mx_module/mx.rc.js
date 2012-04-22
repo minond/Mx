@@ -5,6 +5,7 @@
 mx.include.directories[ mx.include.MODULE ] = "mx_module/mx.{%0}.js";
 mx.include.directories[ mx.include.PROJECT ] = "mx_project/{%0}/main.js";
 mx.include.directories[ mx.include.COMPONENT ] = "mx_component/mx.{%0}.js";
+mx.include.directories[ mx.include.DEPENDENCY ] = "mx_dependency/{%0}.js";
 
 // default modules
 mx.include.register("component", mx.include.MODULE);
@@ -18,6 +19,7 @@ mx.include.register("url", mx.include.MODULE);
 mx.include.register("http", mx.include.MODULE);
 mx.include.register("storage", mx.include.MODULE);
 mx.include.register("out", mx.include.MODULE);
+mx.include.register("level", mx.include.MODULE);
 mx.include.register("enviroment", mx.include.MODULE_PARENT, mx);
 mx.include.register("element", mx.include.MODULE, mx.include.module.enviroment);
 mx.include.register("placement", mx.include.MODULE, mx.include.module.enviroment);
