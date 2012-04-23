@@ -102,7 +102,7 @@ mx.include.register = (function () {
 			// for the main project, the url is generate
 			// and it is loaded right away
 			case mx.include.PROJECT:
-				url = stringf(directories[ type ], name);
+				url = stringf(directories[ type ], name, mx.include.project_file);
 				return load_file(url, 'js');
 
 			case mx.include.DEPENDENCY:

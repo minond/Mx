@@ -54,7 +54,12 @@
 
 	// applies enviroment piece settings on an enviroment node
 	main.public.draw = function (on, type, no_save) {
-		var elem = self.storage.get.enviroment_element(on);
+		var elem;
+
+		if (!(type in this.env_map))
+			throw new Error("invalid draw type");
+
+		elem = self.storage.get.enviroment_element(on);
 
 		if (!no_save) {
 			this.nodes.push({ on: on, type: type });
@@ -67,6 +72,69 @@
 				self.enviroment.element.as_solid(on, true);
 			}
 		}
+	};
+
+	main.public.clear = function () {
+		var cell, me = this;
+
+		mh.for_each(this.nodes, function (i, info) {
+			cell = self.storage.get.enviroment_element(info.on);
+
+			if (cell && cell.node) {
+				mh.remove_class(cell.node, me.env_map[ info.type ].class_name);
+				self.enviroment.element.as_solid(info.on, false);
+			}
+		});
+	};
+
+	// moves the whole enripoment port node list to the right
+	main.public.move = function (direction) {
+		// store the last version
+		var node_backup = this.nodes;
+		var offset = direction === self.enviroment.movement.direction.RIGHT ? 1 : -1;
+		var me = this;
+
+		// get the moving elements
+		var moving_parts = mh.filter(mh.map(this.env_map, function (a, info) {
+			if (info.move) {
+				return a;
+			}
+		}), function (a, b) {
+			return b;
+		});
+
+		// get the looping elements
+		var looping_parts = mh.filter(mh.map(this.env_map, function (a, info) {
+			if (info.loop) {
+				return a;
+			}
+		}), function (a, b) {
+			return b;
+		});
+
+		// clear the last version
+		this.clear();
+		this.nodes = [];
+
+		// move everything to the right
+		mh.for_each(node_backup, function (n, info) {
+			me.draw([ info.on[0] + offset, info.on[1] ], info.type);
+
+			/* var elem_current, elem_sibling; 
+			// if this is a moving part 
+			if (mh.in_array(info.type, moving_parts)) {
+				// first draw the element in it's new location
+				me.draw([ info.on[0] + 1, info.on[1] ], info.type);
+
+				// then take the element to the right and place
+				// that where this one used to be
+				elem_sibling = self.storage.get.enviroment_element([ info.on[0] - 1, info.on[1] ]);
+
+				if (elem_sibling) {}
+			}
+			else
+				me.nodes.push({ on: [info.on[0], info.on[1]], type: info.type }); */
+		});
 	};
 
 	// draws a section of the enviromentport
@@ -83,5 +151,54 @@
 		}
 
 		return cells;
+	};
+
+	main.public.piramid = function (width, xoffset, yoffset, type) {
+		for (var i = 0; i < width; i++) {
+			for (var j = 0; j < width - (i * 2); j++) {
+				this.draw([xoffset + i + j, self.dom.settings.enviromentport.dimension.height + yoffset - i], type);
+			}
+		}
+	};
+
+	main.public.flag = function (woffset, hoffset, class_footer, class_pole, class_flag) {
+		// flag footer
+		this.draw([woffset, hoffset], class_footer);
+		this.draw([woffset - 1, hoffset], class_footer);
+		this.draw([woffset - 2, hoffset], class_footer);
+		
+		self.enviroment.element.as_used([woffset, hoffset], true);
+		self.enviroment.element.as_used([woffset - 1, hoffset], true);
+		self.enviroment.element.as_used([woffset - 2, hoffset], true);
+
+		// flag pole
+		this.draw([woffset - 1, hoffset - 1], class_pole);
+		this.draw([woffset - 1, hoffset - 2], class_pole);
+		this.draw([woffset - 1, hoffset - 3], class_pole);
+		this.draw([woffset - 1, hoffset - 4], class_pole);
+		this.draw([woffset - 1, hoffset - 5], class_pole);
+		this.draw([woffset - 1, hoffset - 6], class_pole);
+		this.draw([woffset - 1, hoffset - 7], class_pole);
+		this.draw([woffset - 1, hoffset - 8], class_pole);
+		this.draw([woffset - 1, hoffset - 9], class_pole);
+		this.draw([woffset - 1, hoffset - 10], class_pole);
+		this.draw([woffset - 1, hoffset - 11], class_pole);
+		this.draw([woffset - 1, hoffset - 12], class_pole);
+		this.draw([woffset - 1, hoffset - 13], class_pole);
+		this.draw([woffset - 1, hoffset - 14], class_pole);
+
+		// flag
+		this.draw([woffset - 2, hoffset - 12], class_flag);
+		this.draw([woffset - 3, hoffset - 12], class_flag);
+		this.draw([woffset - 4, hoffset - 12], class_flag);
+		this.draw([woffset - 2, hoffset - 13], class_flag);
+		this.draw([woffset - 3, hoffset - 13], class_flag);
+		this.draw([woffset - 4, hoffset - 13], class_flag);
+
+		return [
+			[woffset, hoffset],
+			[woffset - 1, hoffset],
+			[woffset - 2, hoffset]
+		];
 	};
 })(mx);

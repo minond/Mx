@@ -12,7 +12,7 @@
 	var main = self.module.register("movement", settings, self.enviroment);
 
 	// constant directions
-	main.direction = manage.enum("up", "down", "left", "right");
+	main.direction = manage.const("up", "down", "left", "right");
 
 	// holds current main character
 	var current_selection;
@@ -34,7 +34,7 @@
 		];
 
 		self.events.shortcut(keys, function (ev) {
-			var new_offset = [];
+			var new_offset = [], gravity = true;
 			new_offset[0] = current_selection ? current_selection.offset[0] : null;
 			new_offset[1] = current_selection ? current_selection.offset[1] : null;
 
@@ -45,6 +45,7 @@
 			switch (ev.keyCode) {
 				case self.events.shortcuts.up_arrow:
 					new_offset[1]--;
+					gravity = false;
 					break;
 
 				case self.events.shortcuts.right_arrow:
@@ -63,7 +64,8 @@
 					return false;
 			}
 
-			self.enviroment.placement.place(current_selection, new_offset);
+			self.enviroment.placement.place.clear();
+			self.enviroment.placement.place(current_selection, new_offset, gravity, null, main.used_callback);
 		});
 	}, 1);
 })(mx);

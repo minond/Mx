@@ -6,6 +6,22 @@
 	self.include.module.character;
 	self.include.module.enviroment.element;
 
+	self.out.register("movement", {
+		title: "Movement",
+		content: "character moving {%0}"
+	});
+
+	self.out.register("invalid_move", {
+		title: "Movement",
+		content: "invalid movement",
+		color: self.enviroment.element.color_map.dark_purple
+	});
+
+	self.out.register("used_element", {
+		title: "Movement",
+		content: "used element found"
+	});
+
 	var settings = {};
 	var main = self.module.register("placement", settings, self.enviroment);
 
@@ -28,10 +44,10 @@
 	// in the requested location it is moved there.
 	// a "valid_callback" parameter can be passed which 
 	// cancels the movement and calls the function instead
-	main.place = manage.throttle(function (elem, on, valid_callback, force) {
+	main.place = manage.throttle(function (elem, on, gravity, valid_callback, used_callback, force) {
 		var holder, height, width, valid_location = true;
 		var on_node = self.storage.get.enviroment_element(on);
-		var n_array = [on], h_array, w_array;
+		var n_array = [on], h_array, w_array, dir_str, start = [];
 
 		if (!mtype(elem).is_character || !mtype(on).is_array || !on_node) {
 			return false;
@@ -41,6 +57,7 @@
 
 		height = elem.height;
 		width = elem.width;
+		start = [elem.offset[0], elem.offset[1]];
 
 		// now find all nodes around the element
 		var h_array = mh.times(height - 1, function (i) {
@@ -72,6 +89,12 @@
 				|| mh.in_array(self.enviroment.element.type_map.SOLID, loc.type)) {
 				valid_location = false;
 			}
+			else if (used_callback && loc.used) {
+				if (!mh.in_array_hard(offset, elem.surrounding_elements)) {
+					self.out.used_element();
+					used_callback(offset);
+				}
+			}
 		});
 
 		// if valid, mode the element
@@ -98,16 +121,55 @@
 					top: on[1] * self.dom.settings.enviromentport.node_size.height,
 					left: on[0] * self.dom.settings.enviromentport.node_size.width
 				});
+
+				// viewing
+				dir_str = main.direction(start, on);
+				elem.moving(start, on, dir_str);
+
+				// gravity
+				if (gravity) {
+					main.place(elem, [on[0], on[1] + 1], false, function () {
+						main.place.clear();
+						main.place(elem, [on[0], on[1] + 1], gravity);
+					});
+				}
+
+				self.out.movement(dir_str);
 			}
 
 			if (valid_callback) {
 				valid_callback(elem, on);
 			}
 		}
+		else if (!valid_callback) {
+			self.out.invalid_move();
+		}
 
 		return valid_location;
 	}, 50);
 
+	// taking a start and end location and returns
+	// the movement's direction
+	main.direction = function (start, end) {
+		var ret = [];
+
+		if (start[0] > end[0])
+			ret.push(self.enviroment.movement.direction.LEFT);
+		else if (start[0] < end[0])
+			ret.push(self.enviroment.movement.direction.RIGHT);
+
+		if (start[1] > end[1])
+			ret.push(self.enviroment.movement.direction.UP);
+		else if (start[1] < end[1])
+			ret.push(self.enviroment.movement.direction.DOWN);
+
+		return ret;
+	};
+
 	// make all characters hold their locaion elements
 	self.Character.prototype.surrounding_elements = [];
+	self.Character.prototype.viewing = null;
+	self.Character.prototype.moving = function (from, to, direction) {
+		this.viewing = direction;
+	};
 })(mx);

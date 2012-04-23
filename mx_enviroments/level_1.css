@@ -19,7 +19,26 @@
 }
 
 .mountain {
+	background-color: transparent !important;
+	border-bottom: 1px solid transparent !important;
+	border-right: 1px solid transparent !important;
+	background: url(mx_images/enviroment/light_rock.jpg);
+}
+
+.flag_footer {
 	background-color: black !important;
-	border-bottom: 1px solid black !important;
-	border-right: 1px solid black !important;
+	border-bottom: 1px solid transparent !important;
+	border-right: 1px solid transparent !important;
+}
+
+.flag_pole {
+	background-color: gray !important;
+	border-bottom: 1px solid transparent !important;
+	border-right: 1px solid transparent !important;
+}
+
+.flag {
+	background-color: red !important;
+	border-bottom: 1px solid transparent !important;
+	border-right: 1px solid transparent !important;
 }

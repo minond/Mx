@@ -100,7 +100,7 @@
 	main.static.load = function () {
 		var file_path, raw_data, data;
 		
-		mh.for_each(arguments, function (i, file) {
+		mh.for_each(mtype(arguments[0]).is_array ? arguments[0] : arguments, function (i, file) {
 			file_path = stringf(main.static.directory, file);
 			raw_data = self.file.read(file_path);
 
@@ -180,6 +180,7 @@
 	// hide the holder
 	main.public.hide = function () {
 		mh.hide(this.holder);
+		this.state = main.static.states.dead;
 	};
 
 	// character body map appender

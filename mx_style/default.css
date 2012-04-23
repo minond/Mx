@@ -224,3 +224,36 @@ div.Suggestion_item:hover {
 	padding: 6px 9px;
 	cursor: pointer;
 }
+
+/* ---------------------------------------------------------
+ * timer styles
+ * --------------------------------------------------------- */
+div.mx_panel_element {
+	-webkit-user-select: none;
+	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
+	position: fixed;
+	border: 1px solid #C8C8C8;
+	font: 13px Arial;
+	font-weight: 900;
+	cursor: default;
+	padding: 4px 9px;
+	background-color: white;
+	z-index: 1000;
+	left: 10px;
+}
+
+div.mx_timer {
+	top: 10px;
+	height: 25px;
+	width: 70px;
+	padding: 10px 5px 0px 10px;
+	background: white url(../mx_images/enviroment/clock.png) no-repeat 85% 50%;
+}
+
+div.mx_point {
+	top: 55px;
+	height: 25px;
+	width: 48px;
+	padding: 10px 5px 0px 10px;
+	background: white url(../mx_images/enviroment/goldcoin.png) no-repeat 85% 50%;
+}

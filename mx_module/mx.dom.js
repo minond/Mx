@@ -41,7 +41,7 @@
 		enviromentport: {
 			display: null,
 			dimension: {
-				height: 20,
+				height: 30,
 				width: 90
 			},
 			node_size: {

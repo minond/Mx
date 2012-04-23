@@ -56,7 +56,7 @@
 	self.storage.register("enviroment_element", "offset");
 	main.as_enviroment_element = function (node, x_offset, y_offset) {
 		return {
-			// node: main.block(settings.classes.enviroment_element),
+			used: false,
 			node: node,
 			type: [main.type_map.ENVIROMENT],
 			offset: [x_offset, y_offset]
@@ -65,14 +65,18 @@
 
 	// this is an enviroment element that can not
 	// be passed through
-	main.as_solid = function (offset) {
+	main.as_solid = function (offset, remove) {
 		var cell = self.storage.get.enviroment_element(offset);
 
 		if (!cell)
 			return false;
 
-		if (!mh.in_array(main.type_map.SOLID, cell.type))
+		if (!mh.in_array(main.type_map.SOLID, cell.type) && remove !== false)
 			cell.type.push(main.type_map.SOLID);
+		else if (mh.in_array(main.type_map.SOLID, cell.type) && !remove)
+			cell.type = mh.filter(cell.type, function (i, type) {
+				return type !== main.type_map.SOLID
+			});
 
 		return true;
 	};
@@ -86,8 +90,7 @@
 		if (!cell)
 			return false;
 
-		cell.used = used || true;
-
+		cell.used = used;
 		return true;
 	};
 
