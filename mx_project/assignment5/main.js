@@ -45,7 +45,7 @@ mx.Character.register(GAME_ID);
 
 // create a timer element that goes on
 // for five minutes
-var timer = mx.panel.Timer(300, function () {
+var timer = mx.panel.Timer(45, function () {
 	Alert.message(lines.lose);
 
 	// hide all coins
