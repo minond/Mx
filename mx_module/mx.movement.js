@@ -68,10 +68,19 @@
 					return false;
 			}
 
-			// self.enviroment.placement.place.clear();
 			current_selection.move_to.clear();
-			// self.enviroment.placement.place(current_selection, new_offset, gravity, null, main.used_callback);
-			current_selection.move_to(new_offset, gravity, null, main.used_callback);
+			current_selection.move_to(new_offset, gravity, function (elem, on) {
+				mx.http.async_get(
+					stringf(
+						mx.Character.settings.server.directory, {
+								action: stringf(mx.Character.settings.server.announce,  {
+									game_id: GAME_ID,
+									new_loc: JSON.stringify(on)
+								})
+						}
+					)
+				);
+			}, main.used_callback, true);
 		});
 	}, 1);
 })(mx);

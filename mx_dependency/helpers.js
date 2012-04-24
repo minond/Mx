@@ -6,6 +6,13 @@
 // and is not part of a particular one.
 var mh = {};
 
+// random number generator
+mh.random = function () {
+	var num = Math.random();
+	num *= 10000;
+	return num.toString().split(".")[0];
+};
+
 // concatenates a string but checks for fasly values
 mh.concat = function () {
 	var full_string = [];

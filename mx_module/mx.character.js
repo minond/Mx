@@ -3,6 +3,7 @@
 (function (self) {
 	self.include.module.dom;
 	self.include.module.out;
+	self.include.module.http;
 	self.include.module.file;
 	self.include.module.sound;
 	self.include.module.enviroment.element;
@@ -23,6 +24,14 @@
 			char_id: "character_{%0}",
 			char_class: "character_holder",
 			piece_class: "character_piece"
+		},
+
+		// muti-player management
+		server: {
+			directory: "mx_server/{%action}",
+			announce: "announce.php?game_id={%game_id}&location={%new_loc}",
+			register: "register.php?game_id={%game_id}",
+			players: "players.json"
 		}
 	};
 
@@ -243,5 +252,65 @@
 	main.static.get_holder = function (elem) {
 		if (mtype(elem).is_character)
 			return elem.holder;
+	};
+
+	// muti-player management
+	main.static.other_players = {};
+	main.static.request_interval = null;
+	main.static.register = function (game_id) {
+		self.http.async_get(
+			stringf(
+				main.static.settings.server.directory, {
+				action: stringf(main.static.settings.server.register, { game_id: game_id })
+			})
+		);
+
+		$(window).unload(function () {
+			mx.http.async_get(
+				stringf(
+					mx.Character.settings.server.directory, {
+						action: stringf(mx.Character.settings.server.announce,  {
+							game_id: GAME_ID,
+							new_loc: JSON.stringify([0, 0])
+						})
+					}
+				)
+			);
+		});
+
+		main.static.request_interval = setInterval(function () {
+			var data = mx.http.async_get(
+				stringf(
+					mx.Character.settings.server.directory, {
+					action: mx.Character.settings.server.players
+				})
+			);
+
+			if (data.match("{")) {
+				data = JSON.parse(data);
+
+				mh.for_each(data, function (s_game_id, loc) {
+					if (game_id !== s_game_id) {
+						if (loc.length === 2) {
+							// check if is a new character
+							if (!(s_game_id in mx.Character.other_players)) {
+								mx.Character.other_players[ s_game_id ] = new mx.Character.picard(true, false, loc);
+								mx.Character.other_players[ s_game_id ].init_movement(1000);
+							}
+
+							if (loc[0] === 0 && loc[1] === 0) {
+								mx.Character.other_players[ s_game_id ].hide();
+							}
+
+							// check if this character needs to be moved
+							else if (loc[0] !== mx.Character.other_players[ s_game_id ].offset[0] || 
+								loc[1] !== mx.Character.other_players[ s_game_id ].offset[1]) {
+									mx.Character.other_players[ s_game_id ].move_to(loc);
+							}
+						}
+					}
+				});
+			}
+		}, 1000);
 	};
 })(mx);

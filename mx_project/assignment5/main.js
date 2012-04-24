@@ -6,7 +6,7 @@ mx.include.module.enviroment.earth;
 mx.include.module.character;
 mx.include.module.panel;
 
-var GAME_ID = Math.random();
+var GAME_ID = mh.random();
 var DONE = false;
 
 var HEIGHT = mx.dom.settings.enviromentport.dimension.height;
@@ -38,7 +38,7 @@ mx.sound.chaching.volume = .2;
 // initialize Captain Jean-Luc Picard character and
 // make him the main character
 var player = new mx.Character.picard(true, true, [0, P_OFFSET]);
-
+mx.Character.register(GAME_ID);
 
 // goals
 // ========================================================================
