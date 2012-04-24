@@ -6,6 +6,9 @@
 // string for quick message templating.
 (function (self) {
 	var settings = {
+		max: 300,
+		current: 0,
+
 		// build the output section
 		generate: true,
 
@@ -53,6 +56,12 @@
 
 		if (!variables) {
 			variables = [];
+		}
+
+		// size check
+		if (++settings.current >= settings.max) {
+			settings.current = 0;
+			main.clear();
 		}
 		
 		variables.unshift(template_map[ template_name ]);
@@ -103,6 +112,8 @@
 
 		msg_holder.appendChild(msg_out);
 		document.body.appendChild(msg_holder);
+
+		$(msg_holder).resizable({ handles: "sw" }).draggable();
 	}, 1);
 
 	// register a template string to a property in module

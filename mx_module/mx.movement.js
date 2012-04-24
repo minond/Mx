@@ -6,7 +6,8 @@
 
 	var settings = {
 		// bind keyboard arrow keys to character movement
-		keyboard_listener: true
+		keyboard_listener: true,
+		character_move_throttle: 50
 	};
 
 	var main = self.module.register("movement", settings, self.enviroment);
@@ -22,6 +23,9 @@
 
 		if (mtype(elem).is_character) {
 			current_selection = elem;
+			current_selection.init_movement(
+				settings.character_move_throttle
+			);
 		}
 	};
 
@@ -64,8 +68,10 @@
 					return false;
 			}
 
-			self.enviroment.placement.place.clear();
-			self.enviroment.placement.place(current_selection, new_offset, gravity, null, main.used_callback);
+			// self.enviroment.placement.place.clear();
+			current_selection.move_to.clear();
+			// self.enviroment.placement.place(current_selection, new_offset, gravity, null, main.used_callback);
+			current_selection.move_to(new_offset, gravity, null, main.used_callback);
 		});
 	}, 1);
 })(mx);

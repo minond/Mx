@@ -107,13 +107,12 @@ div.mx_output_query span.mx_output_query_data {
 div.mx_out_holder {
 	-webkit-user-select: none;
 	box-shadow: rgba(0, 0, 0, 0.199219) 2px 2px 4px;
-	position: fixed;
+	position: absolute;
 	right: 10px;
 	top: 10px;
 	border: 1px solid #C8C8C8;
 	height: 180px;
-	min-width: 423px;
-	max-width: 423px;
+	width: 423px;
 	font: 12px Arial;
 	cursor: default;
 	padding: 10px;

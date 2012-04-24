@@ -23,10 +23,7 @@
 		var src = settings.directory + filename;
 		var name = filename.split(".")[0];
 
-		if (!self.settings.module.debug.debugging.bool)
-			main[ name ] = new Audio(src);
-		else
-			main[ name ] = { play: new Function };
+		main[ name ] = new Audio(src);
 
 		return name;
 	};

@@ -44,7 +44,7 @@
 	// in the requested location it is moved there.
 	// a "valid_callback" parameter can be passed which 
 	// cancels the movement and calls the function instead
-	main.place = manage.throttle(function (elem, on, gravity, valid_callback, used_callback, force) {
+	main.place = (function (elem, on, gravity, valid_callback, used_callback, force) {
 		var holder, height, width, valid_location = true;
 		var on_node = self.storage.get.enviroment_element(on);
 		var n_array = [on], h_array, w_array, dir_str, start = [];
@@ -53,7 +53,7 @@
 			return false;
 		}
 
-		main.place.clear();
+		//main.place.clear();
 
 		height = elem.height;
 		width = elem.width;
@@ -129,7 +129,7 @@
 				// gravity
 				if (gravity) {
 					main.place(elem, [on[0], on[1] + 1], false, function () {
-						main.place.clear();
+						//main.place.clear();
 						main.place(elem, [on[0], on[1] + 1], gravity);
 					});
 				}
@@ -146,7 +146,7 @@
 		}
 
 		return valid_location;
-	}, 50);
+	});
 
 	// taking a start and end location and returns
 	// the movement's direction
@@ -169,6 +169,14 @@
 	// make all characters hold their locaion elements
 	self.Character.prototype.surrounding_elements = [];
 	self.Character.prototype.viewing = null;
+
+	self.Character.prototype.init_movement = function (n) {
+		var me = this;
+		this.move_to = manage.throttle(function (to, gravity, valid_callback, used_callback, force) {
+			mx.enviroment.placement.place(me, to, gravity, valid_callback, used_callback, force);
+		}, n || 1000);
+	};
+
 	self.Character.prototype.moving = function (from, to, direction) {
 		this.viewing = direction;
 	};

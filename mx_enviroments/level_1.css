@@ -13,9 +13,12 @@
 }
 
 .sky {
-	background-color: #d3dfef !important;
+	/*background-color: #d3dfef !important;
 	border-bottom: 1px solid #d3dfef !important;
-	border-right: 1px solid #d3dfef !important;
+	border-right: 1px solid #d3dfef !important;*/
+	background-color: white !important;
+	border-bottom: 1px solid white !important;
+	border-right: 1px solid white !important;
 }
 
 .mountain {

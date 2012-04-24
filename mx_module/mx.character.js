@@ -50,7 +50,7 @@
 			var loc_main = main;
 			var loc_self = self;
 			
-			main.static[ loc_name ] = function (show, select) {
+			main.static[ loc_name ] = function (show, select, move_to) {
 				loc_self.include.module.enviroment.placement;
 				loc_self.include.module.enviroment.movement;
 
@@ -75,13 +75,27 @@
 				});
 
 				if (show) {
-					self.enviroment.placement.place(character, [0, 0]);
+					if (move_to) {
+						self.enviroment.placement.place(character, move_to);
+					}
+					else {
+						self.enviroment.placement.place(character, [0, 0]);
+					}
 
 					if (select) {
 						self.enviroment.movement.select(character);
 					}
 
 					character.show();
+				}
+
+				if ("normalization" in loc_data) {
+					character.normalize({
+						top: loc_data.normalization.top || 0,
+						right: loc_data.normalization.right || 0,
+						bottom: loc_data.normalization.bottom || 0,
+						left: loc_data.normalization.left || 0
+					});
 				}
 
 				// save the character
@@ -171,7 +185,6 @@
 
 		self.stack.global(function () {
 			self.dom.append(character.holder);
-			self.sound.drop.play();
 			mh.show(character.holder);
 			character.state = main.static.states.ready;
 		});

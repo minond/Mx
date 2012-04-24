@@ -156,7 +156,7 @@
 	main.public.piramid = function (width, xoffset, yoffset, type) {
 		for (var i = 0; i < width; i++) {
 			for (var j = 0; j < width - (i * 2); j++) {
-				this.draw([xoffset + i + j, self.dom.settings.enviromentport.dimension.height + yoffset - i], type);
+				this.draw([xoffset + i + j, yoffset - i], type);
 			}
 		}
 	};
