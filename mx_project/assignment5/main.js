@@ -38,7 +38,10 @@ mx.sound.chaching.volume = .2;
 // initialize Captain Jean-Luc Picard character and
 // make him the main character
 var player = new mx.Character.picard(true, true, [0, P_OFFSET]);
-mx.Character.register(GAME_ID);
+
+if (mx.http.async_get("mx_server/ping.php") === "1") {
+	mx.Character.register(GAME_ID);
+}
 
 // goals
 // ========================================================================
