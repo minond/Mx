@@ -3,7 +3,7 @@ var beedrill, context, canvas_elem;
 beedrill = document.createElement("img");
 canvas_elem = document.createElement("canvas");
 
-beedrill.src = "http://www.freesmileys.org/emoticons/emoticon-pokemon-005.gif";
+beedrill.src = "https://www.google.com/images/srpr/logo3w.png";
 canvas_elem.height = 2000;
 canvas_elem.width = 2000;
 
