@@ -9,7 +9,18 @@ mx.module.register("util", function (module, self) {
 	 * @return Array
 	 */
 	module.to_array = function (args) {
-		return Array.prototype.slice.call(args, 0);
+		var ret = [];
+
+		if (module.is.argument(args)) {
+			ret = Array.prototype.slice.call(args, 0);
+		}
+		else if (module.is.object(args)) {
+			ret = module.map(args, function (prop, value) {
+				return [ prop, value ];
+			});
+		}
+
+		return ret;
 	};
 
 	/**
@@ -215,7 +226,7 @@ mx.module.register("util", function (module, self) {
 	 * @param Object optional scope
 	 * @return Throttled varsion of action
 	 */
-	module.Throttle = function (action, waittime, scope) {
+	module.Throttle = function Throttle (action, waittime, scope) {
 		var manager, timer, items = [];
 
 		function time_next () {
@@ -259,13 +270,13 @@ mx.module.register("util", function (module, self) {
 	};
 
 	/**
-	 * @name debounce
+	 * @name Debounce
 	 * @param Function action
 	 * @param Integer throttled time
 	 * @param Object optional scope
 	 * @return Throttled version of action
 	 */
-	module.debounce = function (action, waittime, scope) {
+	module.Debounce = function Debounce (action, waittime, scope) {
 		var timer, manager = function () {
 			var args = module.to_array(arguments);
 
@@ -280,10 +291,124 @@ mx.module.register("util", function (module, self) {
 	};
 
 	/**
+	 * @name Promise
+	 * @return Promise instance
+	 * @method as key setter
+	 * @method when success appender
+	 * @method fullfil success trigger
+	 * @method fail failure appender
+	 * @method squash failure trigger
+	 */
+	module.Promise = function Promise () {
+		var key_selection = key_default = "default";
+		var callbacks = [], errbacks = [];
+
+		this.as = function (key) {
+			key_selection = key || key_default;
+
+			return this;
+		};
+
+		this.when = function (action, key) {
+			callbacks.push({
+				action: action,
+				key: key || key_default
+			});
+
+			return this;
+		};
+
+		this.fullfil = function (args) {
+			var arglist = module.to_array(arguments);
+			var set_key = key_selection;
+
+			this.as();
+
+			module.foreach(callbacks, function (i, info) {
+				if (info.key === set_key) {
+					info.action.apply(window, arglist);
+				}
+			});
+
+			return this;
+		};
+
+		this.fail = function (action, key) {
+			errbacks.push({
+				action: action,
+				key: key || key_default
+			});
+
+			return this;
+		};
+
+		this.squash = function (args) {
+			var arglist = module.to_array(arguments);
+			var set_key = key_selection;
+
+			this.as();
+
+			module.foreach(errbacks, function (i, info) {
+				if (info.key === set_key) {
+					info.action.apply(window, arglist);
+				}
+			});
+
+			return this;
+		};
+
+	};
+
+	/**
+	 * @name Trigger
+	 * @return Trigger instance
+	 * @method listen adds event listener
+	 * @method trigger triggers event listener
+	 * @method register add event key shortcuts
+	 */
+	module.Trigger = function Trigger () {
+		var tracker = new module.Promise;
+
+		this.listen = function (key, action) {
+			tracker.when(action, key);
+		};
+
+		this.trigger = function (key) {
+			tracker.as(key).fullfil();
+		};
+
+		this.register = function (key) {
+			var _this = this;
+
+			(function (key) {
+				_this.trigger[ key ] = function () {
+					_this.trigger(key);
+
+					return _this;
+				}
+
+				_this.listen[ key ] = function (action) {
+					_this.listen(key, action);
+
+					return _this;
+				};
+			})(key);
+		};
+	};
+
+	/**
 	 * @name is
 	 * @var Object
 	 */
-	module.is = {};
+	module.is = function (x) {
+		var ret = {};
+
+		for (var check in module.is) {
+			ret[ check ] = module.is[ check ](x);
+		}
+
+		return ret;
+	};
 
 	module.is.set = function (x) {
 		return x !== void 0;
@@ -306,7 +431,7 @@ mx.module.register("util", function (module, self) {
 	};
 
 	module.is.object = function (x) {
-		return x instanceof Object && !this.array(x);
+		return x instanceof Object && !module.is.array(x);
 	};
 
 	module.is.node = function (x) {
@@ -318,11 +443,11 @@ mx.module.register("util", function (module, self) {
 	};
 
 	module.is.string = function (x) {
-		return typeof x === "string";
+		return typeof x === "string" || x instanceof String;
 	};
 
 	module.is.number = function (x) {
-		return typeof x === "number" && !isNaN(x);
+		return (typeof x === "number" || x instanceof Number) && !isNaN(x);
 	};
 
 	module.is.boolean = function (x) {
@@ -330,7 +455,7 @@ mx.module.register("util", function (module, self) {
 	};
 
 	module.is.truthy = function (x) {
-		return !this.falsy(x);
+		return !module.is.falsy(x);
 	};
 
 	module.is.falsy = function (x) {
@@ -338,11 +463,14 @@ mx.module.register("util", function (module, self) {
 	};
 
 	module.is.integer = function (x) {
-		return this.number(x) && parseInt(x) === x;
+		return !!x && module.is.number(x) && parseInt(x) === x;
 	};
 
 	module.is.float = module.is.double = function (x) {
-		return this.number(x) && parseInt(x) !== x;
+		return !!x && module.is.number(x) && parseInt(x) !== x;
 	};
 
+	module.is.argument = function (x) {
+		return module.is.set(x) && x.toString() === "[object Arguments]";
+	};
 });

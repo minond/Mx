@@ -11,40 +11,31 @@ document.body.appendChild(canvas_elem);
 
 context = canvas_elem.getContext("2d");
 
-
-
-/*
-// Set the style properties.
-context.fillStyle   = '#00f';
-context.strokeStyle = '#f00';
-context.lineWidth   = 4;
-
-context.beginPath();
-// Start from the top-left point.
-context.moveTo(10, 10); // give the (x,y) coordinates
-context.lineTo(100, 10);
-context.lineTo(10, 100);
-context.lineTo(10, 10);
-
-// Done! Now fill the shape, and draw the stroke.
-// Note: your shape will not be visible until you call any of the two methods.
-context.fill();
-context.stroke();
-context.closePath();
-*/
-
 beedrill.addEventListener("load", function () {
-	context.drawImage(this, 1, 1);
+//	context.drawImage(this, 1, 1);
 }, false);
 
 
 
+function draw_s (x, y) {
+	context.beginPath();
+	context.moveTo(x * 10, y * 4);
+	context.lineTo(x * 10 - 10, y * 4 - 4);
+	context.lineTo(x * 10 - 20, y * 4 - 4);
+	context.lineTo(x * 10 - 10, y * 4);
+	context.lineTo(x * 10, y * 4);
+	context.fill();
+	context.closePath();
+}
 
 
 
 
-
-
+for (var i = 0; i < 10; i++) {
+	for (var j = 0; j < 10; j++) {
+		draw_s(j, i);
+	}
+}
 
 
 
