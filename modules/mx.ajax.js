@@ -2,7 +2,7 @@
  * @name ajax module
  * @var Object
  */
-mx.module.register("ajax", function (module, self) {
+mx.module.register("ajax", function (module, settings, self) {
 	/**
 	 * @name get
 	 * @param String url

@@ -2,12 +2,36 @@
  * @name file module
  * @var Object
  */
-mx.module.register("file", function (module, self) {
+mx.module.register("file", function (module, settings, self) {
+	/**
+	 * @name module_tmpl
+	 * @var String
+	 * 
+	 * module path template
+	 */
+	settings.module_tmpl = "%s";
+
 	/**
 	 * @name cache
 	 * @var Object
 	 */
 	module.cache = {};
+
+	/**
+	 * @name tag_load
+	 * @param String key name
+	 */
+	module.tag_load = function (key) {
+		module.cache[ key ] = true;
+	};
+
+	/**
+	 * @name tag_module
+	 * @param String module name
+	 */
+	module.tag_module = function (modname) {
+		module.tag_load(self.util.sprintf(settings.module_tmpl, modname));
+	};
 
 	/**
 	 * @name include
@@ -91,11 +115,11 @@ mx.module.register("file", function (module, self) {
 	 * @return Boolean register success
 	 */
 	module.register = function (getter, files) {
-	if (getter in module.include || getter in module.require) {
-		return false;
-	}
+		if (getter in module.include || getter in module.require) {
+			return false;
+		}
 
-	return (function (getter, files) {
+		return (function (getter, files) {
 			// extend include and require
 			module.include.__defineGetter__(getter, function () {
 				self.util.foreach(files, function (i, file) {
@@ -109,5 +133,31 @@ mx.module.register("file", function (module, self) {
 				});
 			});
 		})(getter, files);
+	};
+
+	/**
+	 * @name register_module
+	 * @param String module name
+	 * @param String module file name
+	 * @return Boolean register success
+	 */
+	module.register_module = function (getter, file) {
+		if (!file) {
+			file = getter;
+		}
+
+		return module.register(getter, [ self.util.sprintf(module.settings.module_tmpl, file) ]);
+	};
+
+	/**
+	 * @name reload_module
+	 * @param String module name
+	 * @return Object module
+	 */
+	module.reload_module = function (modname) {
+		if (delete self[ modname ]) {
+			self.file.require[ modname ];
+			return self[ modname ];
+		}
 	};
 });

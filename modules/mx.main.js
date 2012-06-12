@@ -28,6 +28,25 @@ mx.module.register = function (holder, module, setter_method) {
 		throw new Error("Cannot overwrite module.");
 	}
 
-	holder[ module ] = {};
-	setter_method.apply(mx, [ holder[ module ], mx ]);
+	holder[ module ] = {
+		settings: {
+			set: function (key, value) {
+				return key in this ? this[ key ] = value : false;
+			},
+
+			get: function (key) {
+				if (!key) {
+					return mx.util.reduce(mx.util.map(this, function (setting, value) {
+						return setting;
+					}), function (index, setting) {
+						return mx.util.in_array(setting, ["get", "set"]) === false;
+					});
+				}
+
+				return key in this ? this[ key ] : void 0;
+			}
+		}
+	};
+
+	setter_method.apply(mx, [ holder[ module ], holder[ module ].settings, mx ]);
 };

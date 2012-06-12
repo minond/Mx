@@ -2,7 +2,7 @@
  * @name util module
  * @var Object
  */
-mx.module.register("util", function (module, self) {
+mx.module.register("util", function (module, settings, self) {
 	/**
 	 * @name to_array
 	 * @param Argument object
@@ -394,6 +394,20 @@ mx.module.register("util", function (module, self) {
 				};
 			})(key);
 		};
+	};
+
+	/**
+	 * @name sprintf
+	 * @param String template string
+	 * @param mixed*
+	 * @return String
+	 */
+	module.sprintf = function (str) {
+		for (var i = 1, max = arguments.length; i < max; i++) {
+			str = str.replace("%s", arguments[ i ]);
+		}
+
+		return str;
 	};
 
 	/**

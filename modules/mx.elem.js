@@ -2,7 +2,7 @@
  * @name elem module
  * @var Object
  */
-mx.module.register("elem", function (module, self) {
+mx.module.register("elem", function (module, settings, self) {
 	/**
 	 * @name create
 	 * @param String node type name
@@ -17,5 +17,14 @@ mx.module.register("elem", function (module, self) {
 		}
 
 		return elem;
+	};
+
+	/**
+	 * @name append
+	 * @param Node to append
+	 * @param Node parent (defaults to body)
+	 */
+	module.append = function (node, holder) {
+		(holder || document.body).appendChild(node);
 	};
 });

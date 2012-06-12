@@ -1,43 +1,22 @@
-var beedrill, context, canvas_elem;
+mx.file.include.canvas;
 
-beedrill = document.createElement("img");
-canvas_elem = document.createElement("canvas");
+mx.canvas.create(2000, 2000, true, true)
 
-beedrill.src = "https://www.google.com/images/srpr/logo3w.png";
-canvas_elem.height = 2000;
-canvas_elem.width = 2000;
+mx.canvas.draw.img("https://www.google.com/images/srpr/logo3w.png", 100, 10);
 
-document.body.appendChild(canvas_elem);
+mx.canvas.register("tsquare", function (x, y) {
+	this.beginPath();
+	this.moveTo(x * 10, y * 4);
+	this.lineTo(x * 10 - 10, y * 4 - 4);
+	this.lineTo(x * 10 - 20, y * 4 - 4);
+	this.lineTo(x * 10 - 10, y * 4);
+	this.lineTo(x * 10, y * 4);
+	this.fill();
+	this.closePath();
+});
 
-context = canvas_elem.getContext("2d");
-
-beedrill.addEventListener("load", function () {
-//	context.drawImage(this, 1, 1);
-}, false);
-
-
-
-function draw_s (x, y) {
-	context.beginPath();
-	context.moveTo(x * 10, y * 4);
-	context.lineTo(x * 10 - 10, y * 4 - 4);
-	context.lineTo(x * 10 - 20, y * 4 - 4);
-	context.lineTo(x * 10 - 10, y * 4);
-	context.lineTo(x * 10, y * 4);
-	context.fill();
-	context.closePath();
-}
-
-
-
-
-for (var i = 0; i < 10; i++) {
-	for (var j = 0; j < 10; j++) {
-		draw_s(j, i);
-	}
-}
-
-
-
-
-
+mx.util.times(10, function (i) {
+	mx.util.times(10, function (j) {
+		mx.canvas.draw.tsquare(j, i);
+	});
+});
