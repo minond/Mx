@@ -19,6 +19,12 @@ mx.module.register("util", function (module, settings, self) {
 				return [ prop, value ];
 			});
 		}
+		else if (!module.is.array(args)) {
+			ret = [ args ];
+		}
+		else {
+			ret = args;
+		}
 
 		return ret;
 	};
@@ -373,8 +379,8 @@ mx.module.register("util", function (module, settings, self) {
 			tracker.when(action, key);
 		};
 
-		this.trigger = function (key) {
-			tracker.as(key).fullfil();
+		this.trigger = function (key, data) {
+			tracker.as(key).fullfil(data);
 		};
 
 		this.register = function (key) {

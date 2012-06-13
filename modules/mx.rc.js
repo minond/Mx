@@ -5,6 +5,7 @@ mx.file.register_module("elem");
 mx.file.register_module("file");
 mx.file.register_module("util");
 mx.file.register_module("canvas");
+mx.file.register_module("events");
 
 mx.file.tag_module("ajax");
 mx.file.tag_module("elem");

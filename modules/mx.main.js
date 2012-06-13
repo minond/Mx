@@ -48,5 +48,7 @@ mx.module.register = function (holder, module, setter_method) {
 		}
 	};
 
-	setter_method.apply(mx, [ holder[ module ], holder[ module ].settings, mx ]);
+	if (setter_method) {
+		setter_method.apply(mx, [ holder[ module ], holder[ module ].settings, mx ]);
+	}
 };
