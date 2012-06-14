@@ -4,6 +4,13 @@
  */
 mx.module.register("canvas", function (module, settings, self) {
 	self.file.include.elem;
+	self.file.include.events;
+
+	/**
+	 * @name listener
+	 * @var Object
+	 */
+	var listener = {};
 
 	/**
 	 * @name el
@@ -18,6 +25,41 @@ mx.module.register("canvas", function (module, settings, self) {
 	settings.context;
 
 	/**
+	 * @name type
+	 * @var String
+	 * 
+	 * type of context canvas should work under
+	 */
+	settings.type = "2d";
+
+	/**
+	 * @name click
+	 * @param Event
+	 * @return void
+	 */
+	listener.click = function (ev) {
+		
+	};
+
+	/**
+	 * @name keydown
+	 * @param Events
+	 * @return void
+	 */
+	listener.keydown = function (ev) {
+		
+	};
+
+	/**
+	 * @name bind_all
+	 * @return void
+	 */
+	module.bind_all = function () {
+		self.events.listen("click", listener.click);
+		self.events.listen("keydown", listener.keydown);
+	};
+
+	/**
 	 * @name create
 	 * @param Integer height
 	 * @param Integer width
@@ -27,6 +69,7 @@ mx.module.register("canvas", function (module, settings, self) {
 	 */
 	module.create = function (height, width, append, use) {
 		var elem = self.elem.create("canvas");
+		var conx = elem.getContext(settings.type);
 
 		if (height && width) {
 			elem.height = height;
@@ -39,12 +82,12 @@ mx.module.register("canvas", function (module, settings, self) {
 
 		if (use) {
 			settings.el = elem;
-			settings.context = elem.getContext("2d");
+			settings.context = conx
 		}
 
 		return {
 			el: elem,
-			context: elem.getContext("2d")
+			context: conx
 		};
 	};
 

@@ -49,6 +49,20 @@ mx.module.register("util", function (module, settings, self) {
 	};
 
 	/**
+	 * @name merge
+	 * @param Array marge holder
+	 * @param Array* marge iten
+	 * @return Array merge holder
+	 */
+	module.merge = function (holder) {
+		for (var i = 1, max = arguments.length; i < max; i++) {
+			holder = holder.concat(module.to_array(arguments[ i ]));
+		}
+
+		return holder;
+	};
+
+	/**
 	 * @name first
 	 * @param Array list
 	 * @return mixed
@@ -403,6 +417,59 @@ mx.module.register("util", function (module, settings, self) {
 	};
 
 	/**
+	 * @name Limit
+	 * @param Function action
+	 * @param Integer limit
+	 * @param Object method call scope
+	 * @return Function limited function
+	 */
+	module.Limit = function (limit, action, scope) {
+		var count = 0;
+
+		return function (args) {
+			if (++count <= limit) {
+				action.apply(scope || window, module.to_array(args));
+			}
+		};
+	};
+
+	/**
+	 * @name Chainable
+	 * @param Object holder with methods
+	 * @return Object with chainable methods
+	 */
+	module.Chainable = function (holder, prefix) {
+		var c_value = [];
+
+		if (!prefix) {
+			prefix = "_";
+		}
+
+		for (var method in holder) {
+			if (module.is.function(holder[ method ])) {
+				(function (loc_method) {
+					holder[ prefix + loc_method ] = function (args) {
+						c_value = [ module.to_array(
+							holder[ loc_method ].apply(
+								holder, c_value.concat(module.to_array(arguments)))) ];
+	
+						return holder;
+					};
+				})(method);
+			}
+		}
+
+		holder.__defineGetter__(prefix, function () {
+			var temp = c_value[ 0 ];
+
+			c_value = null;
+			c_value = [];
+
+			return temp;
+		});
+	};
+
+	/**
 	 * @name sprintf
 	 * @param String template string
 	 * @param mixed*
@@ -494,3 +561,5 @@ mx.module.register("util", function (module, settings, self) {
 		return module.is.set(x) && x.toString() === "[object Arguments]";
 	};
 });
+
+mx.util.Chainable(mx.util, "$");
