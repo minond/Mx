@@ -516,7 +516,7 @@ mx.module.register("util", function (module, settings, self) {
 	 * @return mixed Object/Array
 	 */
 	module.fillin = function (checkitem, defaultitem, copy) {
-		var ret = copy ? module.clone(checkitem) : checkitem;
+		var ret = checkitem ? (copy ? module.clone(checkitem) : checkitem) : module.new_of(defaultitem);
 
 		module.foreach(defaultitem, function (ip, val) {
 			if (!module.is.set(ret[ ip ])) {
@@ -591,7 +591,9 @@ mx.module.register("util", function (module, settings, self) {
 		var ret = {};
 
 		for (var check in module.is) {
-			ret[ check ] = module.is[ check ](x);
+			if (module.is.lambda(module.is[ check ])) {
+				ret[ check ] = module.is[ check ](x);
+			}
 		}
 
 		return ret;
@@ -627,7 +629,7 @@ mx.module.register("util", function (module, settings, self) {
 	/**
 	 * @see is
 	 */
-	module.is.function = function (x) {
+	module.is.function = module.is.lambda = function (x) {
 		return x instanceof Function;
 	};
 

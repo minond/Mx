@@ -5,9 +5,9 @@
 mx.module.constructor("Viewport", function (module, proto, settings, self) {
 	self.file.include.maps;
 
-	proto.__construct = function (info) {
-		if (info.canvas) {
-			this.draw_on(info.canvas);
+	proto.__construct = function (map) {
+		if (map) {
+			this.geo(map);
 		}
 	};
 
@@ -20,7 +20,7 @@ mx.module.constructor("Viewport", function (module, proto, settings, self) {
 
 	proto.show = function () {
 		if (!this.showing && this.map) {
-			document.body.appendChild(this.map.canvas);
+			document.body.appendChild(this.map.canvas.el);
 			this.showing = true;
 		}
 

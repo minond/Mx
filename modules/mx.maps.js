@@ -13,21 +13,24 @@ mx.module.constructor("Map", function (module, proto, settings, self) {
 		point_width: 10
 	};
 
-	proto.__construct = function (info) {
-		self.util.fillin(info, settings.defaults.dim);
+	proto.__construct = function (argv) {
+		argv = self.util.fillin(argv, settings.defaults.dim);
 
-		this.width = info.width;
-		this.height = info.height;
-		this.point_width = info.point_width;
-		this.point_height = info.point_height;
+		this.width = argv.width;
+		this.height = argv.height;
+		this.point_width = argv.point_width;
+		this.point_height = argv.point_height;
 	};
 
 	proto.draw_on = function (canvas) {
-		this.context = canvas.context;
-		this.canvas = canvas.el;
-		this.canvas.height = this.height;
-		this.canvas.width = this.width;
+		this.canvas = canvas;
+		this.canvas.el.height = this.height;
+		this.canvas.el.width = this.width;
 
 		return this;
+	};
+
+	proto.point = function (x, y) {
+		self.canvas.draw.tsquare(this.canvas, x, y);
 	};
 });

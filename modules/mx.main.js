@@ -33,14 +33,8 @@ mx.module.constructor = function (holder, module, setter_method) {
 	mod = new this.template_module;
 
 	holder[ module ] = function $mx (argv) {
-		var argv = arguments;
-
-		if (!argv.length) {
-			argv = [ {} ];
-		}
-
 		if (this.__construct) {
-			this.__construct.apply(this, mx.util.to_array(argv));
+			this.__construct.apply(this, mx.util.to_array(arguments));
 		}
 	};
 
