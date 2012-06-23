@@ -29,7 +29,7 @@ mx.module.register("events", function (module, settings, self) {
 	 * @param Function action
 	 */
 	module.listen = function (type, action) {
-		if (self.util.in_array(type, registration_list) === false) {
+		if (!self.util.in_array(type, registration_list)) {
 			settings.bindto.addEventListener(type, function (ev) {
 				settings.events.trigger(type, ev);
 			});

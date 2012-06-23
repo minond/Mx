@@ -33,9 +33,19 @@ mx.module.register("util", function (module, settings, self) {
 	 * @name in_array
 	 * @param mixed needle
 	 * @param Array haystack
-	 * @return mixed index of item, Boolean if not found
+	 * @return Boolean item in array
 	 */
 	module.in_array = function (needle, haystack) {
+		return module.index_of(needle, haystack) !== false;
+	};
+
+	/**
+	 * @name index_of
+	 * @param mixed needle
+	 * @param Array haystack
+	 * @return mixed index of item, Boolean if not found
+	 */
+	module.index_of = function (needle, haystack) {
 		var found = false;
 
 		module.foreach(haystack, function (i, item) {
@@ -78,6 +88,21 @@ mx.module.register("util", function (module, settings, self) {
 	 */
 	module.last = function (list) {
 		return list[ list.length - 1 ];
+	};
+
+	/**
+	 * @name rest
+	 * @param Array list
+	 * @return Array
+	 */
+	module.rest = function (list) {
+		var ret = []
+
+		for (var i = 1, max = list.length; i < max; i++) {
+			ret[ i - 1 ] = list[ i ];
+		}
+
+		return ret;
 	};
 
 	/**
@@ -484,6 +509,81 @@ mx.module.register("util", function (module, settings, self) {
 	};
 
 	/**
+	 * @name fillin
+	 * @param mixed Object/Array
+	 * @param mixed Object/Array
+	 * @param Boolean copy
+	 * @return mixed Object/Array
+	 */
+	module.fillin = function (checkitem, defaultitem, copy) {
+		var ret = copy ? module.clone(checkitem) : checkitem;
+
+		module.foreach(defaultitem, function (ip, val) {
+			if (!module.is.set(ret[ ip ])) {
+				ret[ ip ] = copy ? module.clone(val) : val;
+			}
+
+			if (module.is.loopable(ret[ ip ])) {
+				module.fillin(ret[ ip ], defaultitem[ ip ], false);
+			}
+		});
+
+		return ret;
+	};
+
+	/**
+	 * @name clone
+	 * @param mixed
+	 * @return mixed
+	 */
+	module.clone = function (item) {
+		var copy;
+
+		if (module.is.loopable(item)) {
+			copy = module.new_of(item);
+
+			module.foreach(item, function (ip, val) {
+				copy[ ip ] = module.clone(val);
+			});
+		}
+		else {
+			copy = item;
+		}
+
+		return copy;
+	};
+
+	/**
+	 * @name new_of
+	 * @param mixed
+	 * @return mixed
+	 */
+	module.new_of = function (item) {
+		var ret;
+		var type = module.is(item);
+
+		switch (true) {
+			case type.array:
+				ret = [];
+				break;
+
+			case type.function:
+				ret = function () {};
+				break;
+
+			case type.object:
+				ret = {};
+				break;
+
+			default:
+				ret = item;
+				break;
+		}
+
+		return ret;
+	};
+
+	/**
 	 * @name is
 	 * @var Object
 	 */
@@ -497,69 +597,162 @@ mx.module.register("util", function (module, settings, self) {
 		return ret;
 	};
 
+	/**
+	 * @name mx
+	 * @var Object
+	 */
+	module.is.mx = {};
+
+	/**
+	 * @see is
+	 */
 	module.is.set = function (x) {
 		return x !== void 0;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.regex = function (x) {
 		return x instanceof RegExp;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.date = function (x) {
 		return x instanceof Date;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.function = function (x) {
 		return x instanceof Function;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.array = function (x) {
 		return x instanceof Array;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.object = function (x) {
 		return x instanceof Object && !module.is.array(x);
 	};
 
+	/**
+	 * @see is
+	 */
+	module.is.loopable = function (x) {
+		return this.object(x) || this.array(x);
+	};
+
+	/**
+	 * @see is
+	 */
 	module.is.node = function (x) {
 		return x instanceof Node;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.nodelist = function (x) {
 		return x instanceof NodeList;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.string = function (x) {
 		return typeof x === "string" || x instanceof String;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.number = function (x) {
 		return (typeof x === "number" || x instanceof Number) && !isNaN(x);
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.boolean = function (x) {
 		return typeof x === "boolean";
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.truthy = function (x) {
 		return !module.is.falsy(x);
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.falsy = function (x) {
 		return module.in_array((x || 0).toString().toLowerCase(), ["no", "0", "false"]) !== false || +x === 0 || !x;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.integer = function (x) {
 		return !!x && module.is.number(x) && parseInt(x) === x;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.float = module.is.double = function (x) {
 		return !!x && module.is.number(x) && parseInt(x) !== x;
 	};
 
+	/**
+	 * @see is
+	 */
 	module.is.argument = function (x) {
 		return module.is.set(x) && x.toString() === "[object Arguments]";
 	};
-});
 
-mx.util.Chainable(mx.util, "$");
+	/**
+	 * @see is.mx
+	 */
+	module.is.mx.canvas = function (x) {
+		return module.is.object(x) && "el" in x && "context" in x;
+	};
+
+	/**
+	 * @name are
+	 * @var Object
+	 * @see is
+	 */
+	module.are = {};
+
+	module.foreach(module.is, function (fn) {
+		(function (fn) {
+			if (module.in_array(fn, ["mx"])) {
+				return;
+			}
+
+			module.are[ fn + "s" ] = function (items) {
+				var are = true;
+
+				module.foreach(arguments, function (i, val) {
+					return are = are && module.is[ fn ](val);
+				});
+
+				return are;
+			};
+		})(fn);
+	});
+
+	module.Chainable(module, "$");
+});

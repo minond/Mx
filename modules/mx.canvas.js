@@ -7,24 +7,6 @@ mx.module.register("canvas", function (module, settings, self) {
 	self.file.include.events;
 
 	/**
-	 * @name listener
-	 * @var Object
-	 */
-	var listener = {};
-
-	/**
-	 * @name el
-	 * @var Node
-	 */
-	settings.el;
-
-	/**
-	 * @name context
-	 * @var CanvasRenderingContext2D
-	 */
-	settings.context;
-
-	/**
 	 * @name type
 	 * @var String
 	 * 
@@ -33,56 +15,19 @@ mx.module.register("canvas", function (module, settings, self) {
 	settings.type = "2d";
 
 	/**
-	 * @name click
-	 * @param Event
-	 * @return void
-	 */
-	listener.click = function (ev) {
-		
-	};
-
-	/**
-	 * @name keydown
-	 * @param Events
-	 * @return void
-	 */
-	listener.keydown = function (ev) {
-		
-	};
-
-	/**
-	 * @name bind_all
-	 * @return void
-	 */
-	module.bind_all = function () {
-		self.events.listen("click", listener.click);
-		self.events.listen("keydown", listener.keydown);
-	};
-
-	/**
-	 * @name create
+	 * @name Create
+	 * @param Boolean append to body
 	 * @param Integer height
 	 * @param Integer width
-	 * @param Boolean append to body
-	 * @param Boolean use as default canvas element
 	 * @return Object canvas element and 2d context
 	 */
-	module.create = function (height, width, append, use) {
+	module.Create = function (height, width) {
 		var elem = self.elem.create("canvas");
 		var conx = elem.getContext(settings.type);
 
 		if (height && width) {
 			elem.height = height;
 			elem.width = width;
-		}
-
-		if (append) {
-			self.elem.append(elem);
-		}
-
-		if (use) {
-			settings.el = elem;
-			settings.context = conx
 		}
 
 		return {
@@ -94,6 +39,7 @@ mx.module.register("canvas", function (module, settings, self) {
 	/**
 	 * @name draw
 	 * @var Object
+	 * @see register
 	 */
 	module.draw = {};
 
@@ -101,36 +47,14 @@ mx.module.register("canvas", function (module, settings, self) {
 	 * @name register
 	 * @param String method name
 	 * @param Function method
+	 * @see draw
 	 */
 	module.register = function (name, action) {
-		module.draw[ name ] = function (args) {
-			if (settings.context) {
-				action.apply(settings.context, self.util.to_array(arguments));
-			}
+		module.draw[ name ] = function (argv) {
+			return action.apply(
+				arguments[ 0 ].context,
+				self.util.rest(arguments)
+			);
 		};
 	};
-
-	/**
-	 * @name img
-	 * @param mixed String/Node
-	 * @return Promise
-	 */
-	module.register("img", function (src, x, y) {
-		var node, promise, loc_this;
-
-		if (self.util.is.node(src)) {
-			node = src;
-		}
-		else {
-			node = self.elem.create("img");
-			node.src = src;
-		}
-
-		loc_this = this;
-		promise = new self.util.Promise;
-
-		node.addEventListener("load", function () {
-			loc_this.drawImage(this, x, y);
-		});
-	});
 });

@@ -146,7 +146,7 @@ mx.module.register("file", function (module, settings, self) {
 			file = getter;
 		}
 
-		return module.register(getter, [ self.util.sprintf(module.settings.module_tmpl, file) ]);
+		return module.register(getter, [ self.util.sprintf(settings.module_tmpl, file) ]);
 	};
 
 	/**
