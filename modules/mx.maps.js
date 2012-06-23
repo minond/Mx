@@ -20,6 +20,10 @@ mx.module.constructor("Map", function (module, proto, settings, self) {
 		this.height = argv.height;
 		this.point_width = argv.point_width;
 		this.point_height = argv.point_height;
+
+		if (argv.canvas) {
+			this.draw_on(argv.canvas);
+		}
 	};
 
 	proto.draw_on = function (canvas) {

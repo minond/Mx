@@ -5,9 +5,13 @@
 mx.module.constructor("Viewport", function (module, proto, settings, self) {
 	self.file.include.maps;
 
-	proto.__construct = function (map) {
-		if (map) {
-			this.geo(map);
+	proto.__construct = function (argv) {
+		if (argv.map) {
+			this.geo(argv.map);
+		}
+
+		if (argv.show) {
+			this.show();
 		}
 	};
 
